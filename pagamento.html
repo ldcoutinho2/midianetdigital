@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Forma de Pagamento — MidiaNetDigital</title>
+  <title>Finalizar Pedido — MidiaNetDigital</title>
   <style>@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap');
 
 :root {
@@ -87,7 +87,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
   <div class="blob blob-2"></div>
   <nav class="nav">
     <a href="index.html" class="logo">MidiaNet<span>Digital</span></a>
-    <a href="planos.html" class="nav-back">← Voltar</a>
+    <a href="pagamento.html" class="nav-back">← Voltar</a>
   </nav>
   <section class="page">
     <div class="progress-bar animate">
@@ -95,28 +95,33 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
       <div class="step-line done"></div>
       <div class="step done"><div class="step-dot">✓</div>Plano</div>
       <div class="step-line done"></div>
-      <div class="step active"><div class="step-dot">3</div>Pagamento</div>
-      <div class="step-line"></div>
-      <div class="step"><div class="step-dot">4</div>Finalizar</div>
+      <div class="step done"><div class="step-dot">✓</div>Pagamento</div>
+      <div class="step-line done"></div>
+      <div class="step active"><div class="step-dot">4</div>Finalizar</div>
     </div>
-    <div class="page-header animate delay-1">
-      <h1>Como você quer pagar?</h1>
-      <p>Escolha sua forma de pagamento. Aprovação rápida e 100% segura.</p>
+    <div class="checkout-box animate delay-1">
+      <h2>Quase lá! 🎉</h2>
+      <p class="sub">Preencha seus dados para finalizar o pedido via WhatsApp. Rápido e sem complicação.</p>
+      <div class="form-group">
+        <label for="nome">Seu nome</label>
+        <input type="text" id="nome" placeholder="Ex: João Silva" required/>
+      </div>
+      <div class="form-group">
+        <label for="email">E-mail</label>
+        <input type="email" id="email" placeholder="seuemail@exemplo.com" required/>
+      </div>
+      <div class="form-group">
+        <label for="telefone">WhatsApp</label>
+        <input type="tel" id="telefone" placeholder="(21) 99999-9999" required/>
+      </div>
+      <div class="form-group">
+        <label for="instagram">Perfil do Instagram</label>
+        <input type="text" id="instagram" placeholder="@seuusuario ou link do perfil" required/>
+      </div>
+      <button class="btn-submit" id="finalizarBtn">Finalizar no WhatsApp →</button>
+      <div class="secure-note">🔒 Seus dados são 100% protegidos e usados só para o pedido</div>
     </div>
-    <div class="pay-grid animate delay-2">
-      <a href="checkout.html?pagamento=pix" class="pay-card featured">
-        <span class="pay-icon">⚡</span>
-        <h3>Pix</h3>
-        <p>Aprovação instantânea, 24h por dia</p>
-        <span class="pay-tag">Mais rápido</span>
-      </a>
-      <a href="checkout.html?pagamento=cartao" class="pay-card">
-        <span class="pay-icon">💳</span>
-        <h3>Cartão</h3>
-        <p>Crédito ou débito com segurança</p>
-      </a>
-    </div>
-    <footer class="page-footer animate delay-3">© 2025 MidiaNetDigital — Todos os direitos reservados</footer>
+    <footer class="page-footer animate delay-2">© 2025 MidiaNetDigital — Todos os direitos reservados</footer>
   </section>
   <script src="script.js"></script>
 </body>
