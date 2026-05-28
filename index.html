@@ -1,79 +1,225 @@
+```html
+<!-- ========================= -->
+<!-- index.html -->
+<!-- ========================= -->
 <!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SocialBoost - Impulsione Seu Instagram</title>
 
-    <div class="card">
-      <h3>Suporte via WhatsApp</h3>
-      <p>Atendimento humanizado para acompanhar seu pedido.</p>
+  <link rel="stylesheet" href="style.css"/>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+  <header class="header">
+
+    <div class="logo">
+      SocialBoost
     </div>
 
-    <div class="card">
-      <h3>Pagamento Seguro</h3>
-      <p>Pagamento realizado apenas após confirmação do pedido.</p>
+    <nav class="nav">
+      <a href="#planos">Planos</a>
+      <a href="#vantagens">Vantagens</a>
+      <a href="#pedido">Pedido</a>
+    </nav>
+
+  </header>
+
+  <section class="hero">
+
+    <div class="hero-content">
+
+      <span class="badge">
+        Plataforma Profissional
+      </span>
+
+      <h1>
+        Cresça Seu Perfil no Instagram com Segurança
+      </h1>
+
+      <p>
+        Seguidores de alta qualidade, entrega rápida e suporte especializado via WhatsApp.
+      </p>
+
+      <a href="#planos" class="hero-btn">
+        Ver Planos
+      </a>
+
     </div>
+
+  </section>
+
+  <section class="stats">
+
+    <div class="stat-box">
+      <h2>+12 Mil</h2>
+      <p>Pedidos Entregues</p>
+    </div>
+
+    <div class="stat-box">
+      <h2>24h</h2>
+      <p>Suporte Especializado</p>
+    </div>
+
+    <div class="stat-box">
+      <h2>100%</h2>
+      <p>Atendimento Humanizado</p>
+    </div>
+
+  </section>
+
+  <section id="vantagens" class="vantagens">
+
+    <h2>Por Que Escolher a SocialBoost?</h2>
+
+    <div class="vantagens-grid">
+
+      <div class="vantagem-card">
+        <h3>Entrega Rápida</h3>
+        <p>
+          Seu pedido começa rapidamente após a confirmação.
+        </p>
+      </div>
+
+      <div class="vantagem-card">
+        <h3>Atendimento via WhatsApp</h3>
+        <p>
+          Suporte humanizado para acompanhar seus pedidos.
+        </p>
+      </div>
+
+      <div class="vantagem-card">
+        <h3>Processo Seguro</h3>
+        <p>
+          Atendimento organizado e confirmação manual do pedido.
+        </p>
+      </div>
+
+    </div>
+
   </section>
 
   <section id="planos" class="planos">
+
     <h2>Escolha Seu Plano</h2>
 
     <div class="planos-grid">
 
-      <div class="plano">
+      <div class="plano-card">
+
         <h3>500 Seguidores</h3>
-        <p class="preco">R$ 19,90</p>
+
+        <div class="preco">
+          R$ 19,90
+        </div>
+
+        <ul>
+          <li>Entrega rápida</li>
+          <li>Suporte especializado</li>
+          <li>Pedido manual seguro</li>
+        </ul>
+
         <button onclick="selecionarPlano('500 Seguidores', '19,90')">
           Selecionar
         </button>
+
       </div>
 
-      <div class="plano destaque">
-        <span class="mais-vendido">Mais Vendido</span>
+      <div class="plano-card destaque">
+
+        <span class="mais-vendido">
+          MAIS VENDIDO
+        </span>
+
         <h3>1000 Seguidores</h3>
-        <p class="preco">R$ 29,90</p>
+
+        <div class="preco">
+          R$ 29,90
+        </div>
+
+        <ul>
+          <li>Entrega rápida</li>
+          <li>Maior custo benefício</li>
+          <li>Suporte prioritário</li>
+        </ul>
+
         <button onclick="selecionarPlano('1000 Seguidores', '29,90')">
           Selecionar
         </button>
+
       </div>
 
-      <div class="plano">
+      <div class="plano-card">
+
         <h3>5000 Seguidores</h3>
-        <p class="preco">R$ 89,90</p>
+
+        <div class="preco">
+          R$ 89,90
+        </div>
+
+        <ul>
+          <li>Alta quantidade</li>
+          <li>Entrega organizada</li>
+          <li>Atendimento completo</li>
+        </ul>
+
         <button onclick="selecionarPlano('5000 Seguidores', '89,90')">
           Selecionar
         </button>
+
       </div>
 
     </div>
+
   </section>
 
   <section id="pedido" class="pedido">
-    <h2>Finalizar Pedido</h2>
 
-    <form id="pedidoForm">
+    <div class="pedido-box">
 
-      <input type="text" id="nome" placeholder="Seu nome" required />
+      <h2>Finalizar Pedido</h2>
 
-      <input type="email" id="email" placeholder="Seu e-mail" required />
+      <form id="pedidoForm">
 
-      <input type="tel" id="telefone" placeholder="Seu WhatsApp" required />
+        <input type="text" id="nome" placeholder="Seu nome" required>
 
-      <input type="text" id="instagram" placeholder="@usuario ou link do perfil" required />
+        <input type="email" id="email" placeholder="Seu e-mail" required>
 
-      <input type="text" id="plano" placeholder="Plano escolhido" readonly required />
+        <input type="tel" id="telefone" placeholder="Seu WhatsApp" required>
 
-      <input type="text" id="valor" placeholder="Valor" readonly required />
+        <input type="text" id="instagram" placeholder="@usuario ou link do perfil" required>
 
-      <button type="submit">
-        Finalizar no WhatsApp
-      </button>
+        <input type="text" id="plano" placeholder="Plano escolhido" readonly required>
 
-    </form>
+        <input type="text" id="valor" placeholder="Valor do plano" readonly required>
+
+        <button type="submit">
+          Finalizar no WhatsApp
+        </button>
+
+      </form>
+
+    </div>
+
   </section>
 
   <footer>
+
     <p>
-      © 2026 SocialBoost - Todos os direitos reservados.
+      © 2026 SocialBoost — Todos os direitos reservados.
     </p>
+
   </footer>
 
   <script src="script.js"></script>
+
 </body>
 </html>
