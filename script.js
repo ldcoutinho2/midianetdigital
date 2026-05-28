@@ -14,6 +14,6 @@ if (form) {
 
     const numero = '5521999999999';
 
-    window.open(`https://wa.me/${numero}?text=${mensagem}`, '_blank');
+    window.open(`https://wa.me/${2199689838}?text=${mensagem}`, '_blank');
   });
 }
