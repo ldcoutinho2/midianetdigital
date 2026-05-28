@@ -10,20 +10,10 @@ if (form) {
     const instagram = document.getElementById('instagram').value;
     const pagamento = document.getElementById('pagamento').value;
 
-    const mensagem =
-`Olá, quero finalizar meu pedido.
-
-Nome: ${nome}
-Email: ${email}
-WhatsApp: ${telefone}
-Instagram: ${instagram}
-Forma de pagamento: ${pagamento}`;
+    const mensagem = `Olá, quero finalizar meu pedido.%0A%0A Nome: ${nome}%0A Email: ${email}%0A WhatsApp: ${telefone}%0A Instagram: ${instagram}%0A Forma de pagamento: ${pagamento}`;
 
     const numero = '5521999999999';
 
-    window.open(
-      `https://wa.me/${21991689838}?text=${encodeURIComponent(mensagem)}`,
-      '_blank'
-    );
+    window.open(`https://wa.me/${numero}?text=${mensagem}`, '_blank');
   });
 }
