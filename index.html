@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+      <h3>Pagamento Seguro</h3>
+      <p>Pagamento realizado apenas após confirmação do pedido.</p>
+    </div>
+  </section>
+
+  <section id="planos" class="planos">
+    <h2>Escolha Seu Plano</h2>
+
+    <div class="planos-grid">
+
+      <div class="plano">
+        <h3>500 Seguidores</h3>
+        <p class="preco">R$ 19,90</p>
+        <button onclick="selecionarPlano('500 Seguidores', '19,90')">
+          Selecionar
+        </button>
+      </div>
+
+      <div class="plano destaque">
+        <span class="mais-vendido">Mais Vendido</span>
+        <h3>1000 Seguidores</h3>
+        <p class="preco">R$ 29,90</p>
+        <button onclick="selecionarPlano('1000 Seguidores', '29,90')">
+          Selecionar
+        </button>
+      </div>
+
+      <div class="plano">
+        <h3>5000 Seguidores</h3>
+        <p class="preco">R$ 89,90</p>
+        <button onclick="selecionarPlano('5000 Seguidores', '89,90')">
+          Selecionar
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="pedido" class="pedido">
+    <h2>Finalizar Pedido</h2>
+
+    <form id="pedidoForm">
+
+      <input type="text" id="nome" placeholder="Seu nome" required />
+
+      <input type="email" id="email" placeholder="Seu e-mail" required />
+
+      <input type="tel" id="telefone" placeholder="Seu WhatsApp" required />
+
+      <input type="text" id="instagram" placeholder="@usuario ou link do perfil" required />
+
+      <input type="text" id="plano" placeholder="Plano escolhido" readonly required />
+
+      <input type="text" id="valor" placeholder="Valor" readonly required />
+
+      <button type="submit">
+        Finalizar no WhatsApp
+      </button>
+
+    </form>
+  </section>
+
+  <footer>
+    <p>
+      © 2026 SocialBoost - Todos os direitos reservados.
+    </p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
