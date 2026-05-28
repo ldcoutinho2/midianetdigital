@@ -1,1 +1,639 @@
-<!DOCTYPE html> <html lang="pt-BR"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>MidiaNetDigital</title> <link rel="stylesheet" href="style.css"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"> </head> <body> <header class="header"> <div class="logo"> MidiaNetDigital </div> <a href="servicos.html" class="header-btn"> Começar Agora </a> </header> <section class="hero"> <div class="hero-content"> <span class="badge"> Plataforma Profissional </span> <h1> Impulsione Seu Instagram </h1> <p> Seguidores, curtidas e visualizações com aparência profissional e entrega rápida. </p> <a href="servicos.html" class="hero-btn"> Escolher Serviço </a> </div> </section> <section class="stats"> <div class="stat-card"> <h2> +10 Mil </h2> <p> Pedidos entregues </p> </div> <div class="stat-card"> <h2> 24h </h2> <p> Suporte especializado </p> </div> <div class="stat-card"> <h2> 100% </h2> <p> Atendimento humanizado </p> </div> </section> </body> </html>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MidiaNetDigital — Crescimento Real no Instagram</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #13131c;
+      --surface2: #1c1c2b;
+      --accent: #e8ff47;
+      --accent2: #7c5cfc;
+      --text: #f0f0f8;
+      --muted: #8888aa;
+      --border: rgba(255,255,255,0.07);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* BG noise texture */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 6%;
+      background: rgba(10,10,15,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.25rem;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .logo span { color: var(--accent); }
+
+    nav a.nav-cta {
+      background: var(--accent);
+      color: #0a0a0f;
+      font-weight: 600;
+      font-size: 0.875rem;
+      padding: 0.55rem 1.25rem;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: opacity .2s, transform .2s;
+    }
+
+    nav a.nav-cta:hover { opacity: 0.85; transform: translateY(-1px); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8rem 6% 5rem;
+      overflow: hidden;
+    }
+
+    /* glow blobs */
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.18;
+      pointer-events: none;
+    }
+    .blob-1 { width: 500px; height: 500px; background: var(--accent2); top: -100px; left: -150px; }
+    .blob-2 { width: 400px; height: 400px; background: var(--accent); top: 200px; right: -100px; opacity: 0.10; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(124,92,252,0.15);
+      border: 1px solid rgba(124,92,252,0.35);
+      color: #c4b5fd;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 0.4rem 1rem;
+      border-radius: 100px;
+      margin-bottom: 1.75rem;
+      animation: fadeUp .6s ease both;
+    }
+
+    .badge-dot {
+      width: 7px; height: 7px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.4); }
+    }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.6rem, 7vw, 5.5rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      max-width: 820px;
+      animation: fadeUp .7s .1s ease both;
+    }
+
+    h1 .highlight {
+      position: relative;
+      display: inline-block;
+      color: var(--accent);
+    }
+
+    .hero-sub {
+      margin-top: 1.5rem;
+      font-size: clamp(1rem, 2.2vw, 1.2rem);
+      color: var(--muted);
+      max-width: 540px;
+      animation: fadeUp .7s .2s ease both;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 2.5rem;
+      animation: fadeUp .7s .3s ease both;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--accent);
+      color: #0a0a0f;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 0.85rem 2rem;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 0 30px rgba(232,255,71,0.25);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 45px rgba(232,255,71,0.4);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-weight: 500;
+      font-size: 1rem;
+      padding: 0.85rem 2rem;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: background .2s, border-color .2s;
+    }
+
+    .btn-secondary:hover {
+      background: var(--surface2);
+      border-color: rgba(255,255,255,0.15);
+    }
+
+    /* ── STATS ── */
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      flex-wrap: wrap;
+      margin-top: 4.5rem;
+      padding-top: 3rem;
+      border-top: 1px solid var(--border);
+      width: 100%;
+      max-width: 720px;
+      animation: fadeUp .7s .4s ease both;
+    }
+
+    .stat-item { text-align: center; }
+
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-top: 0.35rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── SECTION SHARED ── */
+    section { padding: 6rem 6%; position: relative; }
+
+    .section-tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      max-width: 560px;
+    }
+
+    .section-sub {
+      color: var(--muted);
+      margin-top: 1rem;
+      max-width: 480px;
+      font-size: 1rem;
+    }
+
+    /* ── SERVICES ── */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+      margin-top: 3rem;
+    }
+
+    .service-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2rem;
+      transition: transform .25s, border-color .25s, box-shadow .25s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent2), var(--accent));
+      opacity: 0;
+      transition: opacity .25s;
+    }
+
+    .service-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255,255,255,0.13);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+
+    .service-card:hover::before { opacity: 1; }
+
+    .service-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .service-card h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .service-card p { color: var(--muted); font-size: 0.92rem; }
+
+    /* ── WHY US ── */
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+      margin-top: 3rem;
+    }
+
+    .why-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.75rem;
+    }
+
+    .why-icon {
+      width: 44px; height: 44px;
+      background: rgba(232,255,71,0.1);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+    }
+
+    .why-card h4 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .why-card p { color: var(--muted); font-size: 0.875rem; }
+
+    /* ── TESTIMONIALS ── */
+    .testimonials { background: var(--surface); }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+      margin-top: 3rem;
+    }
+
+    .testi-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.75rem;
+    }
+
+    .stars { color: var(--accent); font-size: 0.9rem; margin-bottom: 1rem; }
+
+    .testi-card p {
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: #cccce0;
+      margin-bottom: 1.25rem;
+    }
+
+    .testi-author {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .avatar {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: #0a0a0f;
+    }
+
+    .testi-name { font-weight: 600; font-size: 0.9rem; }
+    .testi-handle { font-size: 0.8rem; color: var(--muted); }
+
+    /* ── CTA SECTION ── */
+    .cta-section {
+      text-align: center;
+      background: linear-gradient(135deg, rgba(124,92,252,0.12), rgba(232,255,71,0.05));
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .cta-section h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      max-width: 600px;
+      margin: 0 auto 1rem;
+    }
+
+    .cta-section p {
+      color: var(--muted);
+      max-width: 420px;
+      margin: 0 auto 2.5rem;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 2.5rem 6%;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    footer .logo { font-size: 1rem; }
+
+    footer p {
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    footer a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.82rem;
+      transition: color .2s;
+    }
+
+    footer a:hover { color: var(--text); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      nav { padding: 1rem 5%; }
+      .hero { padding: 7rem 5% 4rem; }
+      .stats { gap: 1.75rem; }
+      section { padding: 4rem 5%; }
+      footer { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="logo">MidiaNet<span>Digital</span></a>
+    <a href="https://midianetdigital.vercel.app/servicos.html" class="nav-cta">Ver Planos →</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <div class="badge">
+      <span class="badge-dot"></span>
+      +10.000 clientes satisfeitos
+    </div>
+
+    <h1>Seu Instagram Crescendo<br>de <span class="highlight">Verdade</span></h1>
+
+    <p class="hero-sub">
+      Seguidores reais, curtidas e visualizações com entrega em horas. Sem risco, sem complicação — só resultado.
+    </p>
+
+    <div class="hero-actions">
+      <a href="https://midianetdigital.vercel.app/servicos.html" class="btn-primary">
+        Quero Crescer Agora →
+      </a>
+      <a href="#servicos" class="btn-secondary">
+        Ver Serviços
+      </a>
+    </div>
+
+    <div class="stats">
+      <div class="stat-item">
+        <div class="stat-num">+10K</div>
+        <div class="stat-label">Pedidos entregues</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">24h</div>
+        <div class="stat-label">Suporte especializado</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">100%</div>
+        <div class="stat-label">Satisfação garantida</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">⚡ Rápido</div>
+        <div class="stat-label">Entrega em horas</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVIÇOS -->
+  <section id="servicos">
+    <span class="section-tag">O que oferecemos</span>
+    <h2 class="section-title">Tudo que você precisa para crescer no Instagram</h2>
+    <p class="section-sub">Escolha o serviço ideal para o seu perfil e comece a ver resultados hoje mesmo.</p>
+
+    <div class="services-grid">
+      <div class="service-card">
+        <span class="service-icon">👥</span>
+        <h3>Seguidores</h3>
+        <p>Aumente sua base de seguidores com perfis de qualidade e entrega progressiva para parecer natural.</p>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">❤️</span>
+        <h3>Curtidas</h3>
+        <p>Mais curtidas nas suas publicações, aumentando o alcance orgânico e a credibilidade do seu perfil.</p>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">▶️</span>
+        <h3>Visualizações</h3>
+        <p>Impulsione seus Reels e stories com visualizações reais que aumentam seu desempenho no algoritmo.</p>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">💬</span>
+        <h3>Comentários</h3>
+        <p>Gere engajamento genuíno nas suas postagens e transmita autoridade para novos visitantes.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- POR QUE NÓS -->
+  <section>
+    <span class="section-tag">Por que escolher a gente</span>
+    <h2 class="section-title">Diferenciais que fazem a diferença</h2>
+
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="why-icon">🔒</div>
+        <h4>100% Seguro</h4>
+        <p>Método sem acesso à sua conta, sem riscos de banimento ou penalizações.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">⚡</div>
+        <h4>Entrega Rápida</h4>
+        <p>A maioria dos pedidos começa a ser processada em menos de 1 hora após a confirmação.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">🙋</div>
+        <h4>Suporte Humano</h4>
+        <p>Atendimento real, por pessoas reais. Estamos disponíveis 24h para resolver qualquer dúvida.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">💰</div>
+        <h4>Melhor Custo-Benefício</h4>
+        <p>Preços acessíveis sem abrir mão da qualidade. Transparência total, sem cobranças ocultas.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DEPOIMENTOS -->
+  <section class="testimonials">
+    <span class="section-tag">Quem já usou</span>
+    <h2 class="section-title">Resultados reais de clientes reais</h2>
+
+    <div class="testimonials-grid">
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p>"Comprei seguidores na MidiaNetDigital e em menos de 2 horas já via o crescimento. Super recomendo, atendimento incrível!"</p>
+        <div class="testi-author">
+          <div class="avatar" style="background: var(--accent);">JC</div>
+          <div>
+            <div class="testi-name">João Carlos</div>
+            <div class="testi-handle">@joaocarlos.fit</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p>"Precisava dar um empurrão no meu perfil de moda. Os resultados foram além do esperado e o suporte respondeu na hora!"</p>
+        <div class="testi-author">
+          <div class="avatar" style="background: #7c5cfc; color: #fff;">AM</div>
+          <div>
+            <div class="testi-name">Ana Monteiro</div>
+            <div class="testi-handle">@ana.moda_style</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p>"Meu Reel explodiu depois de comprar as visualizações. O algoritmo começou a recomendar meu conteúdo organicamente. Vale muito!"</p>
+        <div class="testi-author">
+          <div class="avatar" style="background: #22d3ee; color: #0a0a0f;">LR</div>
+          <div>
+            <div class="testi-name">Lucas Ramos</div>
+            <div class="testi-handle">@lucasramos.music</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="cta-section">
+    <h2>Pronto para transformar seu perfil?</h2>
+    <p>Mais de 10.000 pedidos entregues. Comece agora e veja a diferença em poucas horas.</p>
+    <a href="https://midianetdigital.vercel.app/servicos.html" class="btn-primary">
+      Impulsionar Meu Perfil →
+    </a>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <a href="#" class="logo">MidiaNet<span>Digital</span></a>
+    <p>© 2025 MidiaNetDigital. Todos os direitos reservados.</p>
+    <div style="display:flex; gap: 1.5rem;">
+      <a href="#">Termos</a>
+      <a href="#">Privacidade</a>
+      <a href="#">Contato</a>
+    </div>
+  </footer>
+
+</body>
+</html>
