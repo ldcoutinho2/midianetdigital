@@ -4,217 +4,290 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Finalizar Pedido - MidiaNetDigital</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
   <style>
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap');
-
-:root {
-  --bg: #0a0a0f; --surface: #13131c; --surface2: #1c1c2b;
-  --accent: #e8ff47; --accent2: #7c5cfc;
-  --text: #f0f0f8; --muted: #8888aa;
-  --border: rgba(255,255,255,0.07); --radius: 20px;
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;line-height:1.6;overflow-x:hidden;min-height:100vh}
-body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:0.4}
-.blob{position:fixed;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:0}
-.blob-1{width:500px;height:500px;background:var(--accent2);top:-150px;right:-100px;opacity:0.15}
-.blob-2{width:400px;height:400px;background:var(--accent);bottom:-150px;left:-100px;opacity:0.07}
-.nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1.2rem 6%;background:rgba(10,10,15,0.85);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
-.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.2rem;letter-spacing:-0.03em;color:var(--text);text-decoration:none}
-.logo span{color:var(--accent)}
-.nav-back{display:inline-flex;align-items:center;gap:0.4rem;color:var(--muted);font-size:0.9rem;font-weight:500;text-decoration:none;padding:0.5rem 1rem;border:1px solid var(--border);border-radius:100px;transition:color .2s,border-color .2s}
-.nav-back:hover{color:var(--text);border-color:rgba(255,255,255,0.18)}
-.page{position:relative;z-index:1;min-height:100vh;padding:8rem 6% 5rem;display:flex;flex-direction:column;align-items:center}
-.progress-bar{display:flex;align-items:center;margin-bottom:3.5rem}
-.step{display:flex;align-items:center;gap:0.5rem;font-size:0.8rem;font-weight:600;color:var(--muted)}
-.step.active{color:var(--accent)}
-.step.done{color:rgba(232,255,71,0.5)}
-.step-dot{width:28px;height:28px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700}
-.step.active .step-dot{background:var(--accent);color:#0a0a0f;border-color:var(--accent)}
-.step.done .step-dot{background:rgba(232,255,71,0.15);border-color:rgba(232,255,71,0.3);color:var(--accent)}
-.step-line{width:40px;height:1px;background:var(--border);margin:0 0.25rem}
-.step-line.done{background:rgba(232,255,71,0.3)}
-.page-header{text-align:center;max-width:600px;margin-bottom:3rem}
-.page-header h1{font-family:'Syne',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;letter-spacing:-0.02em;line-height:1.1;margin-bottom:0.75rem}
-.page-header p{color:var(--muted);font-size:1rem}
-.cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.25rem;width:100%;max-width:1100px}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:2rem 1.75rem;text-decoration:none;color:var(--text);transition:transform .25s,border-color .25s,box-shadow .25s;position:relative;overflow:hidden;cursor:pointer;display:block}
-.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent2),var(--accent));opacity:0;transition:opacity .25s}
-.card:hover{transform:translateY(-5px);border-color:rgba(255,255,255,0.14);box-shadow:0 20px 40px rgba(0,0,0,.35)}
-.card:hover::before{opacity:1}
-.card.featured{border-color:rgba(232,255,71,0.3);background:linear-gradient(135deg,rgba(232,255,71,0.04),var(--surface))}
-.card.featured::before{opacity:1}
-.card-badge{position:absolute;top:1rem;right:1rem;background:var(--accent);color:#0a0a0f;font-size:0.7rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;padding:0.25rem 0.6rem;border-radius:100px}
-.card-icon{font-size:2.2rem;margin-bottom:1rem;display:block}
-.card h3{font-family:'Syne',sans-serif;font-size:1.15rem;font-weight:700;margin-bottom:0.4rem}
-.card p,.card span{color:var(--muted);font-size:0.875rem}
-.card-price{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--accent);margin:0.75rem 0 0.25rem;line-height:1}
-.card-price-sub{color:var(--muted);font-size:0.8rem}
-.card-features{list-style:none;margin-top:1rem;display:flex;flex-direction:column;gap:0.4rem}
-.card-features li{font-size:0.85rem;color:var(--muted);display:flex;align-items:center;gap:0.4rem}
-.card-features li::before{content:'✓';color:var(--accent);font-weight:700}
-.checkout-box{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:2.5rem;width:100%;max-width:560px}
-.checkout-box h2{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;margin-bottom:0.4rem}
-.checkout-box .sub{color:var(--muted);font-size:0.9rem;margin-bottom:2rem}
-.form-group{display:flex;flex-direction:column;gap:0.4rem;margin-bottom:1.1rem}
-.form-group label{font-size:0.82rem;font-weight:600;color:var(--muted);letter-spacing:0.03em;text-transform:uppercase}
-.form-group input{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:0.85rem 1rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.95rem;outline:none;transition:border-color .2s;width:100%}
-.form-group input:focus{border-color:rgba(232,255,71,0.4)}
-.form-group input::placeholder{color:var(--muted)}
-.btn-submit{width:100%;padding:1rem;border:none;border-radius:100px;background:var(--accent);color:#0a0a0f;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;margin-top:0.5rem;transition:opacity .2s,transform .2s,box-shadow .2s;box-shadow:0 0 30px rgba(232,255,71,0.2)}
-.btn-submit:hover{opacity:0.9;transform:translateY(-2px);box-shadow:0 0 45px rgba(232,255,71,0.35)}
-.secure-note{display:flex;align-items:center;justify-content:center;gap:0.4rem;margin-top:1rem;font-size:0.8rem;color:var(--muted)}
-.page-footer{margin-top:4rem;padding-top:2rem;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.8rem;width:100%;max-width:1100px}
-.pay-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.25rem;width:100%;max-width:600px}
-.pay-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:2.25rem 1.5rem;text-align:center;text-decoration:none;color:var(--text);transition:transform .25s,border-color .25s,box-shadow .25s;position:relative;overflow:hidden}
-.pay-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent2),var(--accent));opacity:0;transition:opacity .25s}
-.pay-card:hover{transform:translateY(-5px);border-color:rgba(255,255,255,0.14);box-shadow:0 20px 40px rgba(0,0,0,.3)}
-.pay-card:hover::before{opacity:1}
-.pay-card.featured{border-color:rgba(232,255,71,0.3)}
-.pay-card.featured::before{opacity:1}
-.pay-icon{font-size:2.5rem;margin-bottom:1rem;display:block}
-.pay-card h3{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:700;margin-bottom:0.4rem}
-.pay-card p{color:var(--muted);font-size:0.875rem}
-.pay-tag{display:inline-block;margin-top:0.75rem;background:rgba(232,255,71,0.1);border:1px solid rgba(232,255,71,0.25);color:var(--accent);font-size:0.72rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;padding:0.2rem 0.6rem;border-radius:100px}
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-.animate{animation:fadeUp .6s ease both}
-.delay-1{animation-delay:.1s}
-.delay-2{animation-delay:.2s}
-.delay-3{animation-delay:.3s}
-@media(max-width:600px){.page{padding:7rem 5% 4rem}.nav{padding:1rem 5%}.cards-grid{grid-template-columns:1fr}.step-line{width:20px}.checkout-box{padding:1.75rem 1.25rem}}
-
-.order-summary {
-  background: rgba(232,255,71,0.05);
-  border: 1px solid rgba(232,255,71,0.2);
-  border-radius: 14px;
-  padding: 1rem 1.25rem;
-  margin-bottom: 1.75rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-.order-summary-title {
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 0.25rem;
-}
-.order-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.875rem;
-}
-.order-row span:first-child { color: var(--muted); }
-.order-row span:last-child  { font-weight: 600; color: var(--text); }
+    :root{--bg:#080810;--s1:#111120;--s2:#181828;--ac:#e8ff47;--ac2:#7c5cfc;--text:#f0f0f8;--muted:#8888aa;--border:rgba(255,255,255,0.07)}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"DM Sans",sans-serif;overflow-x:hidden;min-height:100vh}
+    body::before{content:"";position:fixed;inset:0;opacity:.03;pointer-events:none;z-index:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+    .blob{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(110px)}
+    .b1{width:500px;height:500px;background:var(--ac2);top:-150px;right:-100px;opacity:.13}
+    .b2{width:400px;height:400px;background:var(--ac);bottom:-150px;left:-100px;opacity:.06}
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1.1rem 6%;background:rgba(8,8,16,.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+    .logo{font-family:"Syne",sans-serif;font-weight:800;font-size:1.2rem;letter-spacing:-.03em;color:var(--text);text-decoration:none}
+    .logo em{color:var(--ac);font-style:normal}
+    .nav-back{display:inline-flex;align-items:center;gap:.4rem;color:var(--muted);font-size:.875rem;font-weight:500;text-decoration:none;padding:.5rem 1rem;border:1px solid var(--border);border-radius:100px;transition:color .2s,border-color .2s}
+    .nav-back:hover{color:var(--text);border-color:rgba(255,255,255,.18)}
+    .page{position:relative;z-index:1;min-height:100vh;padding:7rem 6% 5rem;display:flex;flex-direction:column;align-items:center}
+    .prog{display:flex;align-items:center;margin-bottom:3rem}
+    .st{display:flex;align-items:center;gap:.45rem;font-size:.78rem;font-weight:600;color:var(--muted)}
+    .st.on{color:var(--ac)}.st.dn{color:rgba(232,255,71,.5)}
+    .sd{width:26px;height:26px;border-radius:50%;background:var(--s2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700}
+    .st.on .sd{background:var(--ac);color:#080810;border-color:var(--ac)}
+    .st.dn .sd{background:rgba(232,255,71,.12);border-color:rgba(232,255,71,.3);color:var(--ac)}
+    .sl{width:36px;height:1px;background:var(--border);margin:0 .2rem}.sl.dn{background:rgba(232,255,71,.3)}
+    .box{background:var(--s1);border:1px solid var(--border);border-radius:24px;padding:2.5rem;width:100%;max-width:540px}
+    .box h2{font-family:"Syne",sans-serif;font-size:1.5rem;font-weight:800;margin-bottom:.3rem}
+    .sub{color:var(--muted);font-size:.9rem;margin-bottom:1.75rem}
+    .resumo{background:rgba(232,255,71,.04);border:1px solid rgba(232,255,71,.18);border-radius:14px;padding:1rem 1.25rem;margin-bottom:1.75rem}
+    .resumo-title{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ac);margin-bottom:.6rem}
+    .resumo-row{display:flex;justify-content:space-between;font-size:.875rem;padding:.2rem 0}
+    .resumo-row span:first-child{color:var(--muted)}.resumo-row span:last-child{font-weight:600}
+    .resumo-total{border-top:1px solid var(--border);margin-top:.5rem;padding-top:.5rem}
+    .resumo-total span:last-child{color:var(--ac);font-family:"Syne",sans-serif;font-size:1.1rem;font-weight:800}
+    .fg{display:flex;flex-direction:column;gap:.4rem;margin-bottom:1rem}
+    .fg label{font-size:.78rem;font-weight:600;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+    .fg input{background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:.85rem 1rem;color:var(--text);font-family:"DM Sans",sans-serif;font-size:.95rem;outline:none;transition:border-color .2s;width:100%}
+    .fg input:focus{border-color:rgba(232,255,71,.4)}
+    .fg input::placeholder{color:var(--muted)}
+    .pay-tabs{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1.5rem}
+    .pay-tab{background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:.85rem;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;user-select:none}
+    .pay-tab.active{border-color:var(--ac);background:rgba(232,255,71,.06)}
+    .pay-tab-icon{font-size:1.4rem;margin-bottom:.25rem}
+    .pay-tab-name{font-weight:600;font-size:.9rem}
+    .pay-tab-sub{font-size:.75rem;color:var(--muted)}
+    .btn-pay{width:100%;padding:1rem;border:none;border-radius:100px;background:var(--ac);color:#080810;font-family:"DM Sans",sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:opacity .2s,transform .2s,box-shadow .2s;box-shadow:0 0 32px rgba(232,255,71,.2);display:flex;align-items:center;justify-content:center;gap:.5rem}
+    .btn-pay:hover{opacity:.9;transform:translateY(-2px);box-shadow:0 0 50px rgba(232,255,71,.35)}
+    .btn-pay:disabled{opacity:.5;cursor:not-allowed;transform:none}
+    .secure{display:flex;align-items:center;justify-content:center;gap:.4rem;margin-top:.9rem;font-size:.78rem;color:var(--muted)}
+    #tela-pix{display:none;text-align:center}
+    #tela-pix h3{font-family:"Syne",sans-serif;font-size:1.3rem;font-weight:800;margin-bottom:.5rem}
+    #tela-pix p{color:var(--muted);font-size:.9rem;margin-bottom:1.5rem}
+    .pix-valor{font-family:"Syne",sans-serif;font-size:2rem;font-weight:800;color:var(--ac);margin-bottom:1.5rem}
+    .pix-qr{background:white;border-radius:16px;padding:1rem;display:inline-block;margin-bottom:1.5rem}
+    .pix-qr img{width:200px;height:200px;display:block}
+    .pix-copy-box{background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:.85rem 1rem;display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-bottom:1.25rem;word-break:break-all}
+    .pix-code{font-size:.75rem;color:var(--muted);text-align:left;flex:1;line-height:1.5}
+    .btn-copy{background:var(--ac);color:#080810;font-weight:700;font-size:.82rem;padding:.5rem 1rem;border:none;border-radius:100px;cursor:pointer;white-space:nowrap;transition:opacity .2s}
+    .btn-copy:hover{opacity:.85}
+    .pix-timer{font-size:.85rem;color:var(--muted);margin-bottom:1.25rem}
+    .pix-timer span{color:var(--ac);font-weight:700}
+    .status-box{background:rgba(232,255,71,.04);border:1px solid rgba(232,255,71,.18);border-radius:14px;padding:1rem 1.25rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:.75rem;font-size:.875rem}
+    .status-dot{width:10px;height:10px;border-radius:50%;background:var(--muted);flex-shrink:0;animation:blink 1.5s infinite}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+    #tela-sucesso{display:none;text-align:center}
+    .success-icon{font-size:4rem;margin-bottom:1rem}
+    #tela-sucesso h3{font-family:"Syne",sans-serif;font-size:1.5rem;font-weight:800;margin-bottom:.5rem}
+    #tela-sucesso p{color:var(--muted);font-size:.9rem;line-height:1.65;margin-bottom:1.5rem}
+    .btn-home{display:inline-flex;align-items:center;background:var(--ac);color:#080810;font-weight:700;font-size:.9rem;padding:.7rem 1.5rem;border-radius:100px;text-decoration:none;transition:opacity .2s}
+    .btn-home:hover{opacity:.85}
+    footer{position:relative;z-index:1;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:.78rem;width:100%;max-width:540px}
+    @keyframes up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    .a1{animation:up .6s ease both}.a2{animation:up .6s .1s ease both}
+    @media(max-width:600px){.page{padding:6.5rem 5% 4rem}nav{padding:1rem 5%}.box{padding:1.75rem 1.25rem}.sl{width:18px}}
   </style>
 </head>
 <body>
-  <div class="blob blob-1"></div>
-  <div class="blob blob-2"></div>
-  <nav class="nav">
-    <a href="index.html" class="logo">MidiaNet<span>Digital</span></a>
-    <a href="pagamento.html" class="nav-back">← Voltar</a>
+  <div class="blob b1"></div><div class="blob b2"></div>
+  <nav>
+    <a href="index.html" class="logo">MidiaNet<em>Digital</em></a>
+    <a href="pagamento.html" class="nav-back">&#8592; Voltar</a>
   </nav>
-
   <section class="page">
-    <div class="progress-bar animate">
-      <div class="step done"><div class="step-dot">✓</div>Servico</div>
-      <div class="step-line done"></div>
-      <div class="step done"><div class="step-dot">✓</div>Plano</div>
-      <div class="step-line done"></div>
-      <div class="step done"><div class="step-dot">✓</div>Pagamento</div>
-      <div class="step-line done"></div>
-      <div class="step active"><div class="step-dot">4</div>Finalizar</div>
+    <div class="prog a1">
+      <div class="st dn"><div class="sd">&#10003;</div>Servico</div><div class="sl dn"></div>
+      <div class="st dn"><div class="sd">&#10003;</div>Plano</div><div class="sl dn"></div>
+      <div class="st dn"><div class="sd">&#10003;</div>Pagamento</div><div class="sl dn"></div>
+      <div class="st on"><div class="sd">4</div>Finalizar</div>
     </div>
+    <div class="box a2">
 
-    <div class="checkout-box animate delay-1">
-      <h2>Quase la!</h2>
-      <p class="sub">So precisamos de 2 informacoes para te atender no WhatsApp.</p>
-
-      <div class="order-summary" id="orderSummary">
-        <div class="order-summary-title">Resumo do pedido</div>
-        <div class="order-row"><span>Plano</span><span id="resumoPlano">-</span></div>
-        <div class="order-row"><span>Servico</span><span id="resumoServico">-</span></div>
-        <div class="order-row"><span>Pagamento</span><span id="resumoPagamento">-</span></div>
+      <!-- TELA 1: FORMULARIO -->
+      <div id="tela-form">
+        <h2>Quase la!</h2>
+        <p class="sub">Preencha seus dados e pague. O pedido e enviado automaticamente.</p>
+        <div class="resumo">
+          <div class="resumo-title">Resumo do pedido</div>
+          <div class="resumo-row"><span>Servico</span><span id="r-servico">-</span></div>
+          <div class="resumo-row"><span>Plano</span><span id="r-plano">-</span></div>
+          <div class="resumo-row resumo-total"><span>Total</span><span id="r-valor">-</span></div>
+        </div>
+        <div class="fg">
+          <label for="nome">Seu nome</label>
+          <input type="text" id="nome" placeholder="Ex: Joao Silva" required/>
+        </div>
+        <div class="fg">
+          <label for="instagram">@ ou link do Instagram</label>
+          <input type="text" id="instagram" placeholder="@seuusuario" required/>
+        </div>
+        <div style="margin-bottom:1.5rem">
+          <div style="font-size:.78rem;font-weight:600;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;margin-bottom:.6rem">Pagamento</div>
+          <div class="pay-tabs">
+            <div class="pay-tab active" id="tab-pix" onclick="selPay('pix')">
+              <div class="pay-tab-icon">&#9889;</div>
+              <div class="pay-tab-name">Pix</div>
+              <div class="pay-tab-sub">Aprovacao imediata</div>
+            </div>
+            <div class="pay-tab" id="tab-cartao" onclick="selPay('cartao')">
+              <div class="pay-tab-icon">&#128179;</div>
+              <div class="pay-tab-name">Cartao</div>
+              <div class="pay-tab-sub">Credito / Debito</div>
+            </div>
+          </div>
+        </div>
+        <button class="btn-pay" id="btn-pagar" onclick="criarPedido()">
+          <span id="btn-text">Pagar agora</span>
+        </button>
+        <div class="secure">&#128274; Pagamento 100% seguro via PagBank</div>
       </div>
 
-      <div class="form-group">
-        <label for="nome">Seu nome</label>
-        <input type="text" id="nome" placeholder="Ex: Joao Silva" required/>
+      <!-- TELA 2: PIX -->
+      <div id="tela-pix">
+        <h3>Pague com Pix</h3>
+        <p>Escaneie o QR Code ou copie o codigo. O pedido e enviado automaticamente apos o pagamento.</p>
+        <div class="pix-valor" id="pix-valor">R$ 0,00</div>
+        <div class="pix-qr"><img id="pix-qr-img" src="" alt="QR Code Pix" onerror="this.style.display='none'"/></div>
+        <div class="pix-copy-box">
+          <div class="pix-code" id="pix-code">Gerando codigo...</div>
+          <button class="btn-copy" onclick="copiarPix()">Copiar</button>
+        </div>
+        <div class="pix-timer">Expira em: <span id="timer">30:00</span></div>
+        <div class="status-box">
+          <div class="status-dot" id="status-dot"></div>
+          <span id="status-text">Aguardando pagamento...</span>
+        </div>
+        <button class="btn-pay" onclick="verificarManual()" style="margin-top:.5rem">
+          Ja paguei - verificar
+        </button>
       </div>
 
-      <div class="form-group">
-        <label for="instagram">@ ou link do Instagram</label>
-        <input type="text" id="instagram" placeholder="@seuusuario ou instagram.com/usuario" required/>
+      <!-- TELA 3: SUCESSO -->
+      <div id="tela-sucesso">
+        <div class="success-icon">&#127881;</div>
+        <h3>Pedido confirmado!</h3>
+        <p>Pagamento recebido! Seu pedido ja foi enviado automaticamente para o Instagram <strong id="suc-ig"></strong>.<br><br>A entrega comeca em breve. Fique de olho no seu perfil!</p>
+        <a href="index.html" class="btn-home">Voltar ao inicio</a>
       </div>
 
-      <button class="btn-submit" id="finalizarBtn">Finalizar no WhatsApp</button>
-      <div class="secure-note">Seus dados sao usados apenas para processar o pedido</div>
     </div>
-
-    <footer class="page-footer animate delay-2">2025 MidiaNetDigital - Todos os direitos reservados</footer>
+    <footer>&#169; 2025 MidiaNetDigital &#8212; Todos os direitos reservados</footer>
   </section>
 
   <script>
-    var WHATSAPP = '5521991689838';
+    var BACKEND = "https://midianetdigital-backend.up.railway.app";
 
-    var PLANO_LABELS = {
-      '500':  '500 Seguidores - R$ 18,99 (Starter)',
-      '1000': '1.000 Seguidores - R$ 24,99 (Pro)',
-      '5000': '5.000 Seguidores - R$ 89,99 (Max)',
-      '10000':'10.000 Views - R$ 34,99 (Max)'
+    var PRECOS = {
+      "seguidores-brasileiros__100":8.90,"seguidores-brasileiros__250":14.90,
+      "seguidores-brasileiros__500":24.90,"seguidores-brasileiros__1000":39.90,
+      "seguidores-brasileiros__2000":69.90,"seguidores-brasileiros__5000":149.90,
+      "seguidores-mundiais__100":4.90,"seguidores-mundiais__250":8.90,
+      "seguidores-mundiais__500":14.90,"seguidores-mundiais__1000":24.90,
+      "seguidores-mundiais__2000":44.90,"seguidores-mundiais__5000":89.90,
+      "seguidores-organicos__250":24.90,"seguidores-organicos__500":44.90,
+      "seguidores-organicos__1000":79.90,"seguidores-organicos__2000":139.90,
+      "curtidas-brasileiras__50":3.90,"curtidas-brasileiras__100":4.90,
+      "curtidas-brasileiras__250":9.90,"curtidas-brasileiras__500":14.90,
+      "curtidas-brasileiras__1000":24.90,"curtidas-brasileiras__2000":39.90,
+      "visualizacoes__500":3.90,"visualizacoes__1000":5.90,
+      "visualizacoes__2500":9.90,"visualizacoes__5000":14.90,
+      "visualizacoes__10000":24.90,"visualizacoes__25000":44.90,
+      "comentarios__10":12.90,"comentarios__25":24.90,
+      "comentarios__50":39.90,"comentarios__100":69.90
     };
-    var SERVICO_LABELS = {
-      'seguidores-mundiais':    'Seguidores Mundiais',
-      'seguidores-brasileiros': 'Seguidores Brasileiros',
-      'seguidores-organicos':   'Seguidores Organicos',
-      'curtidas':               'Curtidas Brasileiras',
-      'visualizacoes':          'Visualizacoes de Reels'
-    };
-    var PAGAMENTO_LABELS = {
-      'pix':    'Pix',
-      'cartao': 'Cartao'
-    };
+    var SL = {"seguidores-brasileiros":"Seguidores Brasileiros","seguidores-mundiais":"Seguidores Mundiais",
+      "seguidores-organicos":"Seguidores Organicos","curtidas-brasileiras":"Curtidas Brasileiras",
+      "visualizacoes":"Visualizacoes de Reels","comentarios":"Comentarios"};
+    var PL = {"50":"50 un","100":"100 un","250":"250 un","500":"500 un","1000":"1.000 un",
+      "2000":"2.000 un","5000":"5.000 un","2500":"2.500 un","10000":"10.000 un",
+      "25000":"25.000 un","10":"10 un","25":"25 un"};
 
-    var params   = new URLSearchParams(location.search);
-    var pagamento = params.get('pagamento') || sessionStorage.getItem('pagamento') || '';
-    var plano     = params.get('plano')     || sessionStorage.getItem('plano')     || '';
-    var servico   = params.get('servico')   || sessionStorage.getItem('servico')   || '';
+    var payAtual = "pix";
+    var pedidoId = null;
+    var pollInt  = null;
+    var cdInt    = null;
 
-    if (pagamento) sessionStorage.setItem('pagamento', pagamento);
-    if (plano)     sessionStorage.setItem('plano',     plano);
-    if (servico)   sessionStorage.setItem('servico',   servico);
+    var p       = new URLSearchParams(location.search);
+    var servico = p.get("servico")  || sessionStorage.getItem("servico")  || "";
+    var plano   = p.get("plano")    || sessionStorage.getItem("plano")    || "";
+    var chave   = servico + "__" + plano;
+    var valor   = PRECOS[chave] || 0;
 
-    var planoLabel = sessionStorage.getItem('planoLabel') || PLANO_LABELS[plano] || plano || '-';
-    document.getElementById('resumoPlano').textContent = planoLabel;
-    document.getElementById('resumoServico').textContent   = SERVICO_LABELS[servico]   || servico    || '-';
-    document.getElementById('resumoPagamento').textContent = PAGAMENTO_LABELS[pagamento]|| pagamento  || '-';
+    document.getElementById("r-servico").textContent = SL[servico] || servico || "-";
+    document.getElementById("r-plano").textContent   = PL[plano]   || plano   || "-";
+    document.getElementById("r-valor").textContent   = "R$ " + valor.toFixed(2).replace(".",",");
+    document.getElementById("pix-valor").textContent = "R$ " + valor.toFixed(2).replace(".",",");
 
-    document.getElementById('finalizarBtn').addEventListener('click', function () {
-      var nome      = document.getElementById('nome').value.trim();
-      var instagram = document.getElementById('instagram').value.trim();
+    function selPay(t) {
+      payAtual = t;
+      document.getElementById("tab-pix").classList.toggle("active", t==="pix");
+      document.getElementById("tab-cartao").classList.toggle("active", t==="cartao");
+    }
 
-      if (!nome || !instagram) {
-        alert('Por favor, preencha seu nome e o perfil do Instagram.');
-        return;
+    async function criarPedido() {
+      var nome = document.getElementById("nome").value.trim();
+      var ig   = document.getElementById("instagram").value.trim();
+      if (!nome || !ig) { alert("Preencha nome e Instagram."); return; }
+      if (!servico || !plano) { alert("Volte e selecione servico e plano."); return; }
+      var btn = document.getElementById("btn-pagar");
+      btn.disabled = true;
+      document.getElementById("btn-text").textContent = "Gerando pagamento...";
+      try {
+        var r = await fetch(BACKEND + "/criar-pedido", {
+          method:"POST", headers:{"Content-Type":"application/json"},
+          body: JSON.stringify({nome, instagram:ig, servico, plano, pagamento:payAtual})
+        });
+        var d = await r.json();
+        if (!r.ok || !d.success) throw new Error(d.error || "Erro ao gerar pagamento");
+        pedidoId = d.pedidoId;
+        sessionStorage.setItem("pedidoId", pedidoId);
+        sessionStorage.setItem("instagram", ig);
+        if (payAtual === "pix") {
+          document.getElementById("tela-form").style.display = "none";
+          document.getElementById("tela-pix").style.display  = "block";
+          if (d.pix) {
+            document.getElementById("pix-code").textContent = d.pix.copia_e_cola || "-";
+            if (d.pix.qr_code_image) document.getElementById("pix-qr-img").src = d.pix.qr_code_image;
+          }
+          iniciarTimer(1800);
+          pollInt = setInterval(checarStatus, 5000);
+        }
+      } catch(e) {
+        alert("Erro: " + e.message);
+        btn.disabled = false;
+        document.getElementById("btn-text").textContent = "Pagar agora";
       }
+    }
 
-      var planoLabel     = sessionStorage.getItem('planoLabel') || PLANO_LABELS[plano] || plano || 'nao informado';
-      var servicoLabel   = SERVICO_LABELS[servico]    || servico    || 'nao informado';
-      var pagamentoLabel = PAGAMENTO_LABELS[pagamento] || pagamento || 'nao informado';
+    function copiarPix() {
+      var c = document.getElementById("pix-code").textContent;
+      navigator.clipboard.writeText(c).then(function(){
+        var b = document.querySelector(".btn-copy");
+        b.textContent = "Copiado!";
+        setTimeout(function(){ b.textContent = "Copiar"; }, 2000);
+      });
+    }
 
-      var msg = 'Ola! Quero finalizar meu pedido na MidiaNetDigital.%0A%0A'
-              + '*Nome:* ' + encodeURIComponent(nome) + '%0A'
-              + '*Instagram:* ' + encodeURIComponent(instagram) + '%0A'
-              + '*Plano:* ' + encodeURIComponent(planoLabel) + '%0A'
-              + '*Servico:* ' + encodeURIComponent(servicoLabel) + '%0A'
-              + '*Pagamento:* ' + encodeURIComponent(pagamentoLabel);
+    function iniciarTimer(s) {
+      clearInterval(cdInt);
+      cdInt = setInterval(function(){
+        s--;
+        var m = Math.floor(s/60), ss = s%60;
+        document.getElementById("timer").textContent =
+          (m<10?"0":"")+m+":"+(ss<10?"0":"")+ss;
+        if (s<=0) { clearInterval(cdInt); clearInterval(pollInt); }
+      }, 1000);
+    }
 
-      window.open('https://wa.me/' + WHATSAPP + '?text=' + msg, '_blank');
-    });
+    async function checarStatus() {
+      if (!pedidoId) return;
+      try {
+        var r = await fetch(BACKEND + "/status/" + pedidoId);
+        var d = await r.json();
+        if (d.status === "concluido") {
+          clearInterval(pollInt); clearInterval(cdInt);
+          document.getElementById("tela-pix").style.display     = "none";
+          document.getElementById("tela-sucesso").style.display = "block";
+          document.getElementById("suc-ig").textContent = sessionStorage.getItem("instagram") || "";
+        }
+      } catch(e){}
+    }
+
+    async function verificarManual() {
+      document.getElementById("status-text").textContent = "Verificando...";
+      await checarStatus();
+      if (pedidoId) document.getElementById("status-text").textContent = "Aguardando pagamento...";
+    }
   </script>
 </body>
 </html>
