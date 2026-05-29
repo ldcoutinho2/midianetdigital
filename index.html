@@ -1,639 +1,317 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MidiaNetDigital — Crescimento Real no Instagram</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MidiaNetDigital — Cresça no Instagram de Verdade</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"/>
   <style>
-    :root {
-      --bg: #0a0a0f;
-      --surface: #13131c;
-      --surface2: #1c1c2b;
-      --accent: #e8ff47;
-      --accent2: #7c5cfc;
-      --text: #f0f0f8;
-      --muted: #8888aa;
-      --border: rgba(255,255,255,0.07);
-    }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
-
-    /* BG noise texture */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.4;
-    }
-
-    /* ── NAV ── */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1.2rem 6%;
-      background: rgba(10,10,15,0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .logo {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      font-size: 1.25rem;
-      letter-spacing: -0.03em;
-      color: var(--text);
-      text-decoration: none;
-    }
-
-    .logo span { color: var(--accent); }
-
-    nav a.nav-cta {
-      background: var(--accent);
-      color: #0a0a0f;
-      font-weight: 600;
-      font-size: 0.875rem;
-      padding: 0.55rem 1.25rem;
-      border-radius: 100px;
-      text-decoration: none;
-      transition: opacity .2s, transform .2s;
-    }
-
-    nav a.nav-cta:hover { opacity: 0.85; transform: translateY(-1px); }
-
-    /* ── HERO ── */
-    .hero {
-      position: relative;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 8rem 6% 5rem;
-      overflow: hidden;
-    }
-
-    /* glow blobs */
-    .blob {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(90px);
-      opacity: 0.18;
-      pointer-events: none;
-    }
-    .blob-1 { width: 500px; height: 500px; background: var(--accent2); top: -100px; left: -150px; }
-    .blob-2 { width: 400px; height: 400px; background: var(--accent); top: 200px; right: -100px; opacity: 0.10; }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: rgba(124,92,252,0.15);
-      border: 1px solid rgba(124,92,252,0.35);
-      color: #c4b5fd;
-      font-size: 0.8rem;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      padding: 0.4rem 1rem;
-      border-radius: 100px;
-      margin-bottom: 1.75rem;
-      animation: fadeUp .6s ease both;
-    }
-
-    .badge-dot {
-      width: 7px; height: 7px;
-      background: var(--accent);
-      border-radius: 50%;
-      animation: pulse 1.8s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(1.4); }
-    }
-
-    h1 {
-      font-family: 'Syne', sans-serif;
-      font-size: clamp(2.6rem, 7vw, 5.5rem);
-      font-weight: 800;
-      line-height: 1.05;
-      letter-spacing: -0.03em;
-      max-width: 820px;
-      animation: fadeUp .7s .1s ease both;
-    }
-
-    h1 .highlight {
-      position: relative;
-      display: inline-block;
-      color: var(--accent);
-    }
-
-    .hero-sub {
-      margin-top: 1.5rem;
-      font-size: clamp(1rem, 2.2vw, 1.2rem);
-      color: var(--muted);
-      max-width: 540px;
-      animation: fadeUp .7s .2s ease both;
-    }
-
-    .hero-actions {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-top: 2.5rem;
-      animation: fadeUp .7s .3s ease both;
-    }
-
-    .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: var(--accent);
-      color: #0a0a0f;
-      font-weight: 700;
-      font-size: 1rem;
-      padding: 0.85rem 2rem;
-      border-radius: 100px;
-      text-decoration: none;
-      transition: transform .2s, box-shadow .2s;
-      box-shadow: 0 0 30px rgba(232,255,71,0.25);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 0 45px rgba(232,255,71,0.4);
-    }
-
-    .btn-secondary {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      border: 1px solid var(--border);
-      color: var(--text);
-      font-weight: 500;
-      font-size: 1rem;
-      padding: 0.85rem 2rem;
-      border-radius: 100px;
-      text-decoration: none;
-      transition: background .2s, border-color .2s;
-    }
-
-    .btn-secondary:hover {
-      background: var(--surface2);
-      border-color: rgba(255,255,255,0.15);
-    }
-
-    /* ── STATS ── */
-    .stats {
-      display: flex;
-      justify-content: center;
-      gap: 3rem;
-      flex-wrap: wrap;
-      margin-top: 4.5rem;
-      padding-top: 3rem;
-      border-top: 1px solid var(--border);
-      width: 100%;
-      max-width: 720px;
-      animation: fadeUp .7s .4s ease both;
-    }
-
-    .stat-item { text-align: center; }
-
-    .stat-num {
-      font-family: 'Syne', sans-serif;
-      font-size: 2.2rem;
-      font-weight: 800;
-      color: var(--accent);
-      line-height: 1;
-    }
-
-    .stat-label {
-      font-size: 0.82rem;
-      color: var(--muted);
-      margin-top: 0.35rem;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
-    /* ── SECTION SHARED ── */
-    section { padding: 6rem 6%; position: relative; }
-
-    .section-tag {
-      display: inline-block;
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 1rem;
-    }
-
-    .section-title {
-      font-family: 'Syne', sans-serif;
-      font-size: clamp(1.8rem, 4vw, 2.8rem);
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      line-height: 1.1;
-      max-width: 560px;
-    }
-
-    .section-sub {
-      color: var(--muted);
-      margin-top: 1rem;
-      max-width: 480px;
-      font-size: 1rem;
-    }
-
-    /* ── SERVICES ── */
-    .services-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1.25rem;
-      margin-top: 3rem;
-    }
-
-    .service-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 2rem;
-      transition: transform .25s, border-color .25s, box-shadow .25s;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .service-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--accent2), var(--accent));
-      opacity: 0;
-      transition: opacity .25s;
-    }
-
-    .service-card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(255,255,255,0.13);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-    }
-
-    .service-card:hover::before { opacity: 1; }
-
-    .service-icon {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-      display: block;
-    }
-
-    .service-card h3 {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.2rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
-
-    .service-card p { color: var(--muted); font-size: 0.92rem; }
-
-    /* ── WHY US ── */
-    .why-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1.25rem;
-      margin-top: 3rem;
-    }
-
-    .why-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 1.75rem;
-    }
-
-    .why-icon {
-      width: 44px; height: 44px;
-      background: rgba(232,255,71,0.1);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.3rem;
-      margin-bottom: 1rem;
-    }
-
-    .why-card h4 {
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: 1rem;
-      margin-bottom: 0.4rem;
-    }
-
-    .why-card p { color: var(--muted); font-size: 0.875rem; }
-
-    /* ── TESTIMONIALS ── */
-    .testimonials { background: var(--surface); }
-
-    .testimonials-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.25rem;
-      margin-top: 3rem;
-    }
-
-    .testi-card {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 1.75rem;
-    }
-
-    .stars { color: var(--accent); font-size: 0.9rem; margin-bottom: 1rem; }
-
-    .testi-card p {
-      font-size: 0.95rem;
-      line-height: 1.65;
-      color: #cccce0;
-      margin-bottom: 1.25rem;
-    }
-
-    .testi-author {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .avatar {
-      width: 38px; height: 38px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 0.9rem;
-      color: #0a0a0f;
-    }
-
-    .testi-name { font-weight: 600; font-size: 0.9rem; }
-    .testi-handle { font-size: 0.8rem; color: var(--muted); }
-
-    /* ── CTA SECTION ── */
-    .cta-section {
-      text-align: center;
-      background: linear-gradient(135deg, rgba(124,92,252,0.12), rgba(232,255,71,0.05));
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .cta-section h2 {
-      font-family: 'Syne', sans-serif;
-      font-size: clamp(1.8rem, 4vw, 3rem);
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      max-width: 600px;
-      margin: 0 auto 1rem;
-    }
-
-    .cta-section p {
-      color: var(--muted);
-      max-width: 420px;
-      margin: 0 auto 2.5rem;
-    }
-
-    /* ── FOOTER ── */
-    footer {
-      padding: 2.5rem 6%;
-      border-top: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    footer .logo { font-size: 1rem; }
-
-    footer p {
-      color: var(--muted);
-      font-size: 0.82rem;
-    }
-
-    footer a {
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 0.82rem;
-      transition: color .2s;
-    }
-
-    footer a:hover { color: var(--text); }
-
-    /* ── ANIMATIONS ── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ── RESPONSIVE ── */
-    @media (max-width: 600px) {
-      nav { padding: 1rem 5%; }
-      .hero { padding: 7rem 5% 4rem; }
-      .stats { gap: 1.75rem; }
-      section { padding: 4rem 5%; }
-      footer { flex-direction: column; text-align: center; }
-    }
+    :root{--bg:#080810;--s1:#111120;--s2:#181828;--ac:#e8ff47;--ac2:#7c5cfc;--text:#f0f0f8;--muted:#8888aa;--border:rgba(255,255,255,0.07)}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--text);font-family:"DM Sans",sans-serif;overflow-x:hidden;line-height:1.6}
+    /* noise */
+    body::before{content:"";position:fixed;inset:0;opacity:.03;pointer-events:none;z-index:0;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+    /* blobs */
+    .blob{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(110px)}
+    .b1{width:600px;height:600px;background:var(--ac2);top:-200px;right:-150px;opacity:.13}
+    .b2{width:500px;height:500px;background:var(--ac);bottom:-200px;left:-150px;opacity:.06}
+    .b3{width:350px;height:350px;background:#06b6d4;top:50%;left:50%;transform:translate(-50%,-50%);opacity:.05}
+    /* nav */
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1.1rem 6%;background:rgba(8,8,16,.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+    .logo{font-family:"Syne",sans-serif;font-weight:800;font-size:1.3rem;letter-spacing:-.03em;color:var(--text);text-decoration:none}
+    .logo em{color:var(--ac);font-style:normal}
+    .nav-cta{display:inline-flex;align-items:center;gap:.4rem;background:var(--ac);color:#080810;font-weight:700;font-size:.875rem;padding:.55rem 1.3rem;border-radius:100px;text-decoration:none;transition:opacity .2s,transform .2s;white-space:nowrap}
+    .nav-cta:hover{opacity:.85;transform:translateY(-1px)}
+    /* hero */
+    .hero{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8rem 6% 5rem}
+    .tag{display:inline-flex;align-items:center;gap:.5rem;background:rgba(124,92,252,.12);border:1px solid rgba(124,92,252,.3);color:#c4b5fd;font-size:.78rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:.4rem 1rem;border-radius:100px;margin-bottom:2rem;animation:up .6s ease both}
+    .dot{width:7px;height:7px;background:var(--ac);border-radius:50%;animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}
+    h1{font-family:"Syne",sans-serif;font-size:clamp(2.8rem,7.5vw,5.8rem);font-weight:800;line-height:1.03;letter-spacing:-.035em;max-width:880px;animation:up .7s .1s ease both}
+    h1 .hl{color:var(--ac)}
+    .hero-p{margin-top:1.5rem;font-size:clamp(1rem,2.2vw,1.2rem);color:var(--muted);max-width:520px;animation:up .7s .2s ease both}
+    .btns{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;margin-top:2.5rem;animation:up .7s .3s ease both}
+    .btn-p{display:inline-flex;align-items:center;gap:.5rem;background:var(--ac);color:#080810;font-weight:700;font-size:1rem;padding:.9rem 2.2rem;border-radius:100px;text-decoration:none;transition:transform .2s,box-shadow .2s;box-shadow:0 0 32px rgba(232,255,71,.22)}
+    .btn-p:hover{transform:translateY(-2px);box-shadow:0 0 50px rgba(232,255,71,.38)}
+    .btn-s{display:inline-flex;align-items:center;gap:.5rem;border:1px solid var(--border);color:var(--text);font-weight:500;font-size:1rem;padding:.9rem 2.2rem;border-radius:100px;text-decoration:none;transition:background .2s,border-color .2s}
+    .btn-s:hover{background:var(--s2);border-color:rgba(255,255,255,.15)}
+    /* trust bar */
+    .trust{display:flex;justify-content:center;gap:2.5rem;flex-wrap:wrap;margin-top:4.5rem;padding-top:3.5rem;border-top:1px solid var(--border);width:100%;max-width:780px;animation:up .7s .4s ease both}
+    .trust-item{text-align:center}
+    .trust-num{font-family:"Syne",sans-serif;font-size:2.4rem;font-weight:800;color:var(--ac);line-height:1}
+    .trust-lbl{font-size:.78rem;color:var(--muted);margin-top:.3rem;text-transform:uppercase;letter-spacing:.05em}
+    /* sections */
+    section{position:relative;z-index:1;padding:6rem 6%}
+    .section-inner{max-width:1200px;margin:0 auto}
+    .sec-tag{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ac);margin-bottom:.75rem}
+    .sec-h{font-family:"Syne",sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;letter-spacing:-.025em;line-height:1.1;max-width:560px}
+    .sec-p{color:var(--muted);margin-top:.9rem;max-width:480px;font-size:1rem}
+    /* services cards */
+    .srv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.25rem;margin-top:3rem}
+    .srv-card{background:var(--s1);border:1px solid var(--border);border-radius:20px;padding:2rem 1.75rem;text-decoration:none;color:var(--text);transition:transform .25s,border-color .25s,box-shadow .25s;position:relative;overflow:hidden;display:block}
+    .srv-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--ac2),var(--ac));opacity:0;transition:opacity .25s}
+    .srv-card:hover{transform:translateY(-5px);border-color:rgba(255,255,255,.14);box-shadow:0 20px 40px rgba(0,0,0,.4)}
+    .srv-card:hover::before{opacity:1}
+    .srv-card.hot{border-color:rgba(232,255,71,.25);background:linear-gradient(135deg,rgba(232,255,71,.04),var(--s1))}
+    .srv-card.hot::before{opacity:1}
+    .badge-hot{position:absolute;top:1rem;right:1rem;background:var(--ac);color:#080810;font-size:.68rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:.22rem .6rem;border-radius:100px}
+    .srv-icon{font-size:2.2rem;margin-bottom:1rem;display:block}
+    .srv-card h3{font-family:"Syne",sans-serif;font-size:1.15rem;font-weight:700;margin-bottom:.4rem}
+    .srv-card p{color:var(--muted);font-size:.875rem;margin-bottom:1rem}
+    .srv-list{list-style:none;display:flex;flex-direction:column;gap:.35rem}
+    .srv-list li{font-size:.82rem;color:var(--muted);display:flex;align-items:center;gap:.4rem}
+    .srv-list li::before{content:"✓";color:var(--ac);font-weight:700;flex-shrink:0}
+    /* how it works */
+    .how{background:var(--s1)}
+    .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;margin-top:3rem}
+    .step-card{position:relative;padding:2rem;background:var(--bg);border:1px solid var(--border);border-radius:20px}
+    .step-num{font-family:"Syne",sans-serif;font-size:3rem;font-weight:800;color:rgba(232,255,71,.12);line-height:1;margin-bottom:1rem}
+    .step-card h4{font-family:"Syne",sans-serif;font-size:1rem;font-weight:700;margin-bottom:.4rem}
+    .step-card p{color:var(--muted);font-size:.875rem}
+    /* why us */
+    .why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.2rem;margin-top:3rem}
+    .why-card{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:1.75rem}
+    .why-icon{width:44px;height:44px;background:rgba(232,255,71,.08);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin-bottom:1rem}
+    .why-card h4{font-family:"Syne",sans-serif;font-weight:700;font-size:1rem;margin-bottom:.4rem}
+    .why-card p{color:var(--muted);font-size:.875rem}
+    /* testimonials */
+    .testi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem;margin-top:3rem}
+    .testi-card{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:1.75rem}
+    .stars{color:var(--ac);font-size:.9rem;margin-bottom:1rem}
+    .testi-card blockquote{font-size:.95rem;line-height:1.65;color:#cccce0;margin-bottom:1.25rem;font-style:italic}
+    .author{display:flex;align-items:center;gap:.75rem}
+    .ava{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;color:#080810;flex-shrink:0}
+    .author-info .name{font-weight:600;font-size:.9rem}
+    .author-info .handle{font-size:.78rem;color:var(--muted)}
+    /* faq */
+    .faq-list{max-width:720px;margin:3rem auto 0;display:flex;flex-direction:column;gap:1rem}
+    details{background:var(--s1);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+    summary{padding:1.25rem 1.5rem;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center;list-style:none;font-size:.95rem}
+    summary::after{content:"+";font-size:1.3rem;color:var(--ac);transition:transform .3s;flex-shrink:0}
+    details[open] summary::after{transform:rotate(45deg)}
+    details p{padding:0 1.5rem 1.25rem;color:var(--muted);font-size:.9rem;line-height:1.7}
+    /* cta section */
+    .cta-sec{text-align:center;background:linear-gradient(135deg,rgba(124,92,252,.1),rgba(232,255,71,.04));border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+    .cta-sec h2{font-family:"Syne",sans-serif;font-size:clamp(1.8rem,4vw,3rem);font-weight:800;letter-spacing:-.025em;max-width:600px;margin:0 auto 1rem}
+    .cta-sec p{color:var(--muted);max-width:420px;margin:0 auto 2.5rem}
+    /* footer */
+    footer{position:relative;z-index:1;padding:2.5rem 6%;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+    footer p{color:var(--muted);font-size:.8rem}
+    footer a{color:var(--muted);font-size:.8rem;text-decoration:none;transition:color .2s}
+    footer a:hover{color:var(--text)}
+    .footer-links{display:flex;gap:1.5rem}
+    /* whatsapp float */
+    .wa-float{position:fixed;bottom:1.5rem;right:1.5rem;z-index:200;width:56px;height:56px;background:#25d366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,211,102,.4);transition:transform .2s,box-shadow .2s;text-decoration:none}
+    .wa-float:hover{transform:scale(1.1);box-shadow:0 6px 28px rgba(37,211,102,.6)}
+    .wa-float svg{width:28px;height:28px;fill:white}
+    /* animations */
+    @keyframes up{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+    @media(max-width:600px){nav{padding:1rem 5%}.hero{padding:7rem 5% 4rem}section{padding:4rem 5%}.trust{gap:1.5rem}footer{flex-direction:column;text-align:center}.footer-links{justify-content:center}}
   </style>
 </head>
 <body>
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
 
   <!-- NAV -->
   <nav>
-    <a href="#" class="logo">MidiaNet<span>Digital</span></a>
-    <a href="https://midianetdigital.vercel.app/servicos.html" class="nav-cta">Ver Planos →</a>
+    <a href="index.html" class="logo">MidiaNet<em>Digital</em></a>
+    <a href="servicos.html" class="nav-cta">Comecar Agora &rarr;</a>
   </nav>
 
   <!-- HERO -->
   <section class="hero">
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
-
-    <div class="badge">
-      <span class="badge-dot"></span>
-      +10.000 clientes satisfeitos
+    <div class="tag"><span class="dot"></span>+10.000 pedidos entregues com sucesso</div>
+    <h1>Seu Instagram<br>Crescendo de <span class="hl">Verdade</span></h1>
+    <p class="hero-p">Seguidores, curtidas e visualizacoes com entrega em horas. Sem risco, sem senha, so resultado real.</p>
+    <div class="btns">
+      <a href="servicos.html" class="btn-p">Quero Crescer Agora &rarr;</a>
+      <a href="#servicos" class="btn-s">Ver Servicos</a>
     </div>
-
-    <h1>Seu Instagram Crescendo<br>de <span class="highlight">Verdade</span></h1>
-
-    <p class="hero-sub">
-      Seguidores reais, curtidas e visualizações com entrega em horas. Sem risco, sem complicação — só resultado.
-    </p>
-
-    <div class="hero-actions">
-      <a href="https://midianetdigital.vercel.app/servicos.html" class="btn-primary">
-        Quero Crescer Agora →
-      </a>
-      <a href="#servicos" class="btn-secondary">
-        Ver Serviços
-      </a>
-    </div>
-
-    <div class="stats">
-      <div class="stat-item">
-        <div class="stat-num">+10K</div>
-        <div class="stat-label">Pedidos entregues</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-num">24h</div>
-        <div class="stat-label">Suporte especializado</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-num">100%</div>
-        <div class="stat-label">Satisfação garantida</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-num">⚡ Rápido</div>
-        <div class="stat-label">Entrega em horas</div>
-      </div>
+    <div class="trust">
+      <div class="trust-item"><div class="trust-num">+10K</div><div class="trust-lbl">Pedidos entregues</div></div>
+      <div class="trust-item"><div class="trust-num">24h</div><div class="trust-lbl">Suporte especializado</div></div>
+      <div class="trust-item"><div class="trust-num">100%</div><div class="trust-lbl">Sem precisar de senha</div></div>
+      <div class="trust-item"><div class="trust-num">2h</div><div class="trust-lbl">Entrega media</div></div>
     </div>
   </section>
 
-  <!-- SERVIÇOS -->
+  <!-- SERVICOS -->
   <section id="servicos">
-    <span class="section-tag">O que oferecemos</span>
-    <h2 class="section-title">Tudo que você precisa para crescer no Instagram</h2>
-    <p class="section-sub">Escolha o serviço ideal para o seu perfil e comece a ver resultados hoje mesmo.</p>
-
-    <div class="services-grid">
-      <div class="service-card">
-        <span class="service-icon">👥</span>
-        <h3>Seguidores</h3>
-        <p>Aumente sua base de seguidores com perfis de qualidade e entrega progressiva para parecer natural.</p>
-      </div>
-      <div class="service-card">
-        <span class="service-icon">❤️</span>
-        <h3>Curtidas</h3>
-        <p>Mais curtidas nas suas publicações, aumentando o alcance orgânico e a credibilidade do seu perfil.</p>
-      </div>
-      <div class="service-card">
-        <span class="service-icon">▶️</span>
-        <h3>Visualizações</h3>
-        <p>Impulsione seus Reels e stories com visualizações reais que aumentam seu desempenho no algoritmo.</p>
-      </div>
-      <div class="service-card">
-        <span class="service-icon">💬</span>
-        <h3>Comentários</h3>
-        <p>Gere engajamento genuíno nas suas postagens e transmita autoridade para novos visitantes.</p>
+    <div class="section-inner">
+      <span class="sec-tag">Nossos Servicos</span>
+      <h2 class="sec-h">Tudo para bombar seu Instagram</h2>
+      <p class="sec-p">Escolha o servico ideal e comece a crescer hoje mesmo. Entrega rapida e garantida.</p>
+      <div class="srv-grid">
+        <a href="servicos.html" class="srv-card hot">
+          <span class="badge-hot">Popular</span>
+          <span class="srv-icon">&#127463;&#127479;</span>
+          <h3>Seguidores Brasileiros</h3>
+          <p>Perfis brasileiros reais que aumentam sua autoridade e engajamento.</p>
+          <ul class="srv-list">
+            <li>Perfis com foto e bio</li>
+            <li>Entrega progressiva e natural</li>
+            <li>Garantia de reposicao 30 dias</li>
+            <li>A partir de R$ 14,90</li>
+          </ul>
+        </a>
+        <a href="servicos.html" class="srv-card">
+          <span class="srv-icon">&#127760;</span>
+          <h3>Seguidores Mundiais</h3>
+          <p>Aumente sua base globalmente com entrega rapida e segura.</p>
+          <ul class="srv-list">
+            <li>Entrega em ate 24h</li>
+            <li>Sem queda garantida</li>
+            <li>Sem precisar de senha</li>
+            <li>A partir de R$ 8,90</li>
+          </ul>
+        </a>
+        <a href="servicos.html" class="srv-card">
+          <span class="srv-icon">&#10084;&#65039;</span>
+          <h3>Curtidas Brasileiras</h3>
+          <p>Mais curtidas para aumentar o alcance no algoritmo do Instagram.</p>
+          <ul class="srv-list">
+            <li>Entrega imediata</li>
+            <li>Perfis brasileiros</li>
+            <li>Por publicacao</li>
+            <li>A partir de R$ 4,90</li>
+          </ul>
+        </a>
+        <a href="servicos.html" class="srv-card">
+          <span class="srv-icon">&#9654;&#65039;</span>
+          <h3>Visualizacoes de Reels</h3>
+          <p>Impulsione seus Reels e Stories e exploda no algoritmo.</p>
+          <ul class="srv-list">
+            <li>Reels, Stories e IGTV</li>
+            <li>Resultado em horas</li>
+            <li>Aumenta alcance organico</li>
+            <li>A partir de R$ 3,90</li>
+          </ul>
+        </a>
+        <a href="servicos.html" class="srv-card">
+          <span class="srv-icon">&#128242;</span>
+          <h3>Comentarios</h3>
+          <p>Comentarios reais em portugues para aumentar o engajamento.</p>
+          <ul class="srv-list">
+            <li>Em portugues brasileiro</li>
+            <li>Comentarios personalizados</li>
+            <li>Perfis com foto</li>
+            <li>A partir de R$ 12,90</li>
+          </ul>
+        </a>
+        <a href="servicos.html" class="srv-card">
+          <span class="srv-icon">&#128084;</span>
+          <h3>Seguidores Organicos</h3>
+          <p>Crescimento gradual e natural. Ideal para parecer 100% real.</p>
+          <ul class="srv-list">
+            <li>Entrega gradual 7-15 dias</li>
+            <li>Aparencia totalmente organica</li>
+            <li>Seguranca maxima</li>
+            <li>A partir de R$ 24,90</li>
+          </ul>
+        </a>
       </div>
     </div>
   </section>
 
-  <!-- POR QUE NÓS -->
-  <section>
-    <span class="section-tag">Por que escolher a gente</span>
-    <h2 class="section-title">Diferenciais que fazem a diferença</h2>
+  <!-- COMO FUNCIONA -->
+  <section class="how">
+    <div class="section-inner">
+      <span class="sec-tag">Como funciona</span>
+      <h2 class="sec-h">Simples, rapido e seguro</h2>
+      <p class="sec-p">Em menos de 5 minutos seu pedido esta feito e a entrega comeca.</p>
+      <div class="steps">
+        <div class="step-card"><div class="step-num">01</div><h4>Escolha o servico</h4><p>Selecione entre seguidores, curtidas, visualizacoes ou comentarios para o Instagram.</p></div>
+        <div class="step-card"><div class="step-num">02</div><h4>Escolha o plano</h4><p>Selecione a quantidade ideal para o seu objetivo e orcamento.</p></div>
+        <div class="step-card"><div class="step-num">03</div><h4>Informe seu @</h4><p>So precisa do seu usuario ou link do perfil. Nunca pedimos senha.</p></div>
+        <div class="step-card"><div class="step-num">04</div><h4>Receba os resultados</h4><p>A entrega comeca em horas. Acompanhe o crescimento no seu perfil.</p></div>
+      </div>
+    </div>
+  </section>
 
-    <div class="why-grid">
-      <div class="why-card">
-        <div class="why-icon">🔒</div>
-        <h4>100% Seguro</h4>
-        <p>Método sem acesso à sua conta, sem riscos de banimento ou penalizações.</p>
-      </div>
-      <div class="why-card">
-        <div class="why-icon">⚡</div>
-        <h4>Entrega Rápida</h4>
-        <p>A maioria dos pedidos começa a ser processada em menos de 1 hora após a confirmação.</p>
-      </div>
-      <div class="why-card">
-        <div class="why-icon">🙋</div>
-        <h4>Suporte Humano</h4>
-        <p>Atendimento real, por pessoas reais. Estamos disponíveis 24h para resolver qualquer dúvida.</p>
-      </div>
-      <div class="why-card">
-        <div class="why-icon">💰</div>
-        <h4>Melhor Custo-Benefício</h4>
-        <p>Preços acessíveis sem abrir mão da qualidade. Transparência total, sem cobranças ocultas.</p>
+  <!-- POR QUE NOS -->
+  <section>
+    <div class="section-inner">
+      <span class="sec-tag">Por que nos escolher</span>
+      <h2 class="sec-h">Diferenciais que fazem a diferenca</h2>
+      <div class="why-grid">
+        <div class="why-card"><div class="why-icon">&#128274;</div><h4>100% Seguro</h4><p>Metodo sem acesso a sua conta. Nunca solicitamos senha. Zero risco de banimento.</p></div>
+        <div class="why-card"><div class="why-icon">&#9889;</div><h4>Entrega Rapida</h4><p>A maioria dos pedidos comeca a ser processada em menos de 2 horas.</p></div>
+        <div class="why-card"><div class="why-icon">&#128101;</div><h4>Suporte Humano 24h</h4><p>Atendimento real por pessoas reais via WhatsApp, 24 horas por dia.</p></div>
+        <div class="why-card"><div class="why-icon">&#128257;</div><h4>Garantia 30 Dias</h4><p>Reposicao garantida por 30 dias. Se cair, repomos sem custo adicional.</p></div>
+        <div class="why-card"><div class="why-icon">&#128176;</div><h4>Melhor Preco</h4><p>Precos competitivos sem abrir mao da qualidade. Sem taxas ocultas.</p></div>
+        <div class="why-card"><div class="why-icon">&#127941;</div><h4>+10.000 Pedidos</h4><p>Mais de 10 mil pedidos entregues com sucesso e clientes satisfeitos.</p></div>
       </div>
     </div>
   </section>
 
   <!-- DEPOIMENTOS -->
-  <section class="testimonials">
-    <span class="section-tag">Quem já usou</span>
-    <h2 class="section-title">Resultados reais de clientes reais</h2>
+  <section style="background:var(--s1)">
+    <div class="section-inner">
+      <span class="sec-tag">Depoimentos</span>
+      <h2 class="sec-h">Clientes que ja cresceram com a gente</h2>
+      <div class="testi-grid">
+        <div class="testi-card">
+          <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <blockquote>Comprei 1.000 seguidores brasileiros e em menos de 3 horas ja via o crescimento. Atendimento incrivel e super rapido!</blockquote>
+          <div class="author"><div class="ava" style="background:var(--ac)">JC</div><div class="author-info"><div class="name">Joao Carlos</div><div class="handle">@joaocarlos.fit</div></div></div>
+        </div>
+        <div class="testi-card">
+          <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <blockquote>Precisava dar um empurrao no meu perfil de moda. Os resultados foram alem do esperado e o suporte respondeu na hora!</blockquote>
+          <div class="author"><div class="ava" style="background:var(--ac2);color:#fff">AM</div><div class="author-info"><div class="name">Ana Monteiro</div><div class="handle">@ana.moda_style</div></div></div>
+        </div>
+        <div class="testi-card">
+          <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <blockquote>Meu Reel explodiu depois de comprar visualizacoes. O algoritmo comecou a recomendar meu conteudo organicamente. Vale demais!</blockquote>
+          <div class="author"><div class="ava" style="background:#22d3ee;color:#080810">LR</div><div class="author-info"><div class="name">Lucas Ramos</div><div class="handle">@lucasramos.music</div></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <div class="testimonials-grid">
-      <div class="testi-card">
-        <div class="stars">★★★★★</div>
-        <p>"Comprei seguidores na MidiaNetDigital e em menos de 2 horas já via o crescimento. Super recomendo, atendimento incrível!"</p>
-        <div class="testi-author">
-          <div class="avatar" style="background: var(--accent);">JC</div>
-          <div>
-            <div class="testi-name">João Carlos</div>
-            <div class="testi-handle">@joaocarlos.fit</div>
-          </div>
-        </div>
-      </div>
-      <div class="testi-card">
-        <div class="stars">★★★★★</div>
-        <p>"Precisava dar um empurrão no meu perfil de moda. Os resultados foram além do esperado e o suporte respondeu na hora!"</p>
-        <div class="testi-author">
-          <div class="avatar" style="background: #7c5cfc; color: #fff;">AM</div>
-          <div>
-            <div class="testi-name">Ana Monteiro</div>
-            <div class="testi-handle">@ana.moda_style</div>
-          </div>
-        </div>
-      </div>
-      <div class="testi-card">
-        <div class="stars">★★★★★</div>
-        <p>"Meu Reel explodiu depois de comprar as visualizações. O algoritmo começou a recomendar meu conteúdo organicamente. Vale muito!"</p>
-        <div class="testi-author">
-          <div class="avatar" style="background: #22d3ee; color: #0a0a0f;">LR</div>
-          <div>
-            <div class="testi-name">Lucas Ramos</div>
-            <div class="testi-handle">@lucasramos.music</div>
-          </div>
-        </div>
+  <!-- FAQ -->
+  <section>
+    <div class="section-inner" style="text-align:center">
+      <span class="sec-tag">Duvidas frequentes</span>
+      <h2 class="sec-h" style="margin:0 auto">Perguntas e respostas</h2>
+      <div class="faq-list" style="text-align:left">
+        <details><summary>Preciso informar minha senha?</summary><p>Nao! Jamais solicitamos sua senha. Precisamos apenas do seu usuario (@) ou link do perfil publico do Instagram. Sua seguranca e nossa prioridade.</p></details>
+        <details><summary>Em quanto tempo a entrega comeca?</summary><p>A maioria dos pedidos comeca a ser processada em ate 2 horas apos a confirmacao do pagamento. Para pedidos maiores, pode levar ate 24h para completar totalmente.</p></details>
+        <details><summary>Minha conta pode ser banida?</summary><p>Nao. Utilizamos metodos seguros e testados que seguem as diretrizes do Instagram. Em mais de 10.000 pedidos entregues, nenhum cliente teve a conta bloqueada.</p></details>
+        <details><summary>E se cair algum seguidor?</summary><p>Oferecemos garantia de reposicao por 30 dias. Se qualquer seguidor deixar de seguir dentro desse periodo, repomos gratuitamente.</p></details>
+        <details><summary>Quais formas de pagamento aceitas?</summary><p>Aceitamos Pix (aprovacao instantanea) e cartao de credito/debito. O pedido e liberado logo apos a confirmacao do pagamento.</p></details>
       </div>
     </div>
   </section>
 
   <!-- CTA FINAL -->
-  <section class="cta-section">
-    <h2>Pronto para transformar seu perfil?</h2>
-    <p>Mais de 10.000 pedidos entregues. Comece agora e veja a diferença em poucas horas.</p>
-    <a href="https://midianetdigital.vercel.app/servicos.html" class="btn-primary">
-      Impulsionar Meu Perfil →
-    </a>
+  <section class="cta-sec">
+    <div class="section-inner">
+      <h2>Pronto para transformar seu perfil?</h2>
+      <p>Mais de 10.000 pedidos entregues. Comece agora e veja a diferenca em poucas horas.</p>
+      <a href="servicos.html" class="btn-p">Impulsionar Meu Perfil &rarr;</a>
+    </div>
   </section>
 
   <!-- FOOTER -->
   <footer>
-    <a href="#" class="logo">MidiaNet<span>Digital</span></a>
-    <p>© 2025 MidiaNetDigital. Todos os direitos reservados.</p>
-    <div style="display:flex; gap: 1.5rem;">
+    <a href="index.html" class="logo">MidiaNet<em>Digital</em></a>
+    <p>&#169; 2025 MidiaNetDigital. Todos os direitos reservados.</p>
+    <div class="footer-links">
       <a href="#">Termos</a>
       <a href="#">Privacidade</a>
-      <a href="#">Contato</a>
+      <a href="https://wa.me/5521991689838" target="_blank">Contato</a>
     </div>
   </footer>
 
+  <!-- WHATSAPP FLOAT -->
+  <a href="https://wa.me/5521991689838" target="_blank" class="wa-float" title="Falar no WhatsApp">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  </a>
 </body>
 </html>
