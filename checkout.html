@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Finalizar Pedido — MidiaNetDigital</title>
+  <title>Finalizar Pedido - MidiaNetDigital</title>
   <style>
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap');
 
@@ -83,7 +83,6 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .delay-3{animation-delay:.3s}
 @media(max-width:600px){.page{padding:7rem 5% 4rem}.nav{padding:1rem 5%}.cards-grid{grid-template-columns:1fr}.step-line{width:20px}.checkout-box{padding:1.75rem 1.25rem}}
 
-/* ── RESUMO DO PEDIDO ── */
 .order-summary {
   background: rgba(232,255,71,0.05);
   border: 1px solid rgba(232,255,71,0.2);
@@ -122,7 +121,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 
   <section class="page">
     <div class="progress-bar animate">
-      <div class="step done"><div class="step-dot">✓</div>Serviço</div>
+      <div class="step done"><div class="step-dot">✓</div>Servico</div>
       <div class="step-line done"></div>
       <div class="step done"><div class="step-dot">✓</div>Plano</div>
       <div class="step-line done"></div>
@@ -132,94 +131,87 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     </div>
 
     <div class="checkout-box animate delay-1">
-      <h2>Quase lá! 🎉</h2>
-      <p class="sub">Só precisamos de 2 informações para te atender no WhatsApp.</p>
+      <h2>Quase la!</h2>
+      <p class="sub">So precisamos de 2 informacoes para te atender no WhatsApp.</p>
 
-      <!-- Resumo automático do pedido -->
       <div class="order-summary" id="orderSummary">
-        <div class="order-summary-title">📋 Resumo do pedido</div>
-        <div class="order-row"><span>Plano</span><span id="resumoPlano">—</span></div>
-        <div class="order-row"><span>Serviço</span><span id="resumoServico">—</span></div>
-        <div class="order-row"><span>Pagamento</span><span id="resumoPagamento">—</span></div>
+        <div class="order-summary-title">Resumo do pedido</div>
+        <div class="order-row"><span>Plano</span><span id="resumoPlano">-</span></div>
+        <div class="order-row"><span>Servico</span><span id="resumoServico">-</span></div>
+        <div class="order-row"><span>Pagamento</span><span id="resumoPagamento">-</span></div>
       </div>
 
       <div class="form-group">
         <label for="nome">Seu nome</label>
-        <input type="text" id="nome" placeholder="Ex: João Silva" required/>
+        <input type="text" id="nome" placeholder="Ex: Joao Silva" required/>
       </div>
 
       <div class="form-group">
         <label for="instagram">@ ou link do Instagram</label>
-        <input type="text" id="instagram" placeholder="@seuusuario ou instagram.com/seuusuario" required/>
+        <input type="text" id="instagram" placeholder="@seuusuario ou instagram.com/usuario" required/>
       </div>
 
-      <button class="btn-submit" id="finalizarBtn">Finalizar no WhatsApp →</button>
-      <div class="secure-note">🔒 Seus dados são usados apenas para processar o pedido</div>
+      <button class="btn-submit" id="finalizarBtn">Finalizar no WhatsApp</button>
+      <div class="secure-note">Seus dados sao usados apenas para processar o pedido</div>
     </div>
 
-    <footer class="page-footer animate delay-2">© 2025 MidiaNetDigital — Todos os direitos reservados</footer>
+    <footer class="page-footer animate delay-2">2025 MidiaNetDigital - Todos os direitos reservados</footer>
   </section>
 
   <script>
-    const WHATSAPP = '5521991689838';
+    var WHATSAPP = '5521991689838';
 
-    // Mapas de label amigável
-    const PLANO_LABELS = {
-      '500':  '500 Seguidores — R$ 18,99 (Starter)',
-      '1000': '1.000 Seguidores — R$ 24,99 (Pro)',
-      '5000': '5.000 Seguidores — R$ 89,99 (Max)',
+    var PLANO_LABELS = {
+      '500':  '500 Seguidores - R$ 18,99 (Starter)',
+      '1000': '1.000 Seguidores - R$ 24,99 (Pro)',
+      '5000': '5.000 Seguidores - R$ 89,99 (Max)'
     };
-    const SERVICO_LABELS = {
-      'seguidores-mundiais':   'Seguidores Mundiais',
-      'seguidores-brasileiros':'Seguidores Brasileiros',
-      'seguidores-organicos':  'Seguidores Orgânicos',
-      'curtidas':              'Curtidas Brasileiras',
-      'visualizacoes':         'Visualizações de Reels',
+    var SERVICO_LABELS = {
+      'seguidores-mundiais':    'Seguidores Mundiais',
+      'seguidores-brasileiros': 'Seguidores Brasileiros',
+      'seguidores-organicos':   'Seguidores Organicos',
+      'curtidas':               'Curtidas Brasileiras',
+      'visualizacoes':          'Visualizacoes de Reels'
     };
-    const PAGAMENTO_LABELS = {
-      'pix':    '⚡ Pix',
-      'cartao': '💳 Cartão',
+    var PAGAMENTO_LABELS = {
+      'pix':    'Pix',
+      'cartao': 'Cartao'
     };
 
-    // Lê parâmetros acumulados: pagamento vem da URL atual,
-    // plano e serviço podem vir da URL ou do sessionStorage
-    const params   = new URLSearchParams(location.search);
-    const pagamento = params.get('pagamento') || sessionStorage.getItem('pagamento') || '';
-    const plano     = params.get('plano')     || sessionStorage.getItem('plano')     || '';
-    const servico   = params.get('servico')   || sessionStorage.getItem('servico')   || '';
+    var params   = new URLSearchParams(location.search);
+    var pagamento = params.get('pagamento') || sessionStorage.getItem('pagamento') || '';
+    var plano     = params.get('plano')     || sessionStorage.getItem('plano')     || '';
+    var servico   = params.get('servico')   || sessionStorage.getItem('servico')   || '';
 
-    // Salva tudo para caso o usuário recarregue
     if (pagamento) sessionStorage.setItem('pagamento', pagamento);
     if (plano)     sessionStorage.setItem('plano',     plano);
     if (servico)   sessionStorage.setItem('servico',   servico);
 
-    // Preenche resumo visual
-    document.getElementById('resumoPlano').textContent     = PLANO_LABELS[plano]         || plano     || '—';
-    document.getElementById('resumoServico').textContent   = SERVICO_LABELS[servico]      || servico   || '—';
-    document.getElementById('resumoPagamento').textContent = PAGAMENTO_LABELS[pagamento]  || pagamento || '—';
+    document.getElementById('resumoPlano').textContent     = PLANO_LABELS[plano]      || plano      || '-';
+    document.getElementById('resumoServico').textContent   = SERVICO_LABELS[servico]   || servico    || '-';
+    document.getElementById('resumoPagamento').textContent = PAGAMENTO_LABELS[pagamento]|| pagamento  || '-';
 
-    // Envio para WhatsApp
     document.getElementById('finalizarBtn').addEventListener('click', function () {
-      const nome      = document.getElementById('nome').value.trim();
-      const instagram = document.getElementById('instagram').value.trim();
+      var nome      = document.getElementById('nome').value.trim();
+      var instagram = document.getElementById('instagram').value.trim();
 
       if (!nome || !instagram) {
         alert('Por favor, preencha seu nome e o perfil do Instagram.');
         return;
       }
 
-      const linhas = [
-        'Ola! Quero finalizar meu pedido na *MidiaNetDigital*.',
-        '',
-        '*Nome:* ' + nome,
-        '*Instagram:* ' + instagram,
-        '*Plano:* ' + (PLANO_LABELS[plano] || plano || 'nao informado'),
-        '*Servico:* ' + (SERVICO_LABELS[servico] || servico || 'nao informado'),
-        '*Pagamento:* ' + (PAGAMENTO_LABELS[pagamento] || pagamento || 'nao informado'),
-      ];
+      var planoLabel     = PLANO_LABELS[plano]       || plano      || 'nao informado';
+      var servicoLabel   = SERVICO_LABELS[servico]    || servico    || 'nao informado';
+      var pagamentoLabel = PAGAMENTO_LABELS[pagamento] || pagamento || 'nao informado';
 
-      const texto = encodeURIComponent(linhas.join('\n'));
-      window.open('https://wa.me/' + WHATSAPP + '?text=' + texto, '_blank');
+      var msg = 'Ola! Quero finalizar meu pedido na MidiaNetDigital.%0A%0A'
+              + '*Nome:* ' + encodeURIComponent(nome) + '%0A'
+              + '*Instagram:* ' + encodeURIComponent(instagram) + '%0A'
+              + '*Plano:* ' + encodeURIComponent(planoLabel) + '%0A'
+              + '*Servico:* ' + encodeURIComponent(servicoLabel) + '%0A'
+              + '*Pagamento:* ' + encodeURIComponent(pagamentoLabel);
+
+      window.open('https://wa.me/' + WHATSAPP + '?text=' + msg, '_blank');
     });
   </script>
 </body>
