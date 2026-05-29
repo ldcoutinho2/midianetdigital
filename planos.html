@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Escolha o Plano — MidiaNetDigital</title>
-  <style>@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap');
+  <title>Escolha o Plano - MidiaNetDigital</title>
+  <style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap');
 
 :root {
   --bg: #0a0a0f; --surface: #13131c; --surface2: #1c1c2b;
@@ -80,7 +81,10 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .delay-1{animation-delay:.1s}
 .delay-2{animation-delay:.2s}
 .delay-3{animation-delay:.3s}
-@media(max-width:600px){.page{padding:7rem 5% 4rem}.nav{padding:1rem 5%}.cards-grid{grid-template-columns:1fr}.step-line{width:20px}.checkout-box{padding:1.75rem 1.25rem}}</style>
+@media(max-width:600px){.page{padding:7rem 5% 4rem}.nav{padding:1rem 5%}.cards-grid{grid-template-columns:1fr}.step-line{width:20px}.checkout-box{padding:1.75rem 1.25rem}}
+
+#planos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; width: 100%; max-width: 900px; }
+  </style>
 </head>
 <body>
   <div class="blob blob-1"></div>
@@ -89,9 +93,10 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     <a href="index.html" class="logo">MidiaNet<span>Digital</span></a>
     <a href="servicos.html" class="nav-back">← Voltar</a>
   </nav>
+
   <section class="page">
     <div class="progress-bar animate">
-      <div class="step done"><div class="step-dot">✓</div>Serviço</div>
+      <div class="step done"><div class="step-dot">✓</div>Servico</div>
       <div class="step-line done"></div>
       <div class="step active"><div class="step-dot">2</div>Plano</div>
       <div class="step-line"></div>
@@ -99,34 +104,103 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
       <div class="step-line"></div>
       <div class="step"><div class="step-dot">4</div>Finalizar</div>
     </div>
+
     <div class="page-header animate delay-1">
-      <h1>Escolha seu plano</h1>
-      <p>Quanto mais você investe, mais rápido seu perfil cresce. Todos com entrega garantida.</p>
+      <h1 id="page-title">Escolha seu plano</h1>
+      <p id="page-sub">Selecione a quantidade desejada. Entrega garantida.</p>
     </div>
-    <div class="cards-grid animate delay-2" style="max-width:900px">
-      <a href="pagamento.html?plano=500" class="card">
-        <h3>Starter</h3>
-        <div class="card-price">R$ 18,99</div>
-        <div class="card-price-sub">500 seguidores</div>
-        <ul class="card-features"><li>Entrega em até 24h</li><li>Sem queda garantida</li><li>Suporte via WhatsApp</li></ul>
-      </a>
-      <a href="pagamento.html?plano=1000" class="card featured">
-        <span class="card-badge">🔥 Mais vendido</span>
-        <h3>Pro</h3>
-        <div class="card-price">R$ 24,99</div>
-        <div class="card-price-sub">1.000 seguidores</div>
-        <ul class="card-features"><li>Entrega em até 12h</li><li>Sem queda garantida</li><li>Suporte prioritário</li><li>Melhor custo-benefício</li></ul>
-      </a>
-      <a href="pagamento.html?plano=5000" class="card">
-        <h3>Max</h3>
-        <div class="card-price">R$ 89,99</div>
-        <div class="card-price-sub">5.000 seguidores</div>
-        <ul class="card-features"><li>Entrega expressa</li><li>Sem queda garantida</li><li>Suporte VIP 24h</li><li>Maior alcance e autoridade</li></ul>
-      </a>
-    </div>
-    <footer class="page-footer animate delay-3">© 2025 MidiaNetDigital — Todos os direitos reservados</footer>
+
+    <div id="planos-grid" class="animate delay-2"></div>
+
+    <footer class="page-footer animate delay-3">2025 MidiaNetDigital - Todos os direitos reservados</footer>
   </section>
-  <script src="script.js"></script>
+
+  <script>
+    var CATALOGO = {
+      'seguidores-mundiais': {
+        titulo: 'Seguidores Mundiais',
+        sub: 'Aumente sua base globalmente. Entrega progressiva e rapida.',
+        planos: [
+          { id:'500',  nome:'Starter', qtd:'500 Seguidores',   preco:'R$ 18,99', destaque:false, features:['Entrega em ate 24h','Sem queda garantida','Suporte WhatsApp'] },
+          { id:'1000', nome:'Pro',     qtd:'1.000 Seguidores', preco:'R$ 24,99', destaque:true,  features:['Entrega em ate 12h','Sem queda garantida','Suporte prioritario','Melhor custo-beneficio'] },
+          { id:'5000', nome:'Max',     qtd:'5.000 Seguidores', preco:'R$ 89,99', destaque:false, features:['Entrega expressa','Sem queda garantida','Suporte VIP 24h','Maior alcance'] }
+        ]
+      },
+      'seguidores-brasileiros': {
+        titulo: 'Seguidores Brasileiros',
+        sub: 'Seguidores do Brasil para mais engajamento nacional.',
+        planos: [
+          { id:'500',  nome:'Starter', qtd:'500 Seguidores BR',   preco:'R$ 22,99', destaque:false, features:['Perfis brasileiros','Entrega em ate 24h','Sem queda garantida'] },
+          { id:'1000', nome:'Pro',     qtd:'1.000 Seguidores BR', preco:'R$ 34,99', destaque:true,  features:['Perfis brasileiros','Entrega em ate 12h','Suporte prioritario','Mais engajamento organico'] },
+          { id:'5000', nome:'Max',     qtd:'5.000 Seguidores BR', preco:'R$ 119,99',destaque:false, features:['Perfis brasileiros','Entrega expressa','Suporte VIP 24h','Maximo alcance nacional'] }
+        ]
+      },
+      'seguidores-organicos': {
+        titulo: 'Seguidores Organicos',
+        sub: 'Crescimento gradual e natural para parecer 100% real.',
+        planos: [
+          { id:'500',  nome:'Starter', qtd:'500 Seguidores',   preco:'R$ 24,99', destaque:false, features:['Entrega gradual 7 dias','Aparencia organica','Sem queda garantida'] },
+          { id:'1000', nome:'Pro',     qtd:'1.000 Seguidores', preco:'R$ 44,99', destaque:true,  features:['Entrega gradual 7 dias','Aparencia organica','Suporte prioritario','Ideal para criadores'] },
+          { id:'5000', nome:'Max',     qtd:'5.000 Seguidores', preco:'R$ 179,99',destaque:false, features:['Entrega gradual 15 dias','Aparencia organica','Suporte VIP 24h','Crescimento solido'] }
+        ]
+      },
+      'curtidas': {
+        titulo: 'Curtidas Brasileiras',
+        sub: 'Mais curtidas nas suas fotos e reels para bombar no algoritmo.',
+        planos: [
+          { id:'500',  nome:'Starter', qtd:'500 Curtidas',   preco:'R$ 9,99',  destaque:false, features:['Perfis brasileiros','Entrega imediata','Por publicacao'] },
+          { id:'1000', nome:'Pro',     qtd:'1.000 Curtidas', preco:'R$ 14,99', destaque:true,  features:['Perfis brasileiros','Entrega imediata','Mais alcance organico','Melhor custo-beneficio'] },
+          { id:'5000', nome:'Max',     qtd:'5.000 Curtidas', preco:'R$ 49,99', destaque:false, features:['Perfis brasileiros','Entrega rapida','Maximo engajamento','Ideal para viralizacao'] }
+        ]
+      },
+      'visualizacoes': {
+        titulo: 'Visualizacoes de Reels',
+        sub: 'Impulsione seus videos e conquiste mais alcance organico.',
+        planos: [
+          { id:'1000', nome:'Starter', qtd:'1.000 Views',  preco:'R$ 7,99',  destaque:false, features:['Reels e Stories','Entrega em horas','Aumenta o alcance'] },
+          { id:'5000', nome:'Pro',     qtd:'5.000 Views',  preco:'R$ 19,99', destaque:true,  features:['Reels e Stories','Entrega rapida','Bomba no algoritmo','Mais indicados'] },
+          { id:'10000',nome:'Max',     qtd:'10.000 Views', preco:'R$ 34,99', destaque:false, features:['Reels e Stories','Entrega expressa','Maximo alcance','Ideal para viralizacao'] }
+        ]
+      }
+    };
+
+    // Le servico da URL ou sessionStorage
+    var params  = new URLSearchParams(location.search);
+    var servico = params.get('servico') || sessionStorage.getItem('servico') || 'seguidores-mundiais';
+    if (servico) sessionStorage.setItem('servico', servico);
+
+    var dados = CATALOGO[servico] || CATALOGO['seguidores-mundiais'];
+
+    // Atualiza titulo
+    document.getElementById('page-title').textContent = 'Planos: ' + dados.titulo;
+    document.getElementById('page-sub').textContent   = dados.sub;
+
+    // Renderiza cards
+    var grid = document.getElementById('planos-grid');
+    dados.planos.forEach(function(p) {
+      var features = p.features.map(function(f){ return '<li>' + f + '</li>'; }).join('');
+      var badge    = p.destaque ? '<span class="card-badge">Mais vendido</span>' : '';
+      var cls      = p.destaque ? 'card featured' : 'card';
+
+      var card = document.createElement('a');
+      card.className = cls;
+      card.href = '#';
+      card.innerHTML =
+        badge +
+        '<h3>' + p.nome + '</h3>' +
+        '<div class="card-price">' + p.preco + '</div>' +
+        '<div class="card-price-sub">' + p.qtd + '</div>' +
+        '<ul class="card-features">' + features + '</ul>';
+
+      card.addEventListener('click', function(e) {
+        e.preventDefault();
+        sessionStorage.setItem('plano', p.id);
+        sessionStorage.setItem('planoLabel', p.qtd + ' - ' + p.preco + ' (' + p.nome + ')');
+        window.location.href = 'pagamento.html?plano=' + p.id + '&servico=' + encodeURIComponent(servico);
+      });
+
+      grid.appendChild(card);
+    });
+  </script>
 </body>
 </html>
-
