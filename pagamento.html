@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Finalizar Pedido — MidiaNetDigital</title>
-  <style>@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap');
+  <title>Forma de Pagamento - MidiaNetDigital</title>
+  <style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap');
 
 :root {
   --bg: #0a0a0f; --surface: #13131c; --surface2: #1c1c2b;
@@ -80,49 +81,63 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .delay-1{animation-delay:.1s}
 .delay-2{animation-delay:.2s}
 .delay-3{animation-delay:.3s}
-@media(max-width:600px){.page{padding:7rem 5% 4rem}.nav{padding:1rem 5%}.cards-grid{grid-template-columns:1fr}.step-line{width:20px}.checkout-box{padding:1.75rem 1.25rem}}</style>
+@media(max-width:600px){.page{padding:7rem 5% 4rem}.nav{padding:1rem 5%}.cards-grid{grid-template-columns:1fr}.step-line{width:20px}.checkout-box{padding:1.75rem 1.25rem}}
+
+  </style>
 </head>
 <body>
   <div class="blob blob-1"></div>
   <div class="blob blob-2"></div>
   <nav class="nav">
     <a href="index.html" class="logo">MidiaNet<span>Digital</span></a>
-    <a href="pagamento.html" class="nav-back">← Voltar</a>
+    <a href="planos.html" class="nav-back">← Voltar</a>
   </nav>
+
   <section class="page">
     <div class="progress-bar animate">
-      <div class="step done"><div class="step-dot">✓</div>Serviço</div>
+      <div class="step done"><div class="step-dot">✓</div>Servico</div>
       <div class="step-line done"></div>
       <div class="step done"><div class="step-dot">✓</div>Plano</div>
       <div class="step-line done"></div>
-      <div class="step done"><div class="step-dot">✓</div>Pagamento</div>
-      <div class="step-line done"></div>
-      <div class="step active"><div class="step-dot">4</div>Finalizar</div>
+      <div class="step active"><div class="step-dot">3</div>Pagamento</div>
+      <div class="step-line"></div>
+      <div class="step"><div class="step-dot">4</div>Finalizar</div>
     </div>
-    <div class="checkout-box animate delay-1">
-      <h2>Quase lá! 🎉</h2>
-      <p class="sub">Preencha seus dados para finalizar o pedido via WhatsApp. Rápido e sem complicação.</p>
-      <div class="form-group">
-        <label for="nome">Seu nome</label>
-        <input type="text" id="nome" placeholder="Ex: João Silva" required/>
-      </div>
-      <div class="form-group">
-        <label for="email">E-mail</label>
-        <input type="email" id="email" placeholder="seuemail@exemplo.com" required/>
-      </div>
-      <div class="form-group">
-        <label for="telefone">WhatsApp</label>
-        <input type="tel" id="telefone" placeholder="(21) 99999-9999" required/>
-      </div>
-      <div class="form-group">
-        <label for="instagram">Perfil do Instagram</label>
-        <input type="text" id="instagram" placeholder="@seuusuario ou link do perfil" required/>
-      </div>
-      <button class="btn-submit" id="finalizarBtn">Finalizar no WhatsApp →</button>
-      <div class="secure-note">🔒 Seus dados são 100% protegidos e usados só para o pedido</div>
+
+    <div class="page-header animate delay-1">
+      <h1>Como voce quer pagar?</h1>
+      <p>Escolha sua forma de pagamento. Aprovacao rapida e 100% segura.</p>
     </div>
-    <footer class="page-footer animate delay-2">© 2025 MidiaNetDigital — Todos os direitos reservados</footer>
+
+    <div class="pay-grid animate delay-2">
+      <a href="#" class="pay-card featured" onclick="escolher('pix'); return false;">
+        <span class="pay-icon">&#9889;</span>
+        <h3>Pix</h3>
+        <p>Aprovacao instantanea, 24h por dia</p>
+        <span class="pay-tag">Mais rapido</span>
+      </a>
+      <a href="#" class="pay-card" onclick="escolher('cartao'); return false;">
+        <span class="pay-icon">&#128179;</span>
+        <h3>Cartao</h3>
+        <p>Credito ou debito com seguranca</p>
+      </a>
+    </div>
+
+    <footer class="page-footer animate delay-3">2025 MidiaNetDigital - Todos os direitos reservados</footer>
   </section>
-  <script src="script.js"></script>
+
+  <script>
+    // Preserva plano e servico vindos das etapas anteriores
+    var params  = new URLSearchParams(location.search);
+    var plano   = params.get('plano')   || sessionStorage.getItem('plano')   || '';
+    var servico = params.get('servico') || sessionStorage.getItem('servico') || '';
+    if (plano)   sessionStorage.setItem('plano',   plano);
+    if (servico) sessionStorage.setItem('servico', servico);
+
+    function escolher(pagamento) {
+      sessionStorage.setItem('pagamento', pagamento);
+      window.location.href = 'checkout.html?pagamento=' + pagamento;
+    }
+  </script>
 </body>
 </html>
