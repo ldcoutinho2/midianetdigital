@@ -4,201 +4,170 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Escolha o Plano - MidiaNetDigital</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
   <style>
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap');
-
-:root {
-  --bg: #0a0a0f; --surface: #13131c; --surface2: #1c1c2b;
-  --accent: #e8ff47; --accent2: #7c5cfc;
-  --text: #f0f0f8; --muted: #8888aa;
-  --border: rgba(255,255,255,0.07); --radius: 20px;
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;line-height:1.6;overflow-x:hidden;min-height:100vh}
-body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:0.4}
-.blob{position:fixed;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:0}
-.blob-1{width:500px;height:500px;background:var(--accent2);top:-150px;right:-100px;opacity:0.15}
-.blob-2{width:400px;height:400px;background:var(--accent);bottom:-150px;left:-100px;opacity:0.07}
-.nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1.2rem 6%;background:rgba(10,10,15,0.85);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
-.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.2rem;letter-spacing:-0.03em;color:var(--text);text-decoration:none}
-.logo span{color:var(--accent)}
-.nav-back{display:inline-flex;align-items:center;gap:0.4rem;color:var(--muted);font-size:0.9rem;font-weight:500;text-decoration:none;padding:0.5rem 1rem;border:1px solid var(--border);border-radius:100px;transition:color .2s,border-color .2s}
-.nav-back:hover{color:var(--text);border-color:rgba(255,255,255,0.18)}
-.page{position:relative;z-index:1;min-height:100vh;padding:8rem 6% 5rem;display:flex;flex-direction:column;align-items:center}
-.progress-bar{display:flex;align-items:center;margin-bottom:3.5rem}
-.step{display:flex;align-items:center;gap:0.5rem;font-size:0.8rem;font-weight:600;color:var(--muted)}
-.step.active{color:var(--accent)}
-.step.done{color:rgba(232,255,71,0.5)}
-.step-dot{width:28px;height:28px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700}
-.step.active .step-dot{background:var(--accent);color:#0a0a0f;border-color:var(--accent)}
-.step.done .step-dot{background:rgba(232,255,71,0.15);border-color:rgba(232,255,71,0.3);color:var(--accent)}
-.step-line{width:40px;height:1px;background:var(--border);margin:0 0.25rem}
-.step-line.done{background:rgba(232,255,71,0.3)}
-.page-header{text-align:center;max-width:600px;margin-bottom:3rem}
-.page-header h1{font-family:'Syne',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;letter-spacing:-0.02em;line-height:1.1;margin-bottom:0.75rem}
-.page-header p{color:var(--muted);font-size:1rem}
-.cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.25rem;width:100%;max-width:1100px}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:2rem 1.75rem;text-decoration:none;color:var(--text);transition:transform .25s,border-color .25s,box-shadow .25s;position:relative;overflow:hidden;cursor:pointer;display:block}
-.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent2),var(--accent));opacity:0;transition:opacity .25s}
-.card:hover{transform:translateY(-5px);border-color:rgba(255,255,255,0.14);box-shadow:0 20px 40px rgba(0,0,0,.35)}
-.card:hover::before{opacity:1}
-.card.featured{border-color:rgba(232,255,71,0.3);background:linear-gradient(135deg,rgba(232,255,71,0.04),var(--surface))}
-.card.featured::before{opacity:1}
-.card-badge{position:absolute;top:1rem;right:1rem;background:var(--accent);color:#0a0a0f;font-size:0.7rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;padding:0.25rem 0.6rem;border-radius:100px}
-.card-icon{font-size:2.2rem;margin-bottom:1rem;display:block}
-.card h3{font-family:'Syne',sans-serif;font-size:1.15rem;font-weight:700;margin-bottom:0.4rem}
-.card p,.card span{color:var(--muted);font-size:0.875rem}
-.card-price{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--accent);margin:0.75rem 0 0.25rem;line-height:1}
-.card-price-sub{color:var(--muted);font-size:0.8rem}
-.card-features{list-style:none;margin-top:1rem;display:flex;flex-direction:column;gap:0.4rem}
-.card-features li{font-size:0.85rem;color:var(--muted);display:flex;align-items:center;gap:0.4rem}
-.card-features li::before{content:'✓';color:var(--accent);font-weight:700}
-.checkout-box{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:2.5rem;width:100%;max-width:560px}
-.checkout-box h2{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;margin-bottom:0.4rem}
-.checkout-box .sub{color:var(--muted);font-size:0.9rem;margin-bottom:2rem}
-.form-group{display:flex;flex-direction:column;gap:0.4rem;margin-bottom:1.1rem}
-.form-group label{font-size:0.82rem;font-weight:600;color:var(--muted);letter-spacing:0.03em;text-transform:uppercase}
-.form-group input{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:0.85rem 1rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.95rem;outline:none;transition:border-color .2s;width:100%}
-.form-group input:focus{border-color:rgba(232,255,71,0.4)}
-.form-group input::placeholder{color:var(--muted)}
-.btn-submit{width:100%;padding:1rem;border:none;border-radius:100px;background:var(--accent);color:#0a0a0f;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;margin-top:0.5rem;transition:opacity .2s,transform .2s,box-shadow .2s;box-shadow:0 0 30px rgba(232,255,71,0.2)}
-.btn-submit:hover{opacity:0.9;transform:translateY(-2px);box-shadow:0 0 45px rgba(232,255,71,0.35)}
-.secure-note{display:flex;align-items:center;justify-content:center;gap:0.4rem;margin-top:1rem;font-size:0.8rem;color:var(--muted)}
-.page-footer{margin-top:4rem;padding-top:2rem;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.8rem;width:100%;max-width:1100px}
-.pay-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.25rem;width:100%;max-width:600px}
-.pay-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:2.25rem 1.5rem;text-align:center;text-decoration:none;color:var(--text);transition:transform .25s,border-color .25s,box-shadow .25s;position:relative;overflow:hidden}
-.pay-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent2),var(--accent));opacity:0;transition:opacity .25s}
-.pay-card:hover{transform:translateY(-5px);border-color:rgba(255,255,255,0.14);box-shadow:0 20px 40px rgba(0,0,0,.3)}
-.pay-card:hover::before{opacity:1}
-.pay-card.featured{border-color:rgba(232,255,71,0.3)}
-.pay-card.featured::before{opacity:1}
-.pay-icon{font-size:2.5rem;margin-bottom:1rem;display:block}
-.pay-card h3{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:700;margin-bottom:0.4rem}
-.pay-card p{color:var(--muted);font-size:0.875rem}
-.pay-tag{display:inline-block;margin-top:0.75rem;background:rgba(232,255,71,0.1);border:1px solid rgba(232,255,71,0.25);color:var(--accent);font-size:0.72rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;padding:0.2rem 0.6rem;border-radius:100px}
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-.animate{animation:fadeUp .6s ease both}
-.delay-1{animation-delay:.1s}
-.delay-2{animation-delay:.2s}
-.delay-3{animation-delay:.3s}
-@media(max-width:600px){.page{padding:7rem 5% 4rem}.nav{padding:1rem 5%}.cards-grid{grid-template-columns:1fr}.step-line{width:20px}.checkout-box{padding:1.75rem 1.25rem}}
-
-#planos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; width: 100%; max-width: 900px; }
+    :root{--bg:#080810;--s1:#111120;--s2:#181828;--ac:#e8ff47;--ac2:#7c5cfc;--text:#f0f0f8;--muted:#8888aa;--border:rgba(255,255,255,0.07)}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"DM Sans",sans-serif;overflow-x:hidden;min-height:100vh}
+    body::before{content:"";position:fixed;inset:0;opacity:.03;pointer-events:none;z-index:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+    .blob{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(110px)}
+    .b1{width:500px;height:500px;background:var(--ac2);top:-150px;right:-100px;opacity:.13}
+    .b2{width:400px;height:400px;background:var(--ac);bottom:-150px;left:-100px;opacity:.06}
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1.1rem 6%;background:rgba(8,8,16,.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+    .logo{font-family:"Syne",sans-serif;font-weight:800;font-size:1.2rem;letter-spacing:-.03em;color:var(--text);text-decoration:none}
+    .logo em{color:var(--ac);font-style:normal}
+    .nav-back{display:inline-flex;align-items:center;gap:.4rem;color:var(--muted);font-size:.875rem;font-weight:500;text-decoration:none;padding:.5rem 1rem;border:1px solid var(--border);border-radius:100px;transition:color .2s,border-color .2s}
+    .nav-back:hover{color:var(--text);border-color:rgba(255,255,255,.18)}
+    .page{position:relative;z-index:1;min-height:100vh;padding:7rem 6% 5rem;display:flex;flex-direction:column;align-items:center}
+    .prog{display:flex;align-items:center;margin-bottom:3rem}
+    .st{display:flex;align-items:center;gap:.45rem;font-size:.78rem;font-weight:600;color:var(--muted)}
+    .st.on{color:var(--ac)}.st.dn{color:rgba(232,255,71,.5)}
+    .sd{width:26px;height:26px;border-radius:50%;background:var(--s2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700}
+    .st.on .sd{background:var(--ac);color:#080810;border-color:var(--ac)}
+    .st.dn .sd{background:rgba(232,255,71,.12);border-color:rgba(232,255,71,.3);color:var(--ac)}
+    .sl{width:36px;height:1px;background:var(--border);margin:0 .2rem}.sl.dn{background:rgba(232,255,71,.3)}
+    .ph{text-align:center;max-width:620px;margin-bottom:3rem}
+    .ph h1{font-family:"Syne",sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;letter-spacing:-.025em;line-height:1.1;margin-bottom:.7rem}
+    .ph p{color:var(--muted);font-size:1rem}
+    #grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.2rem;width:100%;max-width:1000px}
+    .card{background:var(--s1);border:1px solid var(--border);border-radius:20px;padding:2rem 1.75rem;text-decoration:none;color:var(--text);transition:transform .25s,border-color .25s,box-shadow .25s;position:relative;overflow:hidden;display:block;cursor:pointer}
+    .card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--ac2),var(--ac));opacity:0;transition:opacity .25s}
+    .card:hover{transform:translateY(-5px);border-color:rgba(255,255,255,.14);box-shadow:0 20px 40px rgba(0,0,0,.4)}
+    .card:hover::before,.card.hot::before{opacity:1}
+    .card.hot{border-color:rgba(232,255,71,.28);background:linear-gradient(135deg,rgba(232,255,71,.05),var(--s1))}
+    .cbadge{position:absolute;top:1rem;right:1rem;background:var(--ac);color:#080810;font-size:.67rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:.22rem .6rem;border-radius:100px}
+    .cname{font-family:"Syne",sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:.1rem}
+    .cqtd{color:var(--muted);font-size:.85rem;margin-bottom:.75rem}
+    .cpreco{font-family:"Syne",sans-serif;font-size:2.2rem;font-weight:800;color:var(--ac);line-height:1;margin-bottom:.2rem}
+    .cper{color:var(--muted);font-size:.75rem;margin-bottom:1rem}
+    .clist{list-style:none;display:flex;flex-direction:column;gap:.35rem;margin-bottom:1.25rem}
+    .clist li{font-size:.82rem;color:var(--muted);display:flex;align-items:center;gap:.38rem}
+    .clist li::before{content:"✓";color:var(--ac);font-weight:700;flex-shrink:0}
+    .cbtn{display:block;width:100%;padding:.75rem;background:var(--s2);border:1px solid var(--border);border-radius:100px;text-align:center;font-weight:600;font-size:.9rem;color:var(--text);transition:background .2s,border-color .2s}
+    .card.hot .cbtn{background:var(--ac);color:#080810;border-color:var(--ac)}
+    .card:hover .cbtn{background:var(--ac);color:#080810;border-color:var(--ac)}
+    footer{position:relative;z-index:1;margin-top:4rem;padding-top:2rem;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:.78rem;width:100%;max-width:1000px}
+    @keyframes up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    .a1{animation:up .6s ease both}.a2{animation:up .6s .1s ease both}.a3{animation:up .6s .2s ease both}
+    @media(max-width:600px){.page{padding:6.5rem 5% 4rem}nav{padding:1rem 5%}#grid{grid-template-columns:1fr}.sl{width:18px}}
   </style>
 </head>
 <body>
-  <div class="blob blob-1"></div>
-  <div class="blob blob-2"></div>
-  <nav class="nav">
-    <a href="index.html" class="logo">MidiaNet<span>Digital</span></a>
-    <a href="servicos.html" class="nav-back">← Voltar</a>
+  <div class="blob b1"></div><div class="blob b2"></div>
+  <nav>
+    <a href="index.html" class="logo">MidiaNet<em>Digital</em></a>
+    <a href="servicos.html" class="nav-back">&#8592; Voltar</a>
   </nav>
-
   <section class="page">
-    <div class="progress-bar animate">
-      <div class="step done"><div class="step-dot">✓</div>Servico</div>
-      <div class="step-line done"></div>
-      <div class="step active"><div class="step-dot">2</div>Plano</div>
-      <div class="step-line"></div>
-      <div class="step"><div class="step-dot">3</div>Pagamento</div>
-      <div class="step-line"></div>
-      <div class="step"><div class="step-dot">4</div>Finalizar</div>
+    <div class="prog a1">
+      <div class="st dn"><div class="sd">&#10003;</div>Servico</div>
+      <div class="sl dn"></div><div class="st on"><div class="sd">2</div>Plano</div>
+      <div class="sl"></div><div class="st"><div class="sd">3</div>Pagamento</div>
+      <div class="sl"></div><div class="st"><div class="sd">4</div>Finalizar</div>
     </div>
-
-    <div class="page-header animate delay-1">
-      <h1 id="page-title">Escolha seu plano</h1>
-      <p id="page-sub">Selecione a quantidade desejada. Entrega garantida.</p>
+    <div class="ph a2">
+      <h1 id="titulo">Escolha seu plano</h1>
+      <p id="sub">Quanto mais voce investe, mais rapido seu perfil cresce.</p>
     </div>
-
-    <div id="planos-grid" class="animate delay-2"></div>
-
-    <footer class="page-footer animate delay-3">2025 MidiaNetDigital - Todos os direitos reservados</footer>
+    <div id="grid" class="a3"></div>
+    <footer>&#169; 2025 MidiaNetDigital &#8212; Todos os direitos reservados</footer>
   </section>
-
   <script>
-    var CATALOGO = {
-      'seguidores-mundiais': {
-        titulo: 'Seguidores Mundiais',
-        sub: 'Aumente sua base globalmente. Entrega progressiva e rapida.',
-        planos: [
-          { id:'500',  nome:'Starter', qtd:'500 Seguidores',   preco:'R$ 18,99', destaque:false, features:['Entrega em ate 24h','Sem queda garantida','Suporte WhatsApp'] },
-          { id:'1000', nome:'Pro',     qtd:'1.000 Seguidores', preco:'R$ 24,99', destaque:true,  features:['Entrega em ate 12h','Sem queda garantida','Suporte prioritario','Melhor custo-beneficio'] },
-          { id:'5000', nome:'Max',     qtd:'5.000 Seguidores', preco:'R$ 89,99', destaque:false, features:['Entrega expressa','Sem queda garantida','Suporte VIP 24h','Maior alcance'] }
+    var CAT = {
+      "seguidores-brasileiros":{
+        titulo:"Seguidores Brasileiros",sub:"Perfis brasileiros reais. Garantia de reposicao 30 dias.",
+        planos:[
+          {id:"100",nome:"Micro",qtd:"100 Seguidores BR",preco:"R$ 8,90",por:"R$ 0,089 por seguidor",hot:false,features:["Perfis brasileiros","Entrega em ate 24h","Garantia 30 dias","Suporte WhatsApp"]},
+          {id:"250",nome:"Starter",qtd:"250 Seguidores BR",preco:"R$ 14,90",por:"R$ 0,059 por seguidor",hot:false,features:["Perfis brasileiros","Entrega em ate 24h","Garantia 30 dias","Suporte WhatsApp"]},
+          {id:"500",nome:"Basico",qtd:"500 Seguidores BR",preco:"R$ 24,90",por:"R$ 0,049 por seguidor",hot:false,features:["Perfis brasileiros","Entrega progressiva","Garantia 30 dias","Suporte prioritario"]},
+          {id:"1000",nome:"Pro",qtd:"1.000 Seguidores BR",preco:"R$ 39,90",por:"R$ 0,039 por seguidor",hot:true,features:["Perfis brasileiros","Entrega em ate 12h","Garantia 30 dias","Melhor custo-beneficio","Suporte VIP"]},
+          {id:"2000",nome:"Plus",qtd:"2.000 Seguidores BR",preco:"R$ 69,90",por:"R$ 0,034 por seguidor",hot:false,features:["Perfis brasileiros","Entrega expressa","Garantia 30 dias","Suporte VIP 24h"]},
+          {id:"5000",nome:"Max",qtd:"5.000 Seguidores BR",preco:"R$ 149,90",por:"R$ 0,029 por seguidor",hot:false,features:["Perfis brasileiros","Entrega rapida","Garantia 30 dias","Suporte VIP 24h","Maximo alcance"]}
         ]
       },
-      'seguidores-brasileiros': {
-        titulo: 'Seguidores Brasileiros',
-        sub: 'Seguidores do Brasil para mais engajamento nacional.',
-        planos: [
-          { id:'500',  nome:'Starter', qtd:'500 Seguidores BR',   preco:'R$ 22,99', destaque:false, features:['Perfis brasileiros','Entrega em ate 24h','Sem queda garantida'] },
-          { id:'1000', nome:'Pro',     qtd:'1.000 Seguidores BR', preco:'R$ 34,99', destaque:true,  features:['Perfis brasileiros','Entrega em ate 12h','Suporte prioritario','Mais engajamento organico'] },
-          { id:'5000', nome:'Max',     qtd:'5.000 Seguidores BR', preco:'R$ 119,99',destaque:false, features:['Perfis brasileiros','Entrega expressa','Suporte VIP 24h','Maximo alcance nacional'] }
+      "seguidores-mundiais":{
+        titulo:"Seguidores Mundiais",sub:"Aumente sua base globalmente com entrega rapida.",
+        planos:[
+          {id:"100",nome:"Micro",qtd:"100 Seguidores",preco:"R$ 4,90",por:"R$ 0,049 por seguidor",hot:false,features:["Entrega em ate 24h","Sem queda garantida","Suporte WhatsApp"]},
+          {id:"250",nome:"Starter",qtd:"250 Seguidores",preco:"R$ 8,90",por:"R$ 0,035 por seguidor",hot:false,features:["Entrega em ate 24h","Sem queda garantida","Suporte WhatsApp"]},
+          {id:"500",nome:"Basico",qtd:"500 Seguidores",preco:"R$ 14,90",por:"R$ 0,029 por seguidor",hot:false,features:["Entrega progressiva","Sem queda garantida","Suporte WhatsApp"]},
+          {id:"1000",nome:"Pro",qtd:"1.000 Seguidores",preco:"R$ 24,90",por:"R$ 0,024 por seguidor",hot:true,features:["Entrega em ate 12h","Sem queda garantida","Melhor custo-beneficio","Suporte prioritario"]},
+          {id:"2000",nome:"Plus",qtd:"2.000 Seguidores",preco:"R$ 44,90",por:"R$ 0,022 por seguidor",hot:false,features:["Entrega expressa","Sem queda garantida","Suporte VIP 24h"]},
+          {id:"5000",nome:"Max",qtd:"5.000 Seguidores",preco:"R$ 89,90",por:"R$ 0,017 por seguidor",hot:false,features:["Entrega rapida","Sem queda garantida","Suporte VIP 24h","Maior alcance"]}
         ]
       },
-      'seguidores-organicos': {
-        titulo: 'Seguidores Organicos',
-        sub: 'Crescimento gradual e natural para parecer 100% real.',
-        planos: [
-          { id:'500',  nome:'Starter', qtd:'500 Seguidores',   preco:'R$ 24,99', destaque:false, features:['Entrega gradual 7 dias','Aparencia organica','Sem queda garantida'] },
-          { id:'1000', nome:'Pro',     qtd:'1.000 Seguidores', preco:'R$ 44,99', destaque:true,  features:['Entrega gradual 7 dias','Aparencia organica','Suporte prioritario','Ideal para criadores'] },
-          { id:'5000', nome:'Max',     qtd:'5.000 Seguidores', preco:'R$ 179,99',destaque:false, features:['Entrega gradual 15 dias','Aparencia organica','Suporte VIP 24h','Crescimento solido'] }
+      "seguidores-organicos":{
+        titulo:"Seguidores Organicos",sub:"Crescimento gradual e natural. 100% seguro.",
+        planos:[
+          {id:"250",nome:"Starter",qtd:"250 Seguidores",preco:"R$ 24,90",por:"Entrega em 7 dias",hot:false,features:["Crescimento gradual","Aparencia organica","Garantia 30 dias","Suporte WhatsApp"]},
+          {id:"500",nome:"Basico",qtd:"500 Seguidores",preco:"R$ 44,90",por:"Entrega em 10 dias",hot:false,features:["Crescimento gradual","Aparencia organica","Garantia 30 dias","Suporte prioritario"]},
+          {id:"1000",nome:"Pro",qtd:"1.000 Seguidores",preco:"R$ 79,90",por:"Entrega em 15 dias",hot:true,features:["Crescimento gradual","Aparencia organica","Garantia 30 dias","Melhor custo-beneficio","Suporte VIP"]},
+          {id:"2000",nome:"Max",qtd:"2.000 Seguidores",preco:"R$ 139,90",por:"Entrega em 20 dias",hot:false,features:["Crescimento gradual","Aparencia organica","Garantia 30 dias","Suporte VIP 24h","Maximo sigilo"]}
         ]
       },
-      'curtidas': {
-        titulo: 'Curtidas Brasileiras',
-        sub: 'Mais curtidas nas suas fotos e reels para bombar no algoritmo.',
-        planos: [
-          { id:'500',  nome:'Starter', qtd:'500 Curtidas',   preco:'R$ 9,99',  destaque:false, features:['Perfis brasileiros','Entrega imediata','Por publicacao'] },
-          { id:'1000', nome:'Pro',     qtd:'1.000 Curtidas', preco:'R$ 14,99', destaque:true,  features:['Perfis brasileiros','Entrega imediata','Mais alcance organico','Melhor custo-beneficio'] },
-          { id:'5000', nome:'Max',     qtd:'5.000 Curtidas', preco:'R$ 49,99', destaque:false, features:['Perfis brasileiros','Entrega rapida','Maximo engajamento','Ideal para viralizacao'] }
+      "curtidas-brasileiras":{
+        titulo:"Curtidas Brasileiras",sub:"Mais curtidas para bombar no algoritmo do Instagram.",
+        planos:[
+          {id:"50",nome:"Micro",qtd:"50 Curtidas",preco:"R$ 3,90",por:"R$ 0,078 por curtida",hot:false,features:["Perfis brasileiros","Entrega imediata","Por publicacao","Suporte WhatsApp"]},
+          {id:"100",nome:"Starter",qtd:"100 Curtidas",preco:"R$ 4,90",por:"R$ 0,049 por curtida",hot:false,features:["Perfis brasileiros","Entrega imediata","Por publicacao","Suporte WhatsApp"]},
+          {id:"250",nome:"Basico",qtd:"250 Curtidas",preco:"R$ 9,90",por:"R$ 0,039 por curtida",hot:false,features:["Perfis brasileiros","Entrega imediata","Mais alcance organico","Suporte prioritario"]},
+          {id:"500",nome:"Pro",qtd:"500 Curtidas",preco:"R$ 14,90",por:"R$ 0,029 por curtida",hot:true,features:["Perfis brasileiros","Entrega imediata","Melhor custo-beneficio","Suporte VIP","Aumenta algoritmo"]},
+          {id:"1000",nome:"Plus",qtd:"1.000 Curtidas",preco:"R$ 24,90",por:"R$ 0,024 por curtida",hot:false,features:["Perfis brasileiros","Entrega rapida","Suporte VIP 24h","Maximo engajamento"]},
+          {id:"2000",nome:"Max",qtd:"2.000 Curtidas",preco:"R$ 39,90",por:"R$ 0,019 por curtida",hot:false,features:["Perfis brasileiros","Entrega rapida","Suporte VIP 24h","Ideal para viralizacao"]}
         ]
       },
-      'visualizacoes': {
-        titulo: 'Visualizacoes de Reels',
-        sub: 'Impulsione seus videos e conquiste mais alcance organico.',
-        planos: [
-          { id:'1000', nome:'Starter', qtd:'1.000 Views',  preco:'R$ 7,99',  destaque:false, features:['Reels e Stories','Entrega em horas','Aumenta o alcance'] },
-          { id:'5000', nome:'Pro',     qtd:'5.000 Views',  preco:'R$ 19,99', destaque:true,  features:['Reels e Stories','Entrega rapida','Bomba no algoritmo','Mais indicados'] },
-          { id:'10000',nome:'Max',     qtd:'10.000 Views', preco:'R$ 34,99', destaque:false, features:['Reels e Stories','Entrega expressa','Maximo alcance','Ideal para viralizacao'] }
+      "visualizacoes":{
+        titulo:"Visualizacoes de Reels",sub:"Impulsione seus Reels e exploda no algoritmo.",
+        planos:[
+          {id:"500",nome:"Micro",qtd:"500 Views",preco:"R$ 3,90",por:"R$ 0,007 por view",hot:false,features:["Reels e Stories","Entrega em horas","Aumenta o alcance","Suporte WhatsApp"]},
+          {id:"1000",nome:"Starter",qtd:"1.000 Views",preco:"R$ 5,90",por:"R$ 0,005 por view",hot:false,features:["Reels e Stories","Entrega em horas","Aumenta o alcance","Suporte WhatsApp"]},
+          {id:"2500",nome:"Basico",qtd:"2.500 Views",preco:"R$ 9,90",por:"R$ 0,003 por view",hot:false,features:["Reels, Stories e IGTV","Entrega rapida","Bomba no algoritmo","Suporte prioritario"]},
+          {id:"5000",nome:"Pro",qtd:"5.000 Views",preco:"R$ 14,90",por:"R$ 0,002 por view",hot:true,features:["Reels, Stories e IGTV","Entrega rapida","Melhor custo-beneficio","Suporte VIP","Mais indicados"]},
+          {id:"10000",nome:"Plus",qtd:"10.000 Views",preco:"R$ 24,90",por:"R$ 0,002 por view",hot:false,features:["Reels, Stories e IGTV","Entrega expressa","Suporte VIP 24h","Maximo alcance"]},
+          {id:"25000",nome:"Max",qtd:"25.000 Views",preco:"R$ 44,90",por:"R$ 0,001 por view",hot:false,features:["Reels, Stories e IGTV","Entrega expressa","Suporte VIP 24h","Ideal para viralizacao"]}
+        ]
+      },
+      "comentarios":{
+        titulo:"Comentarios no Instagram",sub:"Comentarios em portugues para turbinar o engajamento.",
+        planos:[
+          {id:"10",nome:"Starter",qtd:"10 Comentarios",preco:"R$ 12,90",por:"R$ 1,29 por comentario",hot:false,features:["Em portugues BR","Perfis com foto","Por publicacao","Suporte WhatsApp"]},
+          {id:"25",nome:"Basico",qtd:"25 Comentarios",preco:"R$ 24,90",por:"R$ 0,99 por comentario",hot:false,features:["Em portugues BR","Perfis com foto","Personalizados","Suporte prioritario"]},
+          {id:"50",nome:"Pro",qtd:"50 Comentarios",preco:"R$ 39,90",por:"R$ 0,79 por comentario",hot:true,features:["Em portugues BR","Perfis com foto","Personalizados","Melhor custo-beneficio","Suporte VIP"]},
+          {id:"100",nome:"Max",qtd:"100 Comentarios",preco:"R$ 69,90",por:"R$ 0,69 por comentario",hot:false,features:["Em portugues BR","Perfis com foto","Personalizados","Suporte VIP 24h","Maximo engajamento"]}
         ]
       }
     };
 
-    // Le servico da URL ou sessionStorage
     var params  = new URLSearchParams(location.search);
-    var servico = params.get('servico') || sessionStorage.getItem('servico') || 'seguidores-mundiais';
-    if (servico) sessionStorage.setItem('servico', servico);
+    var servico = params.get("servico") || sessionStorage.getItem("servico") || "seguidores-brasileiros";
+    sessionStorage.setItem("servico", servico);
 
-    var dados = CATALOGO[servico] || CATALOGO['seguidores-mundiais'];
+    var dados = CAT[servico] || CAT["seguidores-brasileiros"];
+    document.getElementById("titulo").textContent = dados.titulo;
+    document.getElementById("sub").textContent    = dados.sub;
 
-    // Atualiza titulo
-    document.getElementById('page-title').textContent = 'Planos: ' + dados.titulo;
-    document.getElementById('page-sub').textContent   = dados.sub;
-
-    // Renderiza cards
-    var grid = document.getElementById('planos-grid');
-    dados.planos.forEach(function(p) {
-      var features = p.features.map(function(f){ return '<li>' + f + '</li>'; }).join('');
-      var badge    = p.destaque ? '<span class="card-badge">Mais vendido</span>' : '';
-      var cls      = p.destaque ? 'card featured' : 'card';
-
-      var card = document.createElement('a');
+    var grid = document.getElementById("grid");
+    dados.planos.forEach(function(p){
+      var feats = p.features.map(function(f){ return "<li>"+f+"</li>"; }).join("");
+      var badge = p.hot ? "<span class=\"cbadge\">Mais vendido</span>" : "";
+      var cls   = p.hot ? "card hot" : "card";
+      var card  = document.createElement("a");
       card.className = cls;
-      card.href = '#';
-      card.innerHTML =
-        badge +
-        '<h3>' + p.nome + '</h3>' +
-        '<div class="card-price">' + p.preco + '</div>' +
-        '<div class="card-price-sub">' + p.qtd + '</div>' +
-        '<ul class="card-features">' + features + '</ul>';
-
-      card.addEventListener('click', function(e) {
+      card.href = "#";
+      card.innerHTML = badge +
+        "<div class=\"cname\">"+p.nome+"</div>"+
+        "<div class=\"cqtd\">"+p.qtd+"</div>"+
+        "<div class=\"cpreco\">"+p.preco+"</div>"+
+        "<div class=\"cper\">"+p.por+"</div>"+
+        "<ul class=\"clist\">"+feats+"</ul>"+
+        "<div class=\"cbtn\">Selecionar plano</div>";
+      card.addEventListener("click", function(e){
         e.preventDefault();
-        sessionStorage.setItem('plano', p.id);
-        sessionStorage.setItem('planoLabel', p.qtd + ' - ' + p.preco + ' (' + p.nome + ')');
-        window.location.href = 'pagamento.html?plano=' + p.id + '&servico=' + encodeURIComponent(servico);
+        sessionStorage.setItem("plano", p.id);
+        sessionStorage.setItem("planoLabel", p.qtd+" - "+p.preco+" ("+p.nome+")");
+        window.location.href = "pagamento.html?plano="+p.id+"&servico="+encodeURIComponent(servico);
       });
-
       grid.appendChild(card);
     });
   </script>
