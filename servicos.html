@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Escolha o Plano - MidiaNetDigital</title>
+  <title>Escolha o Servico - MidiaNetDigital</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
   <style>
@@ -20,156 +20,110 @@
     .nav-back{display:inline-flex;align-items:center;gap:.4rem;color:var(--muted);font-size:.875rem;font-weight:500;text-decoration:none;padding:.5rem 1rem;border:1px solid var(--border);border-radius:100px;transition:color .2s,border-color .2s}
     .nav-back:hover{color:var(--text);border-color:rgba(255,255,255,.18)}
     .page{position:relative;z-index:1;min-height:100vh;padding:7rem 6% 5rem;display:flex;flex-direction:column;align-items:center}
+    /* progress */
     .prog{display:flex;align-items:center;margin-bottom:3rem}
     .st{display:flex;align-items:center;gap:.45rem;font-size:.78rem;font-weight:600;color:var(--muted)}
-    .st.on{color:var(--ac)}.st.dn{color:rgba(232,255,71,.5)}
+    .st.on{color:var(--ac)}
+    .st.dn{color:rgba(232,255,71,.5)}
     .sd{width:26px;height:26px;border-radius:50%;background:var(--s2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700}
     .st.on .sd{background:var(--ac);color:#080810;border-color:var(--ac)}
     .st.dn .sd{background:rgba(232,255,71,.12);border-color:rgba(232,255,71,.3);color:var(--ac)}
-    .sl{width:36px;height:1px;background:var(--border);margin:0 .2rem}.sl.dn{background:rgba(232,255,71,.3)}
+    .sl{width:36px;height:1px;background:var(--border);margin:0 .2rem}
+    .sl.dn{background:rgba(232,255,71,.3)}
+    /* header */
     .ph{text-align:center;max-width:620px;margin-bottom:3rem}
     .ph h1{font-family:"Syne",sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;letter-spacing:-.025em;line-height:1.1;margin-bottom:.7rem}
     .ph p{color:var(--muted);font-size:1rem}
-    #grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.2rem;width:100%;max-width:1000px}
-    .card{background:var(--s1);border:1px solid var(--border);border-radius:20px;padding:2rem 1.75rem;text-decoration:none;color:var(--text);transition:transform .25s,border-color .25s,box-shadow .25s;position:relative;overflow:hidden;display:block;cursor:pointer}
+    /* grid */
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.2rem;width:100%;max-width:1100px}
+    .card{background:var(--s1);border:1px solid var(--border);border-radius:20px;padding:1.75rem;text-decoration:none;color:var(--text);transition:transform .25s,border-color .25s,box-shadow .25s;position:relative;overflow:hidden;display:block;cursor:pointer}
     .card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--ac2),var(--ac));opacity:0;transition:opacity .25s}
     .card:hover{transform:translateY(-5px);border-color:rgba(255,255,255,.14);box-shadow:0 20px 40px rgba(0,0,0,.4)}
-    .card:hover::before,.card.hot::before{opacity:1}
-    .card.hot{border-color:rgba(232,255,71,.28);background:linear-gradient(135deg,rgba(232,255,71,.05),var(--s1))}
+    .card:hover::before{opacity:1}
+    .card.hot{border-color:rgba(232,255,71,.28);background:linear-gradient(135deg,rgba(232,255,71,.04),var(--s1))}
+    .card.hot::before{opacity:1}
     .cbadge{position:absolute;top:1rem;right:1rem;background:var(--ac);color:#080810;font-size:.67rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:.22rem .6rem;border-radius:100px}
-    .cname{font-family:"Syne",sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:.1rem}
-    .cqtd{color:var(--muted);font-size:.85rem;margin-bottom:.75rem}
-    .cpreco{font-family:"Syne",sans-serif;font-size:2.2rem;font-weight:800;color:var(--ac);line-height:1;margin-bottom:.2rem}
-    .cper{color:var(--muted);font-size:.75rem;margin-bottom:1rem}
-    .clist{list-style:none;display:flex;flex-direction:column;gap:.35rem;margin-bottom:1.25rem}
-    .clist li{font-size:.82rem;color:var(--muted);display:flex;align-items:center;gap:.38rem}
+    .cico{font-size:2.2rem;margin-bottom:1rem;display:block}
+    .card h3{font-family:"Syne",sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:.4rem}
+    .card p{color:var(--muted);font-size:.875rem;margin-bottom:.9rem}
+    .clist{list-style:none;display:flex;flex-direction:column;gap:.3rem}
+    .clist li{font-size:.8rem;color:var(--muted);display:flex;align-items:center;gap:.35rem}
     .clist li::before{content:"✓";color:var(--ac);font-weight:700;flex-shrink:0}
-    .cbtn{display:block;width:100%;padding:.75rem;background:var(--s2);border:1px solid var(--border);border-radius:100px;text-align:center;font-weight:600;font-size:.9rem;color:var(--text);transition:background .2s,border-color .2s}
-    .card.hot .cbtn{background:var(--ac);color:#080810;border-color:var(--ac)}
-    .card:hover .cbtn{background:var(--ac);color:#080810;border-color:var(--ac)}
-    footer{position:relative;z-index:1;margin-top:4rem;padding-top:2rem;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:.78rem;width:100%;max-width:1000px}
+    .cprice{margin-top:.9rem;font-family:"Syne",sans-serif;font-size:1rem;font-weight:700;color:var(--ac)}
+    footer{position:relative;z-index:1;margin-top:4rem;padding-top:2rem;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:.78rem;width:100%;max-width:1100px}
     @keyframes up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-    .a1{animation:up .6s ease both}.a2{animation:up .6s .1s ease both}.a3{animation:up .6s .2s ease both}
-    @media(max-width:600px){.page{padding:6.5rem 5% 4rem}nav{padding:1rem 5%}#grid{grid-template-columns:1fr}.sl{width:18px}}
+    .a1{animation:up .6s ease both}
+    .a2{animation:up .6s .1s ease both}
+    .a3{animation:up .6s .2s ease both}
+    @media(max-width:600px){.page{padding:6.5rem 5% 4rem}nav{padding:1rem 5%}.grid{grid-template-columns:1fr}.sl{width:18px}}
   </style>
 </head>
 <body>
   <div class="blob b1"></div><div class="blob b2"></div>
   <nav>
     <a href="index.html" class="logo">MidiaNet<em>Digital</em></a>
-    <a href="servicos.html" class="nav-back">&#8592; Voltar</a>
+    <a href="index.html" class="nav-back">&#8592; Voltar ao inicio</a>
   </nav>
   <section class="page">
     <div class="prog a1">
-      <div class="st dn"><div class="sd">&#10003;</div>Servico</div>
-      <div class="sl dn"></div><div class="st on"><div class="sd">2</div>Plano</div>
+      <div class="st on"><div class="sd">1</div>Servico</div>
+      <div class="sl"></div><div class="st"><div class="sd">2</div>Plano</div>
       <div class="sl"></div><div class="st"><div class="sd">3</div>Pagamento</div>
       <div class="sl"></div><div class="st"><div class="sd">4</div>Finalizar</div>
     </div>
     <div class="ph a2">
-      <h1 id="titulo">Escolha seu plano</h1>
-      <p id="sub">Quanto mais voce investe, mais rapido seu perfil cresce.</p>
+      <h1>Qual servico voce quer?</h1>
+      <p>Escolha o tipo de engajamento. Todos os servicos com entrega rapida e garantia.</p>
     </div>
-    <div id="grid" class="a3"></div>
+    <div class="grid a3">
+      <a href="planos.html?servico=seguidores-brasileiros" class="card hot" onclick="saveServico('seguidores-brasileiros')">
+        <span class="cbadge">&#11088; Popular</span>
+        <span class="cico">&#127463;&#127479;</span>
+        <h3>Seguidores Brasileiros</h3>
+        <p>Perfis brasileiros com foto e bio. Aumenta autoridade e engajamento nacional.</p>
+        <ul class="clist"><li>Perfis com foto e bio</li><li>Entrega progressiva</li><li>Garantia 30 dias</li></ul>
+        <div class="cprice">A partir de R$ 14,90</div>
+      </a>
+      <a href="planos.html?servico=seguidores-mundiais" class="card" onclick="saveServico('seguidores-mundiais')">
+        <span class="cico">&#127760;</span>
+        <h3>Seguidores Mundiais</h3>
+        <p>Aumente sua base globalmente com entrega rapida e progressiva.</p>
+        <ul class="clist"><li>Entrega em ate 24h</li><li>Sem queda garantida</li><li>Sem precisar de senha</li></ul>
+        <div class="cprice">A partir de R$ 8,90</div>
+      </a>
+      <a href="planos.html?servico=seguidores-organicos" class="card" onclick="saveServico('seguidores-organicos')">
+        <span class="cico">&#127807;</span>
+        <h3>Seguidores Organicos</h3>
+        <p>Crescimento gradual e natural. Perfeito para parecer 100% organico.</p>
+        <ul class="clist"><li>Entrega em 7-15 dias</li><li>Aparencia totalmente natural</li><li>Seguranca maxima</li></ul>
+        <div class="cprice">A partir de R$ 24,90</div>
+      </a>
+      <a href="planos.html?servico=curtidas-brasileiras" class="card" onclick="saveServico('curtidas-brasileiras')">
+        <span class="cico">&#10084;&#65039;</span>
+        <h3>Curtidas Brasileiras</h3>
+        <p>Mais curtidas para bombar no algoritmo e aumentar o alcance das publicacoes.</p>
+        <ul class="clist"><li>Perfis brasileiros</li><li>Entrega imediata</li><li>Por publicacao</li></ul>
+        <div class="cprice">A partir de R$ 4,90</div>
+      </a>
+      <a href="planos.html?servico=visualizacoes" class="card" onclick="saveServico('visualizacoes')">
+        <span class="cico">&#9654;&#65039;</span>
+        <h3>Visualizacoes de Reels</h3>
+        <p>Impulsione seus Reels e Stories. Exploda no algoritmo em horas.</p>
+        <ul class="clist"><li>Reels, Stories e IGTV</li><li>Resultado em horas</li><li>Aumenta alcance organico</li></ul>
+        <div class="cprice">A partir de R$ 3,90</div>
+      </a>
+      <a href="planos.html?servico=comentarios" class="card" onclick="saveServico('comentarios')">
+        <span class="cico">&#128172;</span>
+        <h3>Comentarios</h3>
+        <p>Comentarios em portugues brasileiro para turbinar o engajamento.</p>
+        <ul class="clist"><li>Em portugues BR</li><li>Perfis com foto</li><li>Personalizados</li></ul>
+        <div class="cprice">A partir de R$ 12,90</div>
+      </a>
+    </div>
     <footer>&#169; 2025 MidiaNetDigital &#8212; Todos os direitos reservados</footer>
   </section>
   <script>
-    var CAT = {
-      "seguidores-brasileiros":{
-        titulo:"Seguidores Brasileiros",sub:"Perfis brasileiros reais. Garantia de reposicao 30 dias.",
-        planos:[
-          {id:"100",nome:"Micro",qtd:"100 Seguidores BR",preco:"R$ 8,90",por:"R$ 0,089 por seguidor",hot:false,features:["Perfis brasileiros","Entrega em ate 24h","Garantia 30 dias","Suporte WhatsApp"]},
-          {id:"250",nome:"Starter",qtd:"250 Seguidores BR",preco:"R$ 14,90",por:"R$ 0,059 por seguidor",hot:false,features:["Perfis brasileiros","Entrega em ate 24h","Garantia 30 dias","Suporte WhatsApp"]},
-          {id:"500",nome:"Basico",qtd:"500 Seguidores BR",preco:"R$ 24,90",por:"R$ 0,049 por seguidor",hot:false,features:["Perfis brasileiros","Entrega progressiva","Garantia 30 dias","Suporte prioritario"]},
-          {id:"1000",nome:"Pro",qtd:"1.000 Seguidores BR",preco:"R$ 39,90",por:"R$ 0,039 por seguidor",hot:true,features:["Perfis brasileiros","Entrega em ate 12h","Garantia 30 dias","Melhor custo-beneficio","Suporte VIP"]},
-          {id:"2000",nome:"Plus",qtd:"2.000 Seguidores BR",preco:"R$ 69,90",por:"R$ 0,034 por seguidor",hot:false,features:["Perfis brasileiros","Entrega expressa","Garantia 30 dias","Suporte VIP 24h"]},
-          {id:"5000",nome:"Max",qtd:"5.000 Seguidores BR",preco:"R$ 149,90",por:"R$ 0,029 por seguidor",hot:false,features:["Perfis brasileiros","Entrega rapida","Garantia 30 dias","Suporte VIP 24h","Maximo alcance"]}
-        ]
-      },
-      "seguidores-mundiais":{
-        titulo:"Seguidores Mundiais",sub:"Aumente sua base globalmente com entrega rapida.",
-        planos:[
-          {id:"100",nome:"Micro",qtd:"100 Seguidores",preco:"R$ 4,90",por:"R$ 0,049 por seguidor",hot:false,features:["Entrega em ate 24h","Sem queda garantida","Suporte WhatsApp"]},
-          {id:"250",nome:"Starter",qtd:"250 Seguidores",preco:"R$ 8,90",por:"R$ 0,035 por seguidor",hot:false,features:["Entrega em ate 24h","Sem queda garantida","Suporte WhatsApp"]},
-          {id:"500",nome:"Basico",qtd:"500 Seguidores",preco:"R$ 14,90",por:"R$ 0,029 por seguidor",hot:false,features:["Entrega progressiva","Sem queda garantida","Suporte WhatsApp"]},
-          {id:"1000",nome:"Pro",qtd:"1.000 Seguidores",preco:"R$ 24,90",por:"R$ 0,024 por seguidor",hot:true,features:["Entrega em ate 12h","Sem queda garantida","Melhor custo-beneficio","Suporte prioritario"]},
-          {id:"2000",nome:"Plus",qtd:"2.000 Seguidores",preco:"R$ 44,90",por:"R$ 0,022 por seguidor",hot:false,features:["Entrega expressa","Sem queda garantida","Suporte VIP 24h"]},
-          {id:"5000",nome:"Max",qtd:"5.000 Seguidores",preco:"R$ 89,90",por:"R$ 0,017 por seguidor",hot:false,features:["Entrega rapida","Sem queda garantida","Suporte VIP 24h","Maior alcance"]}
-        ]
-      },
-      "seguidores-organicos":{
-        titulo:"Seguidores Organicos",sub:"Crescimento gradual e natural. 100% seguro.",
-        planos:[
-          {id:"250",nome:"Starter",qtd:"250 Seguidores",preco:"R$ 24,90",por:"Entrega em 7 dias",hot:false,features:["Crescimento gradual","Aparencia organica","Garantia 30 dias","Suporte WhatsApp"]},
-          {id:"500",nome:"Basico",qtd:"500 Seguidores",preco:"R$ 44,90",por:"Entrega em 10 dias",hot:false,features:["Crescimento gradual","Aparencia organica","Garantia 30 dias","Suporte prioritario"]},
-          {id:"1000",nome:"Pro",qtd:"1.000 Seguidores",preco:"R$ 79,90",por:"Entrega em 15 dias",hot:true,features:["Crescimento gradual","Aparencia organica","Garantia 30 dias","Melhor custo-beneficio","Suporte VIP"]},
-          {id:"2000",nome:"Max",qtd:"2.000 Seguidores",preco:"R$ 139,90",por:"Entrega em 20 dias",hot:false,features:["Crescimento gradual","Aparencia organica","Garantia 30 dias","Suporte VIP 24h","Maximo sigilo"]}
-        ]
-      },
-      "curtidas-brasileiras":{
-        titulo:"Curtidas Brasileiras",sub:"Mais curtidas para bombar no algoritmo do Instagram.",
-        planos:[
-          {id:"50",nome:"Micro",qtd:"50 Curtidas",preco:"R$ 3,90",por:"R$ 0,078 por curtida",hot:false,features:["Perfis brasileiros","Entrega imediata","Por publicacao","Suporte WhatsApp"]},
-          {id:"100",nome:"Starter",qtd:"100 Curtidas",preco:"R$ 4,90",por:"R$ 0,049 por curtida",hot:false,features:["Perfis brasileiros","Entrega imediata","Por publicacao","Suporte WhatsApp"]},
-          {id:"250",nome:"Basico",qtd:"250 Curtidas",preco:"R$ 9,90",por:"R$ 0,039 por curtida",hot:false,features:["Perfis brasileiros","Entrega imediata","Mais alcance organico","Suporte prioritario"]},
-          {id:"500",nome:"Pro",qtd:"500 Curtidas",preco:"R$ 14,90",por:"R$ 0,029 por curtida",hot:true,features:["Perfis brasileiros","Entrega imediata","Melhor custo-beneficio","Suporte VIP","Aumenta algoritmo"]},
-          {id:"1000",nome:"Plus",qtd:"1.000 Curtidas",preco:"R$ 24,90",por:"R$ 0,024 por curtida",hot:false,features:["Perfis brasileiros","Entrega rapida","Suporte VIP 24h","Maximo engajamento"]},
-          {id:"2000",nome:"Max",qtd:"2.000 Curtidas",preco:"R$ 39,90",por:"R$ 0,019 por curtida",hot:false,features:["Perfis brasileiros","Entrega rapida","Suporte VIP 24h","Ideal para viralizacao"]}
-        ]
-      },
-      "visualizacoes":{
-        titulo:"Visualizacoes de Reels",sub:"Impulsione seus Reels e exploda no algoritmo.",
-        planos:[
-          {id:"500",nome:"Micro",qtd:"500 Views",preco:"R$ 3,90",por:"R$ 0,007 por view",hot:false,features:["Reels e Stories","Entrega em horas","Aumenta o alcance","Suporte WhatsApp"]},
-          {id:"1000",nome:"Starter",qtd:"1.000 Views",preco:"R$ 5,90",por:"R$ 0,005 por view",hot:false,features:["Reels e Stories","Entrega em horas","Aumenta o alcance","Suporte WhatsApp"]},
-          {id:"2500",nome:"Basico",qtd:"2.500 Views",preco:"R$ 9,90",por:"R$ 0,003 por view",hot:false,features:["Reels, Stories e IGTV","Entrega rapida","Bomba no algoritmo","Suporte prioritario"]},
-          {id:"5000",nome:"Pro",qtd:"5.000 Views",preco:"R$ 14,90",por:"R$ 0,002 por view",hot:true,features:["Reels, Stories e IGTV","Entrega rapida","Melhor custo-beneficio","Suporte VIP","Mais indicados"]},
-          {id:"10000",nome:"Plus",qtd:"10.000 Views",preco:"R$ 24,90",por:"R$ 0,002 por view",hot:false,features:["Reels, Stories e IGTV","Entrega expressa","Suporte VIP 24h","Maximo alcance"]},
-          {id:"25000",nome:"Max",qtd:"25.000 Views",preco:"R$ 44,90",por:"R$ 0,001 por view",hot:false,features:["Reels, Stories e IGTV","Entrega expressa","Suporte VIP 24h","Ideal para viralizacao"]}
-        ]
-      },
-      "comentarios":{
-        titulo:"Comentarios no Instagram",sub:"Comentarios em portugues para turbinar o engajamento.",
-        planos:[
-          {id:"10",nome:"Starter",qtd:"10 Comentarios",preco:"R$ 12,90",por:"R$ 1,29 por comentario",hot:false,features:["Em portugues BR","Perfis com foto","Por publicacao","Suporte WhatsApp"]},
-          {id:"25",nome:"Basico",qtd:"25 Comentarios",preco:"R$ 24,90",por:"R$ 0,99 por comentario",hot:false,features:["Em portugues BR","Perfis com foto","Personalizados","Suporte prioritario"]},
-          {id:"50",nome:"Pro",qtd:"50 Comentarios",preco:"R$ 39,90",por:"R$ 0,79 por comentario",hot:true,features:["Em portugues BR","Perfis com foto","Personalizados","Melhor custo-beneficio","Suporte VIP"]},
-          {id:"100",nome:"Max",qtd:"100 Comentarios",preco:"R$ 69,90",por:"R$ 0,69 por comentario",hot:false,features:["Em portugues BR","Perfis com foto","Personalizados","Suporte VIP 24h","Maximo engajamento"]}
-        ]
-      }
-    };
-
-    var params  = new URLSearchParams(location.search);
-    var servico = params.get("servico") || sessionStorage.getItem("servico") || "seguidores-brasileiros";
-    sessionStorage.setItem("servico", servico);
-
-    var dados = CAT[servico] || CAT["seguidores-brasileiros"];
-    document.getElementById("titulo").textContent = dados.titulo;
-    document.getElementById("sub").textContent    = dados.sub;
-
-    var grid = document.getElementById("grid");
-    dados.planos.forEach(function(p){
-      var feats = p.features.map(function(f){ return "<li>"+f+"</li>"; }).join("");
-      var badge = p.hot ? "<span class=\"cbadge\">Mais vendido</span>" : "";
-      var cls   = p.hot ? "card hot" : "card";
-      var card  = document.createElement("a");
-      card.className = cls;
-      card.href = "#";
-      card.innerHTML = badge +
-        "<div class=\"cname\">"+p.nome+"</div>"+
-        "<div class=\"cqtd\">"+p.qtd+"</div>"+
-        "<div class=\"cpreco\">"+p.preco+"</div>"+
-        "<div class=\"cper\">"+p.por+"</div>"+
-        "<ul class=\"clist\">"+feats+"</ul>"+
-        "<div class=\"cbtn\">Selecionar plano</div>";
-      card.addEventListener("click", function(e){
-        e.preventDefault();
-        sessionStorage.setItem("plano", p.id);
-        sessionStorage.setItem("planoLabel", p.qtd+" - "+p.preco+" ("+p.nome+")");
-        window.location.href = "pagamento.html?plano="+p.id+"&servico="+encodeURIComponent(servico);
-      });
-      grid.appendChild(card);
-    });
+    function saveServico(s){ sessionStorage.setItem("servico", s); }
   </script>
 </body>
 </html>
