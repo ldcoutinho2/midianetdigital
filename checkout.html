@@ -989,16 +989,21 @@ setTimeout(function(){
     })();
   </script>
 
-  <script>
-fetch('https://midianetdigital.onrender.com/evento', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    tipo: 'checkout'
-  })
-}).catch(() => {});
+<script>
+if (!sessionStorage.getItem('checkout_enviado')) {
+
+  fetch('https://midianetdigital.onrender.com/evento', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      tipo: 'checkout'
+    })
+  }).catch(() => {});
+
+  sessionStorage.setItem('checkout_enviado', '1');
+}
 </script>
   
 </body>
