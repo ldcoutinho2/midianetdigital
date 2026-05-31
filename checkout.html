@@ -4,86 +4,634 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Finalizar Pedido - MidiaNetDigital</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+
+  <!-- Meta Pixel -->
+  <script>
+    !function(f,b,e,v,n,t,s){
+      if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)
+    }(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
+
+    fbq('init', '855639116397202');
+    fbq('track', 'PageView');
+    fbq('track', 'InitiateCheckout');
+  </script>
+
+  <noscript>
+    <img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=855639116397202&ev=PageView&noscript=1"/>
+  </noscript>
+
   <style>
-    :root{--bg:#080810;--s1:#111120;--s2:#181828;--ac:#e8ff47;--ac2:#7c5cfc;--text:#f0f0f8;--muted:#8888aa;--border:rgba(255,255,255,0.07)}
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    body{background:var(--bg);color:var(--text);font-family:"DM Sans",sans-serif;overflow-x:hidden;min-height:100vh}
-    body::before{content:"";position:fixed;inset:0;opacity:.03;pointer-events:none;z-index:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-    .blob{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(110px)}
-    .b1{width:500px;height:500px;background:var(--ac2);top:-150px;right:-100px;opacity:.13}
-    .b2{width:400px;height:400px;background:var(--ac);bottom:-150px;left:-100px;opacity:.06}
-    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1.1rem 6%;background:rgba(8,8,16,.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
-    .logo{font-family:"Syne",sans-serif;font-weight:800;font-size:1.2rem;letter-spacing:-.03em;color:var(--text);text-decoration:none}
-    .logo em{color:var(--ac);font-style:normal}
-    .nav-back{display:inline-flex;align-items:center;gap:.4rem;color:var(--muted);font-size:.875rem;font-weight:500;text-decoration:none;padding:.5rem 1rem;border:1px solid var(--border);border-radius:100px;transition:color .2s,border-color .2s}
-    .nav-back:hover{color:var(--text);border-color:rgba(255,255,255,.18)}
-    .page{position:relative;z-index:1;min-height:100vh;padding:7rem 6% 5rem;display:flex;flex-direction:column;align-items:center}
-    .prog{display:flex;align-items:center;margin-bottom:3rem}
-    .st{display:flex;align-items:center;gap:.45rem;font-size:.78rem;font-weight:600;color:var(--muted)}
-    .st.on{color:var(--ac)}.st.dn{color:rgba(232,255,71,.5)}
-    .sd{width:26px;height:26px;border-radius:50%;background:var(--s2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700}
-    .st.on .sd{background:var(--ac);color:#080810;border-color:var(--ac)}
-    .st.dn .sd{background:rgba(232,255,71,.12);border-color:rgba(232,255,71,.3);color:var(--ac)}
-    .sl{width:36px;height:1px;background:var(--border);margin:0 .2rem}.sl.dn{background:rgba(232,255,71,.3)}
-    .box{background:var(--s1);border:1px solid var(--border);border-radius:24px;padding:2.5rem;width:100%;max-width:540px}
-    .box h2{font-family:"Syne",sans-serif;font-size:1.5rem;font-weight:800;margin-bottom:.3rem}
-    .sub{color:var(--muted);font-size:.9rem;margin-bottom:1.75rem}
-    .resumo{background:rgba(232,255,71,.04);border:1px solid rgba(232,255,71,.18);border-radius:14px;padding:1rem 1.25rem;margin-bottom:1.75rem}
-    .resumo-title{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ac);margin-bottom:.6rem}
-    .resumo-row{display:flex;justify-content:space-between;font-size:.875rem;padding:.2rem 0}
-    .resumo-row span:first-child{color:var(--muted)}.resumo-row span:last-child{font-weight:600}
-    .resumo-total{border-top:1px solid var(--border);margin-top:.5rem;padding-top:.5rem}
-    .resumo-total span:last-child{color:var(--ac);font-family:"Syne",sans-serif;font-size:1.1rem;font-weight:800}
-    .fg{display:flex;flex-direction:column;gap:.4rem;margin-bottom:1rem}
-    .fg label{font-size:.78rem;font-weight:600;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
-    .fg input{background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:.85rem 1rem;color:var(--text);font-family:"DM Sans",sans-serif;font-size:.95rem;outline:none;transition:border-color .2s;width:100%}
-    .fg input:focus{border-color:rgba(232,255,71,.4)}
-    .fg input::placeholder{color:var(--muted)}
-    .pay-tabs{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1.5rem}
-    .pay-tab{background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:.85rem;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;user-select:none}
-    .pay-tab.active{border-color:var(--ac);background:rgba(232,255,71,.06)}
-    .pay-tab-icon{font-size:1.4rem;margin-bottom:.25rem}
-    .pay-tab-name{font-weight:600;font-size:.9rem}
-    .pay-tab-sub{font-size:.75rem;color:var(--muted)}
-    .btn-pay{width:100%;padding:1rem;border:none;border-radius:100px;background:var(--ac);color:#080810;font-family:"DM Sans",sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:opacity .2s,transform .2s,box-shadow .2s;box-shadow:0 0 32px rgba(232,255,71,.2);display:flex;align-items:center;justify-content:center;gap:.5rem}
-    .btn-pay:hover{opacity:.9;transform:translateY(-2px);box-shadow:0 0 50px rgba(232,255,71,.35)}
-    .btn-pay:disabled{opacity:.5;cursor:not-allowed;transform:none}
-    .secure{display:flex;align-items:center;justify-content:center;gap:.4rem;margin-top:.9rem;font-size:.78rem;color:var(--muted)}
-    #tela-pix{display:none;text-align:center}
-    #tela-pix h3{font-family:"Syne",sans-serif;font-size:1.3rem;font-weight:800;margin-bottom:.5rem}
-    #tela-pix p{color:var(--muted);font-size:.9rem;margin-bottom:1.5rem}
-    .pix-valor{font-family:"Syne",sans-serif;font-size:2rem;font-weight:800;color:var(--ac);margin-bottom:1.5rem}
-    .pix-qr{background:white;border-radius:16px;padding:1rem;display:inline-block;margin-bottom:1.5rem}
-    .pix-qr img{width:200px;height:200px;display:block}
-    .pix-copy-box{background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:.85rem 1rem;display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-bottom:1.25rem;word-break:break-all}
-    .pix-code{font-size:.75rem;color:var(--muted);text-align:left;flex:1;line-height:1.5}
-    .btn-copy{background:var(--ac);color:#080810;font-weight:700;font-size:.82rem;padding:.5rem 1rem;border:none;border-radius:100px;cursor:pointer;white-space:nowrap;transition:opacity .2s}
-    .btn-copy:hover{opacity:.85}
-    .pix-timer{font-size:.85rem;color:var(--muted);margin-bottom:1.25rem}
-    .pix-timer span{color:var(--ac);font-weight:700}
-    .status-box{background:rgba(232,255,71,.04);border:1px solid rgba(232,255,71,.18);border-radius:14px;padding:1rem 1.25rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:.75rem;font-size:.875rem}
-    .status-dot{width:10px;height:10px;border-radius:50%;background:var(--muted);flex-shrink:0;animation:blink 1.5s infinite}
-    @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-    #tela-sucesso{display:none;text-align:center}
-    .success-icon{font-size:4rem;margin-bottom:1rem}
-    #tela-sucesso h3{font-family:"Syne",sans-serif;font-size:1.5rem;font-weight:800;margin-bottom:.5rem}
-    #tela-sucesso p{color:var(--muted);font-size:.9rem;line-height:1.65;margin-bottom:1.5rem}
-    .btn-home{display:inline-flex;align-items:center;background:var(--ac);color:#080810;font-weight:700;font-size:.9rem;padding:.7rem 1.5rem;border-radius:100px;text-decoration:none;transition:opacity .2s}
-    .btn-home:hover{opacity:.85}
-    footer{position:relative;z-index:1;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:.78rem;width:100%;max-width:540px}
-    @keyframes up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-    .a1{animation:up .6s ease both}.a2{animation:up .6s .1s ease both}
-    @media(max-width:600px){.page{padding:6.5rem 5% 4rem}nav{padding:1rem 5%}.box{padding:1.75rem 1.25rem}.sl{width:18px}}
+    :root{
+      --bg:#080810;
+      --s1:#111120;
+      --s2:#181828;
+      --ac:#e8ff47;
+      --ac2:#7c5cfc;
+      --text:#f0f0f8;
+      --muted:#8888aa;
+      --border:rgba(255,255,255,0.07);
+    }
+
+    *,*::before,*::after{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+      font-family:"Poppins",sans-serif;
+    }
+
+    body{
+      background:var(--bg);
+      color:var(--text);
+      overflow-x:hidden;
+      min-height:100vh;
+    }
+
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      opacity:.03;
+      pointer-events:none;
+      z-index:0;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    .blob{
+      position:fixed;
+      border-radius:50%;
+      pointer-events:none;
+      z-index:0;
+      filter:blur(110px);
+    }
+
+    .b1{
+      width:500px;
+      height:500px;
+      background:var(--ac2);
+      top:-150px;
+      right:-100px;
+      opacity:.13;
+    }
+
+    .b2{
+      width:400px;
+      height:400px;
+      background:var(--ac);
+      bottom:-150px;
+      left:-100px;
+      opacity:.06;
+    }
+
+    nav{
+      position:fixed;
+      top:0;
+      left:0;
+      right:0;
+      z-index:100;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:1.1rem 6%;
+      background:rgba(8,8,16,.88);
+      backdrop-filter:blur(16px);
+      border-bottom:1px solid var(--border);
+    }
+
+    .logo{
+      font-weight:800;
+      font-size:1.2rem;
+      letter-spacing:-.03em;
+      color:var(--text);
+      text-decoration:none;
+    }
+
+    .logo em{
+      color:var(--ac);
+      font-style:normal;
+    }
+
+    .nav-back{
+      display:inline-flex;
+      align-items:center;
+      gap:.4rem;
+      color:var(--muted);
+      font-size:.875rem;
+      font-weight:500;
+      text-decoration:none;
+      padding:.5rem 1rem;
+      border:1px solid var(--border);
+      border-radius:100px;
+      transition:color .2s,border-color .2s;
+    }
+
+    .nav-back:hover{
+      color:var(--text);
+      border-color:rgba(255,255,255,.18);
+    }
+
+    .page{
+      position:relative;
+      z-index:1;
+      min-height:100vh;
+      padding:7rem 6% 5rem;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+    }
+
+    .prog{
+      display:flex;
+      align-items:center;
+      margin-bottom:3rem;
+    }
+
+    .st{
+      display:flex;
+      align-items:center;
+      gap:.45rem;
+      font-size:.78rem;
+      font-weight:600;
+      color:var(--muted);
+    }
+
+    .st.on{color:var(--ac)}
+    .st.dn{color:rgba(232,255,71,.5)}
+
+    .sd{
+      width:26px;
+      height:26px;
+      border-radius:50%;
+      background:var(--s2);
+      border:1px solid var(--border);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:.72rem;
+      font-weight:700;
+    }
+
+    .st.on .sd{
+      background:var(--ac);
+      color:#080810;
+      border-color:var(--ac);
+    }
+
+    .st.dn .sd{
+      background:rgba(232,255,71,.12);
+      border-color:rgba(232,255,71,.3);
+      color:var(--ac);
+    }
+
+    .sl{
+      width:36px;
+      height:1px;
+      background:var(--border);
+      margin:0 .2rem;
+    }
+
+    .sl.dn{
+      background:rgba(232,255,71,.3);
+    }
+
+    .box{
+      background:var(--s1);
+      border:1px solid var(--border);
+      border-radius:24px;
+      padding:2.5rem;
+      width:100%;
+      max-width:540px;
+      box-shadow:0 24px 80px rgba(0,0,0,.28);
+    }
+
+    .box h2{
+      font-size:1.6rem;
+      font-weight:800;
+      margin-bottom:.3rem;
+      letter-spacing:-.03em;
+    }
+
+    .sub{
+      color:var(--muted);
+      font-size:.9rem;
+      margin-bottom:1.75rem;
+      line-height:1.55;
+    }
+
+    .resumo{
+      background:rgba(232,255,71,.04);
+      border:1px solid rgba(232,255,71,.18);
+      border-radius:14px;
+      padding:1rem 1.25rem;
+      margin-bottom:1.75rem;
+    }
+
+    .resumo-title{
+      font-size:.7rem;
+      font-weight:700;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--ac);
+      margin-bottom:.6rem;
+    }
+
+    .resumo-row{
+      display:flex;
+      justify-content:space-between;
+      font-size:.875rem;
+      padding:.2rem 0;
+    }
+
+    .resumo-row span:first-child{color:var(--muted)}
+    .resumo-row span:last-child{font-weight:600}
+
+    .resumo-total{
+      border-top:1px solid var(--border);
+      margin-top:.5rem;
+      padding-top:.5rem;
+    }
+
+    .resumo-total span:last-child{
+      color:var(--ac);
+      font-size:1.1rem;
+      font-weight:800;
+    }
+
+    .fg{
+      display:flex;
+      flex-direction:column;
+      gap:.4rem;
+      margin-bottom:1rem;
+    }
+
+    .fg label{
+      font-size:.78rem;
+      font-weight:600;
+      color:var(--muted);
+      letter-spacing:.04em;
+      text-transform:uppercase;
+    }
+
+    .fg input{
+      background:var(--s2);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:.85rem 1rem;
+      color:var(--text);
+      font-size:.95rem;
+      outline:none;
+      transition:border-color .2s;
+      width:100%;
+    }
+
+    .fg input:focus{
+      border-color:rgba(232,255,71,.4);
+    }
+
+    .fg input::placeholder{
+      color:var(--muted);
+    }
+
+    .pay-tabs{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:.75rem;
+      margin-bottom:1.5rem;
+    }
+
+    .pay-tab{
+      background:var(--s2);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:.85rem;
+      text-align:center;
+      cursor:pointer;
+      transition:border-color .2s,background .2s;
+      user-select:none;
+    }
+
+    .pay-tab.active{
+      border-color:var(--ac);
+      background:rgba(232,255,71,.06);
+    }
+
+    .pay-tab-icon{
+      font-size:1.4rem;
+      margin-bottom:.25rem;
+    }
+
+    .pay-tab-name{
+      font-weight:600;
+      font-size:.9rem;
+    }
+
+    .pay-tab-sub{
+      font-size:.75rem;
+      color:var(--muted);
+    }
+
+    .btn-pay{
+      width:100%;
+      padding:1rem;
+      border:none;
+      border-radius:100px;
+      background:var(--ac);
+      color:#080810;
+      font-size:1rem;
+      font-weight:800;
+      cursor:pointer;
+      transition:opacity .2s,transform .2s,box-shadow .2s;
+      box-shadow:0 0 32px rgba(232,255,71,.2);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:.5rem;
+    }
+
+    .btn-pay:hover{
+      opacity:.9;
+      transform:translateY(-2px);
+      box-shadow:0 0 50px rgba(232,255,71,.35);
+    }
+
+    .btn-pay:disabled{
+      opacity:.5;
+      cursor:not-allowed;
+      transform:none;
+    }
+
+    .secure{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:.4rem;
+      margin-top:.9rem;
+      font-size:.78rem;
+      color:var(--muted);
+    }
+
+    .trust-box{
+      margin-top:1rem;
+      background:rgba(255,255,255,.035);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:1rem;
+      display:grid;
+      gap:.55rem;
+      font-size:.82rem;
+      color:var(--text);
+    }
+
+    .urgency-box{
+      margin-top:1rem;
+      background:rgba(232,255,71,.08);
+      border:1px solid rgba(232,255,71,.25);
+      border-radius:14px;
+      padding:.85rem 1rem;
+      text-align:center;
+      font-size:.9rem;
+      font-weight:700;
+      color:var(--ac);
+    }
+
+    .receiver-note{
+      margin-top:.85rem;
+      color:var(--muted);
+      font-size:.74rem;
+      line-height:1.5;
+      text-align:center;
+    }
+
+    .social-proof{
+      position:fixed;
+      left:18px;
+      bottom:18px;
+      z-index:200;
+      max-width:310px;
+      background:rgba(17,17,32,.96);
+      border:1px solid rgba(232,255,71,.25);
+      box-shadow:0 12px 40px rgba(0,0,0,.35);
+      border-radius:14px;
+      padding:.85rem 1rem;
+      font-size:.82rem;
+      color:var(--text);
+      opacity:0;
+      transform:translateY(12px);
+      transition:.35s ease;
+    }
+
+    .social-proof.show{
+      opacity:1;
+      transform:translateY(0);
+    }
+
+    #tela-pix{
+      display:none;
+      text-align:center;
+    }
+
+    #tela-pix h3{
+      font-size:1.3rem;
+      font-weight:800;
+      margin-bottom:.5rem;
+    }
+
+    #tela-pix p{
+      color:var(--muted);
+      font-size:.9rem;
+      margin-bottom:1.5rem;
+      line-height:1.55;
+    }
+
+    .pix-valor{
+      font-size:2rem;
+      font-weight:800;
+      color:var(--ac);
+      margin-bottom:1.5rem;
+    }
+
+    .pix-qr{
+      background:white;
+      border-radius:16px;
+      padding:1rem;
+      display:inline-block;
+      margin-bottom:1.5rem;
+    }
+
+    .pix-qr img{
+      width:200px;
+      height:200px;
+      display:block;
+    }
+
+    .pix-copy-box{
+      background:var(--s2);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:.85rem 1rem;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:.75rem;
+      margin-bottom:1.25rem;
+      word-break:break-all;
+    }
+
+    .pix-code{
+      font-size:.75rem;
+      color:var(--muted);
+      text-align:left;
+      flex:1;
+      line-height:1.5;
+    }
+
+    .btn-copy{
+      background:var(--ac);
+      color:#080810;
+      font-weight:700;
+      font-size:.82rem;
+      padding:.5rem 1rem;
+      border:none;
+      border-radius:100px;
+      cursor:pointer;
+      white-space:nowrap;
+      transition:opacity .2s;
+    }
+
+    .btn-copy:hover{
+      opacity:.85;
+    }
+
+    .pix-timer{
+      font-size:.85rem;
+      color:var(--muted);
+      margin-bottom:1.25rem;
+    }
+
+    .pix-timer span{
+      color:var(--ac);
+      font-weight:700;
+    }
+
+    .status-box{
+      background:rgba(232,255,71,.04);
+      border:1px solid rgba(232,255,71,.18);
+      border-radius:14px;
+      padding:1rem 1.25rem;
+      margin-bottom:1.25rem;
+      display:flex;
+      align-items:center;
+      gap:.75rem;
+      font-size:.875rem;
+    }
+
+    .status-dot{
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background:var(--muted);
+      flex-shrink:0;
+      animation:blink 1.5s infinite;
+    }
+
+    @keyframes blink{
+      0%,100%{opacity:1}
+      50%{opacity:.3}
+    }
+
+    #tela-sucesso{
+      display:none;
+      text-align:center;
+    }
+
+    .success-icon{
+      font-size:4rem;
+      margin-bottom:1rem;
+    }
+
+    #tela-sucesso h3{
+      font-size:1.5rem;
+      font-weight:800;
+      margin-bottom:.5rem;
+    }
+
+    #tela-sucesso p{
+      color:var(--muted);
+      font-size:.9rem;
+      line-height:1.65;
+      margin-bottom:1.5rem;
+    }
+
+    .btn-home{
+      display:inline-flex;
+      align-items:center;
+      background:var(--ac);
+      color:#080810;
+      font-weight:700;
+      font-size:.9rem;
+      padding:.7rem 1.5rem;
+      border-radius:100px;
+      text-decoration:none;
+      transition:opacity .2s;
+    }
+
+    .btn-home:hover{
+      opacity:.85;
+    }
+
+    footer{
+      position:relative;
+      z-index:1;
+      margin-top:3rem;
+      padding-top:2rem;
+      border-top:1px solid var(--border);
+      text-align:center;
+      color:var(--muted);
+      font-size:.78rem;
+      width:100%;
+      max-width:540px;
+    }
+
+    @keyframes up{
+      from{opacity:0;transform:translateY(20px)}
+      to{opacity:1;transform:translateY(0)}
+    }
+
+    .a1{animation:up .6s ease both}
+    .a2{animation:up .6s .1s ease both}
+
+    @media(max-width:600px){
+      .page{padding:6.5rem 5% 4rem}
+      nav{padding:1rem 5%}
+      .box{padding:1.75rem 1.25rem}
+      .sl{width:18px}
+      .social-proof{
+        left:12px;
+        right:12px;
+        bottom:12px;
+        max-width:none;
+      }
+    }
   </style>
 </head>
+
 <body>
-  <div class="blob b1"></div><div class="blob b2"></div>
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+
   <nav>
     <a href="index.html" class="logo">MidiaNet<em>Digital</em></a>
     <a href="pagamento.html" class="nav-back">&#8592; Voltar</a>
   </nav>
+
   <section class="page">
     <div class="prog a1">
       <div class="st dn"><div class="sd">&#10003;</div>Servico</div><div class="sl dn"></div>
@@ -91,78 +639,111 @@
       <div class="st dn"><div class="sd">&#10003;</div>Pagamento</div><div class="sl dn"></div>
       <div class="st on"><div class="sd">4</div>Finalizar</div>
     </div>
+
     <div class="box a2">
 
-      <!-- TELA 1: FORMULARIO -->
       <div id="tela-form">
-        <h2>Quase la!</h2>
-        <p class="sub">Preencha seus dados e pague. O pedido e enviado automaticamente.</p>
+        <h2>Quase lá!</h2>
+        <p class="sub">Preencha seus dados e pague com segurança. Seu pedido é enviado automaticamente após a confirmação.</p>
+
         <div class="resumo">
           <div class="resumo-title">Resumo do pedido</div>
-          <div class="resumo-row"><span>Servico</span><span id="r-servico">-</span></div>
+          <div class="resumo-row"><span>Serviço</span><span id="r-servico">-</span></div>
           <div class="resumo-row"><span>Plano</span><span id="r-plano">-</span></div>
           <div class="resumo-row resumo-total"><span>Total</span><span id="r-valor">-</span></div>
         </div>
+
         <div class="fg">
           <label for="nome">Seu nome</label>
-          <input type="text" id="nome" placeholder="Ex: Joao Silva" required/>
+          <input type="text" id="nome" placeholder="Ex: João Silva" required/>
         </div>
+
         <div class="fg">
           <label for="instagram">@ ou link do Instagram</label>
           <input type="text" id="instagram" placeholder="@seuusuario" required/>
         </div>
+
         <div style="margin-bottom:1.5rem">
           <div style="font-size:.78rem;font-weight:600;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;margin-bottom:.6rem">Pagamento</div>
           <div class="pay-tabs">
             <div class="pay-tab active" id="tab-pix" onclick="selPay('pix')">
               <div class="pay-tab-icon">&#9889;</div>
               <div class="pay-tab-name">Pix</div>
-              <div class="pay-tab-sub">Aprovacao imediata</div>
+              <div class="pay-tab-sub">Aprovação imediata</div>
             </div>
+
             <div class="pay-tab" id="tab-cartao" onclick="selPay('cartao')">
               <div class="pay-tab-icon">&#128179;</div>
-              <div class="pay-tab-name">Cartao</div>
-              <div class="pay-tab-sub">Credito / Debito</div>
+              <div class="pay-tab-name">Cartão</div>
+              <div class="pay-tab-sub">Crédito / Débito</div>
             </div>
           </div>
         </div>
+
         <button class="btn-pay" id="btn-pagar" onclick="criarPedido()">
           <span id="btn-text">Pagar agora</span>
         </button>
-        <div class="secure">&#128274; Pagamento 100% seguro via PagBank</div>
+
+        <div class="secure">&#128274; Pagamento 100% seguro via Mercado Pago</div>
+
+        <div class="trust-box">
+          <div>✅ Entrega automática após o pagamento</div>
+          <div>🔒 Pagamento protegido pelo Mercado Pago</div>
+          <div>💬 Suporte via WhatsApp</div>
+          <div>⭐ Mais de 5.000 pedidos entregues</div>
+        </div>
+
+        <div class="urgency-box">
+          🔥 Promoção reservada por: <span id="urgencyTimer">14:59</span>
+        </div>
+
+        <div class="receiver-note">
+          O recebedor do Pix pode aparecer como o titular da conta Mercado Pago. O pedido continua sendo processado pela MidiaNetDigital.
+        </div>
       </div>
 
-      <!-- TELA 2: PIX -->
       <div id="tela-pix">
         <h3>Pague com Pix</h3>
-        <p>Escaneie o QR Code ou copie o codigo. O pedido e enviado automaticamente apos o pagamento.</p>
+        <p>Escaneie o QR Code ou copie o código Pix. Seu pedido será enviado automaticamente após a confirmação do pagamento.</p>
+
         <div class="pix-valor" id="pix-valor">R$ 0,00</div>
-        <div class="pix-qr"><img id="pix-qr-img" src="" alt="QR Code Pix" onerror="this.style.display='none'"/></div>
+
+        <div class="pix-qr">
+          <img id="pix-qr-img" src="" alt="QR Code Pix"/>
+        </div>
+
         <div class="pix-copy-box">
-          <div class="pix-code" id="pix-code">Gerando codigo...</div>
+          <div class="pix-code" id="pix-code">Gerando código...</div>
           <button class="btn-copy" onclick="copiarPix()">Copiar</button>
         </div>
+
         <div class="pix-timer">Expira em: <span id="timer">30:00</span></div>
+
         <div class="status-box">
           <div class="status-dot" id="status-dot"></div>
           <span id="status-text">Aguardando pagamento...</span>
         </div>
+
         <button class="btn-pay" onclick="verificarManual()" style="margin-top:.5rem">
-          Ja paguei - verificar
+          Já paguei - verificar
         </button>
       </div>
 
-      <!-- TELA 3: SUCESSO -->
       <div id="tela-sucesso">
         <div class="success-icon">&#127881;</div>
         <h3>Pedido confirmado!</h3>
-        <p>Pagamento recebido! Seu pedido ja foi enviado automaticamente para o Instagram <strong id="suc-ig"></strong>.<br><br>A entrega comeca em breve. Fique de olho no seu perfil!</p>
-        <a href="index.html" class="btn-home">Voltar ao inicio</a>
+        <p>Pagamento recebido! Seu pedido já foi enviado automaticamente para o Instagram <strong id="suc-ig"></strong>.<br><br>A entrega começa em breve. Fique de olho no seu perfil!</p>
+        <a href="index.html" class="btn-home">Voltar ao início</a>
       </div>
 
     </div>
+
     <footer>&#169; 2025 MidiaNetDigital &#8212; Todos os direitos reservados</footer>
   </section>
+
+  <div class="social-proof" id="socialProof">
+    ✅ Ana acabou de comprar 500 seguidores
+  </div>
 
   <script>
     var BACKEND = "https://midianetdigital.onrender.com";
@@ -185,27 +766,36 @@
       "comentarios__10":12.90,"comentarios__25":24.90,
       "comentarios__50":39.90,"comentarios__100":69.90
     };
-    var SL = {"seguidores-brasileiros":"Seguidores Brasileiros","seguidores-mundiais":"Seguidores Mundiais",
-      "seguidores-organicos":"Seguidores Organicos","curtidas-brasileiras":"Curtidas Brasileiras",
-      "visualizacoes":"Visualizacoes de Reels","comentarios":"Comentarios"};
-    var PL = {"50":"50 un","100":"100 un","250":"250 un","500":"500 un","1000":"1.000 un",
+
+    var SL = {
+      "seguidores-brasileiros":"Seguidores Brasileiros",
+      "seguidores-mundiais":"Seguidores Mundiais",
+      "seguidores-organicos":"Seguidores Orgânicos",
+      "curtidas-brasileiras":"Curtidas Brasileiras",
+      "visualizacoes":"Visualizações de Reels",
+      "comentarios":"Comentários"
+    };
+
+    var PL = {
+      "50":"50 un","100":"100 un","250":"250 un","500":"500 un","1000":"1.000 un",
       "2000":"2.000 un","5000":"5.000 un","2500":"2.500 un","10000":"10.000 un",
-      "25000":"25.000 un","10":"10 un","25":"25 un"};
+      "25000":"25.000 un","10":"10 un","25":"25 un"
+    };
 
     var payAtual = "pix";
     var pedidoId = null;
-    var pollInt  = null;
-    var cdInt    = null;
+    var pollInt = null;
+    var cdInt = null;
 
-    var p       = new URLSearchParams(location.search);
-    var servico = p.get("servico")  || sessionStorage.getItem("servico")  || "";
-    var plano   = p.get("plano")    || sessionStorage.getItem("plano")    || "";
-    var chave   = servico + "__" + plano;
-    var valor   = PRECOS[chave] || 0;
+    var p = new URLSearchParams(location.search);
+    var servico = p.get("servico") || sessionStorage.getItem("servico") || "";
+    var plano = p.get("plano") || sessionStorage.getItem("plano") || "";
+    var chave = servico + "__" + plano;
+    var valor = PRECOS[chave] || 0;
 
     document.getElementById("r-servico").textContent = SL[servico] || servico || "-";
-    document.getElementById("r-plano").textContent   = PL[plano]   || plano   || "-";
-    document.getElementById("r-valor").textContent   = "R$ " + valor.toFixed(2).replace(".",",");
+    document.getElementById("r-plano").textContent = PL[plano] || plano || "-";
+    document.getElementById("r-valor").textContent = "R$ " + valor.toFixed(2).replace(".",",");
     document.getElementById("pix-valor").textContent = "R$ " + valor.toFixed(2).replace(".",",");
 
     function selPay(t) {
@@ -214,38 +804,72 @@
       document.getElementById("tab-cartao").classList.toggle("active", t==="cartao");
     }
 
+    function trackPixGerado(valorPedido){
+      if (typeof fbq === "function") {
+        fbq('track', 'AddPaymentInfo', {
+          value: valorPedido || 0,
+          currency: 'BRL',
+          content_name: servico + " " + plano,
+          payment_method: 'pix'
+        });
+      }
+    }
+
     async function criarPedido() {
       var nome = document.getElementById("nome").value.trim();
-      var ig   = document.getElementById("instagram").value.trim();
-      if (!nome || !ig) { alert("Preencha nome e Instagram."); return; }
-      if (!servico || !plano) { alert("Volte e selecione servico e plano."); return; }
+      var ig = document.getElementById("instagram").value.trim();
+
+      if (!nome || !ig) {
+        alert("Preencha nome e Instagram.");
+        return;
+      }
+
+      if (!servico || !plano) {
+        alert("Volte e selecione serviço e plano.");
+        return;
+      }
+
       var btn = document.getElementById("btn-pagar");
       btn.disabled = true;
       document.getElementById("btn-text").textContent = "Gerando pagamento...";
+
       try {
         var r = await fetch(BACKEND + "/criar-pedido", {
-          method:"POST", headers:{"Content-Type":"application/json"},
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
           body: JSON.stringify({nome, instagram:ig, servico, plano, pagamento:payAtual})
         });
+
         var d = await r.json();
-        if (!r.ok || !d.success) throw new Error(d.error || "Erro ao gerar pagamento");
+
+        if (!r.ok || !d.success) {
+          throw new Error(d.error || "Erro ao gerar pagamento");
+        }
+
         pedidoId = d.pedidoId;
         sessionStorage.setItem("pedidoId", pedidoId);
         sessionStorage.setItem("instagram", ig);
+
+        trackPixGerado(valor);
+
         if (payAtual === "pix") {
           document.getElementById("tela-form").style.display = "none";
-          document.getElementById("tela-pix").style.display  = "block";
+          document.getElementById("tela-pix").style.display = "block";
+
           if (d.pix) {
             document.getElementById("pix-code").textContent = d.pix.copia_e_cola || "-";
+
             if (d.pix && d.pix.qr_code_image) {
-  const img = document.getElementById("pix-qr-img");
-  img.src = d.pix.qr_code_image;
-  img.style.display = "block";
-}
+              var img = document.getElementById("pix-qr-img");
+              img.src = d.pix.qr_code_image;
+              img.style.display = "block";
+            }
           }
+
           iniciarTimer(1800);
           pollInt = setInterval(checarStatus, 5000);
         }
+
       } catch(e) {
         alert("Erro: " + e.message);
         btn.disabled = false;
@@ -255,32 +879,47 @@
 
     function copiarPix() {
       var c = document.getElementById("pix-code").textContent;
+
       navigator.clipboard.writeText(c).then(function(){
         var b = document.querySelector(".btn-copy");
         b.textContent = "Copiado!";
-        setTimeout(function(){ b.textContent = "Copiar"; }, 2000);
+        setTimeout(function(){
+          b.textContent = "Copiar";
+        }, 2000);
       });
     }
 
     function iniciarTimer(s) {
       clearInterval(cdInt);
+
       cdInt = setInterval(function(){
         s--;
-        var m = Math.floor(s/60), ss = s%60;
+
+        var m = Math.floor(s/60);
+        var ss = s%60;
+
         document.getElementById("timer").textContent =
           (m<10?"0":"")+m+":"+(ss<10?"0":"")+ss;
-        if (s<=0) { clearInterval(cdInt); clearInterval(pollInt); }
+
+        if (s<=0) {
+          clearInterval(cdInt);
+          clearInterval(pollInt);
+        }
       }, 1000);
     }
 
     async function checarStatus() {
       if (!pedidoId) return;
+
       try {
         var r = await fetch(BACKEND + "/status/" + pedidoId);
         var d = await r.json();
+
         if (d.status === "concluido") {
-          clearInterval(pollInt); clearInterval(cdInt);
-          document.getElementById("tela-pix").style.display     = "none";
+          clearInterval(pollInt);
+          clearInterval(cdInt);
+
+          document.getElementById("tela-pix").style.display = "none";
           document.getElementById("tela-sucesso").style.display = "block";
           document.getElementById("suc-ig").textContent = sessionStorage.getItem("instagram") || "";
         }
@@ -290,8 +929,59 @@
     async function verificarManual() {
       document.getElementById("status-text").textContent = "Verificando...";
       await checarStatus();
-      if (pedidoId) document.getElementById("status-text").textContent = "Aguardando pagamento...";
+
+      if (pedidoId) {
+        document.getElementById("status-text").textContent = "Aguardando pagamento...";
+      }
     }
+
+    (function(){
+      var tempo = 15 * 60;
+      var el = document.getElementById("urgencyTimer");
+
+      if (!el) return;
+
+      setInterval(function(){
+        tempo--;
+
+        if (tempo < 0) tempo = 0;
+
+        var m = Math.floor(tempo / 60);
+        var s = tempo % 60;
+
+        el.textContent =
+          (m < 10 ? "0" : "") + m + ":" +
+          (s < 10 ? "0" : "") + s;
+      }, 1000);
+    })();
+
+    (function(){
+      var mensagens = [
+        "✅ Ana acabou de comprar 500 seguidores",
+        "✅ Carlos comprou 1.000 seguidores agora",
+        "✅ Mariana acabou de comprar curtidas",
+        "✅ João garantiu um pacote de visualizações",
+        "✅ Amanda acabou de finalizar um pedido",
+        "✅ Lucas acabou de comprar seguidores brasileiros"
+      ];
+
+      var el = document.getElementById("socialProof");
+
+      if (!el) return;
+
+      var i = 0;
+
+      setInterval(function(){
+        el.textContent = mensagens[i % mensagens.length];
+        el.classList.add("show");
+
+        setTimeout(function(){
+          el.classList.remove("show");
+        }, 4500);
+
+        i++;
+      }, 8000);
+    })();
   </script>
 </body>
 </html>
