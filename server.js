@@ -111,7 +111,48 @@ async function enviarPedidoSMM(pedido) {
   return smmResp.data;
 }
 
-// Criar pedido + Pix Mercado Pago
+async function enviarPurchaseMeta(pedido) {
+  try {
+    if (!process.env.META_PIXEL_ID || !process.env.META_ACCESS_TOKEN) {
+      console.log('[META] META_PIXEL_ID ou META_ACCESS_TOKEN ausente');
+      return;
+    }
+
+    const valorReais = Number((pedido.valor / 100).toFixed(2));
+    const eventId = `purchase_${pedido.id}`;
+
+    const payload = {
+      data: [
+        {
+          event_name: 'Purchase',
+          event_time: Math.floor(Date.now() / 1000),
+          event_id: eventId,
+          action_source: 'website',
+          event_source_url: process.env.SITE_URL || 'https://midianetdigital.vercel.app',
+          user_data: {},
+          custom_data: {
+            currency: 'BRL',
+            value: valorReais,
+            content_name: `${pedido.servico} ${pedido.plano}`,
+            content_type: 'product',
+            order_id: pedido.id
+          }
+        }
+      ]
+    };
+
+    const url = `https://graph.facebook.com/v19.0/${process.env.META_PIXEL_ID}/events?access_token=${process.env.META_ACCESS_TOKEN}`;
+
+    const resp = await axios.post(url, payload, {
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+    console.log('[META] Purchase enviado:', resp.data);
+  } catch (err) {
+    console.error('[META] Erro ao enviar Purchase:', err.response?.data || err.message);
+  }
+}
+
 app.post('/criar-pedido', async (req, res) => {
   try {
     const { nome, instagram, servico, plano, pagamento } = req.body;
@@ -195,7 +236,6 @@ app.post('/criar-pedido', async (req, res) => {
   }
 });
 
-// Webhook Mercado Pago
 app.post('/webhook-mercadopago', async (req, res) => {
   try {
     console.log('[WEBHOOK MP]', JSON.stringify(req.body, null, 2));
@@ -245,6 +285,8 @@ app.post('/webhook-mercadopago', async (req, res) => {
     pedidos[pedidoId].smmOrderId = smmData.order;
     pedidos[pedidoId].concluidoEm = new Date().toISOString();
 
+    await enviarPurchaseMeta(pedidos[pedidoId]);
+
     console.log(`[SUCESSO] Pedido ${pedidoId} concluido. SMM: ${smmData.order}`);
 
     return res.status(200).json({ received: true, smmOrder: smmData.order });
@@ -255,7 +297,6 @@ app.post('/webhook-mercadopago', async (req, res) => {
   }
 });
 
-// Status
 app.get('/status/:pedidoId', (req, res) => {
   const pedido = pedidos[req.params.pedidoId];
 
@@ -273,7 +314,6 @@ app.get('/status/:pedidoId', (req, res) => {
   });
 });
 
-// Serviços SMM
 app.get('/servicos-smm', async (req, res) => {
   try {
     const resp = await axios.post(
@@ -298,11 +338,11 @@ app.get('/servicos-smm', async (req, res) => {
   }
 });
 
-// Health check
 app.get('/health', (req, res) => {
   res.json({
     status: 'ok',
     gateway: 'mercado_pago',
+    meta_pixel: process.env.META_PIXEL_ID ? 'configurado' : 'ausente',
     pedidos_em_memoria: Object.keys(pedidos).length,
     timestamp: new Date().toISOString()
   });
@@ -313,7 +353,7 @@ app.listen(PORT, () => {
   ╔════════════════════════════════════╗
   ║  MidiaNetDigital Backend           ║
   ║  Rodando na porta ${PORT}             ║
-  ║  Mercado Pago + EngajaMidia        ║
+  ║  Mercado Pago + EngajaMidia + Meta ║
   ╚════════════════════════════════════╝
   `);
 });
