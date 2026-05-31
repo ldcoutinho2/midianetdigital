@@ -19,9 +19,11 @@
       s.parentNode.insertBefore(t,s)
     }(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
 
-    fbq('init', '855639116397202');
-    fbq('track', 'PageView');
-    fbq('track', 'InitiateCheckout');
+    window.addEventListener('load', function () {
+  fbq('init', '855639116397202');
+  fbq('track', 'PageView');
+  fbq('track', 'InitiateCheckout');
+});
   </script>
 
   <noscript>
