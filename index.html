@@ -343,7 +343,7 @@ document.querySelectorAll('.service-track').forEach(function(card){
         tipo: 'servico',
         servico: nome
       })
-    });
+    }).catch(() => {});
 
     if (typeof fbq === 'function') {
       fbq('track', 'ViewContent', {
@@ -355,7 +355,6 @@ document.querySelectorAll('.service-track').forEach(function(card){
     console.log('ViewContent serviço:', nome);
   });
 });
-</script>
 
 if (!sessionStorage.getItem('visitante_enviado')) {
 
@@ -371,6 +370,7 @@ if (!sessionStorage.getItem('visitante_enviado')) {
 
   sessionStorage.setItem('visitante_enviado', '1');
 }
+</script>
 
 </body>
 </html>
