@@ -93,18 +93,8 @@ const PRECOS = {
 
 const pedidos = {};
 
-const dashboard = {
-  visitantes: 0,
-  servicos: 0,
-  planos: 0,
-  checkout: 0,
-  pix: 0,
-  vendas: 0,
-  faturamento: 0,
-  servicosDetalhes: {},
-  planosDetalhes: {},
-  ultimasVendas: []
-};
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_KEY = process.env.SUPABASE_KEY;
 
 function dinheiroBR(valorCentavos) {
   return (valorCentavos / 100).toLocaleString('pt-BR', {
@@ -116,6 +106,98 @@ function dinheiroBR(valorCentavos) {
 function incrementarDetalhe(obj, nome) {
   if (!nome) return;
   obj[nome] = (obj[nome] || 0) + 1;
+}
+
+async function registrarEvento(tipo, nome = '', valor = 0) {
+  if (!SUPABASE_URL || !SUPABASE_KEY) {
+    console.log('[SUPABASE] URL ou KEY ausente');
+    return;
+  }
+
+  await axios.post(
+    `${SUPABASE_URL}/rest/v1/eventos`,
+    { tipo, nome, valor },
+    {
+      headers: {
+        apikey: SUPABASE_KEY,
+        Authorization: `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+        Prefer: 'return=minimal'
+      }
+    }
+  );
+}
+
+async function buscarEventos() {
+  if (!SUPABASE_URL || !SUPABASE_KEY) return [];
+
+  const resp = await axios.get(
+    `${SUPABASE_URL}/rest/v1/eventos?select=*&order=created_at.desc&limit=10000`,
+    {
+      headers: {
+        apikey: SUPABASE_KEY,
+        Authorization: `Bearer ${SUPABASE_KEY}`
+      }
+    }
+  );
+
+  return resp.data || [];
+}
+
+function montarDashboard(eventos) {
+  const dados = {
+    visitantes: 0,
+    servicos: 0,
+    planos: 0,
+    checkout: 0,
+    pix: 0,
+    vendas: 0,
+    faturamento: 0,
+    servicosDetalhes: {},
+    planosDetalhes: {},
+    ultimasVendas: []
+  };
+
+  eventos.forEach(e => {
+    if (e.tipo === 'visitante') dados.visitantes++;
+
+    if (e.tipo === 'servico') {
+      dados.servicos++;
+      incrementarDetalhe(dados.servicosDetalhes, e.nome);
+    }
+
+    if (e.tipo === 'plano') {
+      dados.planos++;
+      incrementarDetalhe(dados.planosDetalhes, e.nome);
+    }
+
+    if (e.tipo === 'checkout') dados.checkout++;
+    if (e.tipo === 'pix') dados.pix++;
+
+    if (e.tipo === 'venda') {
+      dados.vendas++;
+      dados.faturamento += Math.round(Number(e.valor || 0) * 100);
+      dados.ultimasVendas.push({
+        hora: new Date(e.created_at).toLocaleTimeString('pt-BR', {
+          hour: '2-digit',
+          minute: '2-digit'
+        }),
+        servico: e.nome || 'Venda',
+        plano: '',
+        valor: dinheiroBR(Math.round(Number(e.valor || 0) * 100))
+      });
+    }
+  });
+
+  const conversao = dados.visitantes > 0
+    ? ((dados.vendas / dados.visitantes) * 100).toFixed(2)
+    : '0.00';
+
+  return {
+    ...dados,
+    faturamentoFormatado: dinheiroBR(dados.faturamento),
+    conversao: `${conversao}%`
+  };
 }
 
 async function enviarPedidoSMM(pedido) {
@@ -178,44 +260,36 @@ async function enviarPurchaseMeta(pedido) {
   }
 }
 
-app.post('/evento', (req, res) => {
+app.post('/evento', async (req, res) => {
   try {
-    const { tipo, servico, plano } = req.body;
+    const { tipo, servico, plano, nome, valor } = req.body;
+    const nomeEvento = nome || servico || plano || '';
 
-    if (tipo === 'visitante') dashboard.visitantes++;
-    if (tipo === 'servico') {
-      dashboard.servicos++;
-      incrementarDetalhe(dashboard.servicosDetalhes, servico);
-    }
-    if (tipo === 'plano') {
-      dashboard.planos++;
-      incrementarDetalhe(dashboard.planosDetalhes, plano);
-    }
-    if (tipo === 'checkout') dashboard.checkout++;
-    if (tipo === 'pix') dashboard.pix++;
+    await registrarEvento(tipo, nomeEvento, valor || 0);
 
     return res.json({ ok: true });
   } catch (err) {
+    console.error('[ERRO evento Supabase]', err.response?.data || err.message);
     return res.status(500).json({ ok: false, error: err.message });
   }
 });
 
-app.get('/dashboard-data', (req, res) => {
-  const senha = req.query.senha;
+app.get('/dashboard-data', async (req, res) => {
+  try {
+    const senha = req.query.senha;
 
-  if (process.env.DASHBOARD_PASSWORD && senha !== process.env.DASHBOARD_PASSWORD) {
-    return res.status(401).json({ error: 'Senha incorreta' });
+    if (process.env.DASHBOARD_PASSWORD && senha !== process.env.DASHBOARD_PASSWORD) {
+      return res.status(401).json({ error: 'Senha incorreta' });
+    }
+
+    const eventos = await buscarEventos();
+    const dados = montarDashboard(eventos);
+
+    return res.json(dados);
+  } catch (err) {
+    console.error('[ERRO dashboard-data]', err.response?.data || err.message);
+    return res.status(500).json({ error: 'Erro ao carregar dashboard' });
   }
-
-  const conversao = dashboard.visitantes > 0
-    ? ((dashboard.vendas / dashboard.visitantes) * 100).toFixed(2)
-    : '0.00';
-
-  res.json({
-    ...dashboard,
-    faturamentoFormatado: dinheiroBR(dashboard.faturamento),
-    conversao: `${conversao}%`
-  });
 });
 
 app.get('/dashboard', (req, res) => {
@@ -248,15 +322,13 @@ h1{font-size:28px;margin-bottom:6px}
 .box{background:#111120;border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:18px;margin-bottom:18px}
 .row{display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.07);padding:10px 0;color:#ddd}
 .row:last-child{border-bottom:0}
-.bad{color:#ff7676}
-.good{color:#e8ff47}
 .sale{font-size:14px;color:#ccc}
 button{background:#e8ff47;color:#080810;border:0;padding:10px 18px;border-radius:999px;font-weight:800;cursor:pointer;margin-bottom:18px}
 </style>
 </head>
 <body>
 <h1>MidiaNetDigital Dashboard</h1>
-<div class="sub">Atualizado em tempo real</div>
+<div class="sub">Dados salvos no Supabase</div>
 
 <button onclick="carregar()">Atualizar</button>
 
@@ -328,7 +400,7 @@ async function carregar(){
     ultimasVendas.innerHTML = '<div class="row"><span>Nenhuma venda ainda</span></div>';
   } else {
     ultimasVendas.innerHTML = d.ultimasVendas.map(v =>
-      '<div class="row sale"><span>'+v.hora+' - '+v.servico+' '+v.plano+'</span><strong>'+v.valor+'</strong></div>'
+      '<div class="row sale"><span>'+v.hora+' - '+v.servico+'</span><strong>'+v.valor+'</strong></div>'
     ).join('');
   }
 }
@@ -399,7 +471,7 @@ app.post('/criar-pedido', async (req, res) => {
       criadoEm: new Date().toISOString(),
     };
 
-    dashboard.pix++;
+    await registrarEvento('pix', `${servico} ${plano}`, valorReais);
 
     console.log(`[PEDIDO MP] Criado: ${pedidoId} | Payment ID: ${payment.id}`);
 
@@ -475,15 +547,11 @@ app.post('/webhook-mercadopago', async (req, res) => {
     pedidos[pedidoId].smmOrderId = smmData.order;
     pedidos[pedidoId].concluidoEm = new Date().toISOString();
 
-    dashboard.vendas++;
-    dashboard.faturamento += pedido.valor;
-    dashboard.ultimasVendas.unshift({
-      hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
-      servico: pedido.servico,
-      plano: pedido.plano,
-      valor: dinheiroBR(pedido.valor)
-    });
-    dashboard.ultimasVendas = dashboard.ultimasVendas.slice(0, 10);
+    await registrarEvento(
+      'venda',
+      `${pedido.servico} ${pedido.plano}`,
+      Number((pedido.valor / 100).toFixed(2))
+    );
 
     await enviarPurchaseMeta(pedidos[pedidoId]);
 
@@ -538,13 +606,16 @@ app.get('/servicos-smm', async (req, res) => {
   }
 });
 
-app.get('/health', (req, res) => {
+app.get('/health', async (req, res) => {
+  const eventos = await buscarEventos();
+
   res.json({
     status: 'ok',
     gateway: 'mercado_pago',
+    supabase: SUPABASE_URL ? 'configurado' : 'ausente',
     meta_pixel: process.env.META_PIXEL_ID ? 'configurado' : 'ausente',
     pedidos_em_memoria: Object.keys(pedidos).length,
-    dashboard,
+    eventos_salvos: eventos.length,
     timestamp: new Date().toISOString()
   });
 });
@@ -555,7 +626,7 @@ app.listen(PORT, () => {
   ║  MidiaNetDigital Backend           ║
   ║  Rodando na porta ${PORT}             ║
   ║  Mercado Pago + EngajaMidia + Meta ║
-  ║  Dashboard ativo                  ║
+  ║  Dashboard com Supabase ativo      ║
   ╚════════════════════════════════════╝
   `);
 });
