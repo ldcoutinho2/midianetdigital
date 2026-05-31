@@ -237,7 +237,11 @@
           document.getElementById("tela-pix").style.display  = "block";
           if (d.pix) {
             document.getElementById("pix-code").textContent = d.pix.copia_e_cola || "-";
-            if (d.pix.qr_code_image) document.getElementById("pix-qr-img").src = d.pix.qr_code_image;
+            if (d.pix && d.pix.qr_code_image) {
+  const img = document.getElementById("pix-qr-img");
+  img.src = d.pix.qr_code_image;
+  img.style.display = "block";
+}
           }
           iniciarTimer(1800);
           pollInt = setInterval(checarStatus, 5000);
