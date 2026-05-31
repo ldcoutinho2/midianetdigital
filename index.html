@@ -357,17 +357,20 @@ document.querySelectorAll('.service-track').forEach(function(card){
 });
 </script>
 
-<script>
-fetch('https://midianetdigital.onrender.com/evento', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    tipo: 'visitante'
-  })
-});
-</script>
+if (!sessionStorage.getItem('visitante_enviado')) {
+
+  fetch('https://midianetdigital.onrender.com/evento', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      tipo: 'visitante'
+    })
+  }).catch(() => {});
+
+  sessionStorage.setItem('visitante_enviado', '1');
+}
 
 </body>
 </html>
