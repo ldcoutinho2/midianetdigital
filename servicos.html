@@ -158,27 +158,32 @@
     <footer>&#169; 2025 MidiaNetDigital &#8212; Todos os direitos reservados</footer>
   </section>
 
- <script>
+<script>
 function saveServico(servico, nome){
 
   sessionStorage.setItem("servico", servico);
   sessionStorage.setItem("servico_nome", nome);
 
-  fetch('https://midianetdigital.onrender.com/evento', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      tipo: 'servico',
-      servico: nome
-    })
-  }).catch(() => {});
+  if (!sessionStorage.getItem('servico_enviado')) {
+
+    fetch('https://midianetdigital.onrender.com/evento', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        tipo: 'servico',
+        servico: nome
+      })
+    }).catch(() => {});
+
+    sessionStorage.setItem('servico_enviado', '1');
+  }
 
   if(typeof fbq === "function"){
     fbq('track','ViewContent',{
-      content_name:nome,
-      content_category:'Servico'
+      content_name: nome,
+      content_category: 'Servico'
     });
   }
 
