@@ -93,6 +93,31 @@ const PRECOS = {
 
 const pedidos = {};
 
+const dashboard = {
+  visitantes: 0,
+  servicos: 0,
+  planos: 0,
+  checkout: 0,
+  pix: 0,
+  vendas: 0,
+  faturamento: 0,
+  servicosDetalhes: {},
+  planosDetalhes: {},
+  ultimasVendas: []
+};
+
+function dinheiroBR(valorCentavos) {
+  return (valorCentavos / 100).toLocaleString('pt-BR', {
+    style: 'currency',
+    currency: 'BRL'
+  });
+}
+
+function incrementarDetalhe(obj, nome) {
+  if (!nome) return;
+  obj[nome] = (obj[nome] || 0) + 1;
+}
+
 async function enviarPedidoSMM(pedido) {
   const smmResp = await axios.post(
     process.env.SMM_API_URL,
@@ -153,6 +178,169 @@ async function enviarPurchaseMeta(pedido) {
   }
 }
 
+app.post('/evento', (req, res) => {
+  try {
+    const { tipo, servico, plano } = req.body;
+
+    if (tipo === 'visitante') dashboard.visitantes++;
+    if (tipo === 'servico') {
+      dashboard.servicos++;
+      incrementarDetalhe(dashboard.servicosDetalhes, servico);
+    }
+    if (tipo === 'plano') {
+      dashboard.planos++;
+      incrementarDetalhe(dashboard.planosDetalhes, plano);
+    }
+    if (tipo === 'checkout') dashboard.checkout++;
+    if (tipo === 'pix') dashboard.pix++;
+
+    return res.json({ ok: true });
+  } catch (err) {
+    return res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+app.get('/dashboard-data', (req, res) => {
+  const senha = req.query.senha;
+
+  if (process.env.DASHBOARD_PASSWORD && senha !== process.env.DASHBOARD_PASSWORD) {
+    return res.status(401).json({ error: 'Senha incorreta' });
+  }
+
+  const conversao = dashboard.visitantes > 0
+    ? ((dashboard.vendas / dashboard.visitantes) * 100).toFixed(2)
+    : '0.00';
+
+  res.json({
+    ...dashboard,
+    faturamentoFormatado: dinheiroBR(dashboard.faturamento),
+    conversao: `${conversao}%`
+  });
+});
+
+app.get('/dashboard', (req, res) => {
+  const senha = req.query.senha;
+
+  if (process.env.DASHBOARD_PASSWORD && senha !== process.env.DASHBOARD_PASSWORD) {
+    return res.send(`
+      <h2>Acesso restrito</h2>
+      <p>Use: /dashboard?senha=SUA_SENHA</p>
+    `);
+  }
+
+  res.send(`
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Dashboard MidiaNetDigital</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Poppins,sans-serif}
+body{background:#080810;color:#f0f0f8;padding:24px}
+h1{font-size:28px;margin-bottom:6px}
+.sub{color:#8888aa;margin-bottom:24px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:24px}
+.card{background:#111120;border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:18px}
+.num{font-size:28px;font-weight:800;color:#e8ff47}
+.lbl{color:#8888aa;font-size:13px;margin-top:4px}
+.box{background:#111120;border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:18px;margin-bottom:18px}
+.row{display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.07);padding:10px 0;color:#ddd}
+.row:last-child{border-bottom:0}
+.bad{color:#ff7676}
+.good{color:#e8ff47}
+.sale{font-size:14px;color:#ccc}
+button{background:#e8ff47;color:#080810;border:0;padding:10px 18px;border-radius:999px;font-weight:800;cursor:pointer;margin-bottom:18px}
+</style>
+</head>
+<body>
+<h1>MidiaNetDigital Dashboard</h1>
+<div class="sub">Atualizado em tempo real</div>
+
+<button onclick="carregar()">Atualizar</button>
+
+<div class="grid">
+  <div class="card"><div class="num" id="visitantes">0</div><div class="lbl">👀 Visitantes</div></div>
+  <div class="card"><div class="num" id="servicos">0</div><div class="lbl">📦 Serviços</div></div>
+  <div class="card"><div class="num" id="planos">0</div><div class="lbl">📋 Planos</div></div>
+  <div class="card"><div class="num" id="checkout">0</div><div class="lbl">💳 Checkout</div></div>
+  <div class="card"><div class="num" id="pix">0</div><div class="lbl">🟢 Pix Gerados</div></div>
+  <div class="card"><div class="num" id="vendas">0</div><div class="lbl">🛒 Vendas</div></div>
+  <div class="card"><div class="num" id="faturamento">R$0</div><div class="lbl">💰 Faturamento</div></div>
+  <div class="card"><div class="num" id="conversao">0%</div><div class="lbl">📈 Conversão</div></div>
+</div>
+
+<div class="box">
+  <h2>Funil</h2>
+  <div id="funil"></div>
+</div>
+
+<div class="box">
+  <h2>Serviços mais clicados</h2>
+  <div id="servicosDetalhes"></div>
+</div>
+
+<div class="box">
+  <h2>Planos mais clicados</h2>
+  <div id="planosDetalhes"></div>
+</div>
+
+<div class="box">
+  <h2>Últimas vendas</h2>
+  <div id="ultimasVendas"></div>
+</div>
+
+<script>
+const senha = new URLSearchParams(location.search).get('senha') || '';
+
+function lista(obj){
+  const entries = Object.entries(obj || {}).sort((a,b)=>b[1]-a[1]);
+  if(!entries.length) return '<div class="row"><span>Nenhum dado ainda</span></div>';
+  return entries.map(([k,v]) => '<div class="row"><span>'+k+'</span><strong>'+v+'</strong></div>').join('');
+}
+
+async function carregar(){
+  const r = await fetch('/dashboard-data?senha=' + encodeURIComponent(senha));
+  const d = await r.json();
+
+  visitantes.textContent = d.visitantes;
+  servicos.textContent = d.servicos;
+  planos.textContent = d.planos;
+  checkout.textContent = d.checkout;
+  pix.textContent = d.pix;
+  vendas.textContent = d.vendas;
+  faturamento.textContent = d.faturamentoFormatado;
+  conversao.textContent = d.conversao;
+
+  funil.innerHTML =
+    '<div class="row"><span>👀 Visitantes</span><strong>'+d.visitantes+'</strong></div>'+
+    '<div class="row"><span>📦 Serviço Selecionado</span><strong>'+d.servicos+'</strong></div>'+
+    '<div class="row"><span>📋 Plano Selecionado</span><strong>'+d.planos+'</strong></div>'+
+    '<div class="row"><span>💳 Checkout</span><strong>'+d.checkout+'</strong></div>'+
+    '<div class="row"><span>🟢 Pix Gerados</span><strong>'+d.pix+'</strong></div>'+
+    '<div class="row"><span>🛒 Vendas</span><strong>'+d.vendas+'</strong></div>';
+
+  servicosDetalhes.innerHTML = lista(d.servicosDetalhes);
+  planosDetalhes.innerHTML = lista(d.planosDetalhes);
+
+  if(!d.ultimasVendas.length){
+    ultimasVendas.innerHTML = '<div class="row"><span>Nenhuma venda ainda</span></div>';
+  } else {
+    ultimasVendas.innerHTML = d.ultimasVendas.map(v =>
+      '<div class="row sale"><span>'+v.hora+' - '+v.servico+' '+v.plano+'</span><strong>'+v.valor+'</strong></div>'
+    ).join('');
+  }
+}
+
+carregar();
+setInterval(carregar, 10000);
+</script>
+</body>
+</html>
+  `);
+});
+
 app.post('/criar-pedido', async (req, res) => {
   try {
     const { nome, instagram, servico, plano, pagamento } = req.body;
@@ -210,6 +398,8 @@ app.post('/criar-pedido', async (req, res) => {
       mercadoPagoPaymentId: payment.id,
       criadoEm: new Date().toISOString(),
     };
+
+    dashboard.pix++;
 
     console.log(`[PEDIDO MP] Criado: ${pedidoId} | Payment ID: ${payment.id}`);
 
@@ -285,6 +475,16 @@ app.post('/webhook-mercadopago', async (req, res) => {
     pedidos[pedidoId].smmOrderId = smmData.order;
     pedidos[pedidoId].concluidoEm = new Date().toISOString();
 
+    dashboard.vendas++;
+    dashboard.faturamento += pedido.valor;
+    dashboard.ultimasVendas.unshift({
+      hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+      servico: pedido.servico,
+      plano: pedido.plano,
+      valor: dinheiroBR(pedido.valor)
+    });
+    dashboard.ultimasVendas = dashboard.ultimasVendas.slice(0, 10);
+
     await enviarPurchaseMeta(pedidos[pedidoId]);
 
     console.log(`[SUCESSO] Pedido ${pedidoId} concluido. SMM: ${smmData.order}`);
@@ -344,6 +544,7 @@ app.get('/health', (req, res) => {
     gateway: 'mercado_pago',
     meta_pixel: process.env.META_PIXEL_ID ? 'configurado' : 'ausente',
     pedidos_em_memoria: Object.keys(pedidos).length,
+    dashboard,
     timestamp: new Date().toISOString()
   });
 });
@@ -354,6 +555,7 @@ app.listen(PORT, () => {
   ║  MidiaNetDigital Backend           ║
   ║  Rodando na porta ${PORT}             ║
   ║  Mercado Pago + EngajaMidia + Meta ║
+  ║  Dashboard ativo                  ║
   ╚════════════════════════════════════╝
   `);
 });
