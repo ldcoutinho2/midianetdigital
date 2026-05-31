@@ -218,6 +218,17 @@
         sessionStorage.setItem("plano_nome_pixel", contentName);
         sessionStorage.setItem("valor_plano", valor);
 
+        fetch('https://midianetdigital.onrender.com/evento', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    tipo: 'plano',
+    plano: contentName
+  })
+}).catch(() => {});
+
         if(typeof fbq === "function"){
           fbq('track','ViewContent',{
             content_name: contentName,
