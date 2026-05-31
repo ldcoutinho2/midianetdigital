@@ -230,7 +230,7 @@
         console.log("ViewContent plano:", contentName, valor);
 
         setTimeout(function(){
-          window.location.href = "pagamento.html?plano="+p.id+"&servico="+encodeURIComponent(servico);
+          window.location.href = "checkout.html?plano="+p.id+"&servico="+encodeURIComponent(servico)+"&pagamento=pix";
         }, 250);
       });
 
