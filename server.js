@@ -568,20 +568,22 @@ console.log(JSON.stringify(payment, null, 2));
       valorReais
     );
 
-    return res.json({
-      success: true,
-      pedidoId,
-      gateway,
-      valor: valorReais.toFixed(2),
-      pix: {
-        copia_e_cola: pixData?.qr_code || null,
-        qr_code_image: pixData?.qr_code_base64
-          ? `data:image/png;base64,${pixData.qr_code_base64}`
-          : null,
-        expira_em: null,
-      },
-      paymentId: payment.id
-    });
+console.log("BASE64:", pixData?.qr_code_base64?.substring(0,50));
+
+return res.json({
+  success: true,
+  pedidoId,
+  gateway,
+  valor: valorReais.toFixed(2),
+  pix: {
+    copia_e_cola: pixData?.qr_code || null,
+    qr_code_image: pixData?.qr_code_base64
+      ? `data:image/png;base64,${pixData.qr_code_base64}`
+      : null,
+    expira_em: null,
+  },
+  paymentId: payment.id
+});
 
   } catch (err) {
     console.error('[ERRO criar-pedido]', err.response?.data || err.message);
