@@ -439,9 +439,15 @@ async function carregar(){
   if(!d.ultimosPedidos.length){
   ultimosPedidos.innerHTML = '<div class="row"><span>Nenhum Pix gerado ainda</span></div>';
 } else {
-  ultimosPedidos.innerHTML = d.ultimosPedidos.map(p =>
-    '<div class="row sale"><span>'+p.hora+' - '+p.info+'</span><strong>'+p.valor+'</strong></div>'
-  ).join('');
+ var pedidosVisiveis = d.ultimosPedidos.slice(0, 5);
+
+ultimosPedidos.innerHTML = pedidosVisiveis.map(p =>
+  '<div class="row sale"><span>'+p.hora+' - '+p.info+'</span><strong>'+p.valor+'</strong></div>'
+).join('');
+
+if (d.ultimosPedidos.length > 5) {
+  ultimosPedidos.innerHTML += '<button onclick="mostrarTodosPedidos()" style="margin-top:12px">Ver todos</button>';
+}
 }
 
   if(!d.ultimasVendas.length){
@@ -451,6 +457,16 @@ async function carregar(){
       '<div class="row sale"><span>'+v.hora+' - '+v.servico+'</span><strong>'+v.valor+'</strong></div>'
     ).join('');
   }
+}
+
+function mostrarTodosPedidos(){
+  fetch('/dashboard-data?senha=' + encodeURIComponent(senha))
+    .then(r => r.json())
+    .then(d => {
+      ultimosPedidos.innerHTML = d.ultimosPedidos.map(p =>
+        '<div class="row sale"><span>'+p.hora+' - '+p.info+'</span><strong>'+p.valor+'</strong></div>'
+      ).join('');
+    });
 }
 
 carregar();
