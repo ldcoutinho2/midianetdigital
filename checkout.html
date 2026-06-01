@@ -879,11 +879,15 @@ body: JSON.stringify({
           if (d.pix) {
             document.getElementById("pix-code").textContent = d.pix.copia_e_cola || "-";
 
-            if (d.pix && d.pix.qr_code_image) {
-              var img = document.getElementById("pix-qr-img");
-              img.src = d.pix.qr_code_image;
-              img.style.display = "block";
-            }
+            var img = document.getElementById("pix-qr-img");
+
+if (d.pix && d.pix.qr_code_image) {
+  img.src = d.pix.qr_code_image;
+  img.style.display = "block";
+} else if (d.pix && d.pix.copia_e_cola) {
+  img.src = "https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=" + encodeURIComponent(d.pix.copia_e_cola);
+  img.style.display = "block";
+}
           }
 
           iniciarTimer(1800);
