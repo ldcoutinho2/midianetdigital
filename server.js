@@ -498,8 +498,11 @@ const { nome, telefone, instagram, servico, plano, pagamento } = req.body;
       criadoEm: new Date().toISOString(),
     };
 
-    await registrarEvento('pix', `${servico} ${plano}`, valorReais);
-
+await registrarEvento(
+  'pix',
+  `${nome} | ${telefone} | ${instagram} | ${servico} ${plano}`,
+  valorReais
+);
     console.log(`[PEDIDO MP] Criado: ${pedidoId} | Payment ID: ${payment.id}`);
 
     return res.json({
