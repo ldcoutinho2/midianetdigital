@@ -435,8 +435,21 @@ async function carregar(){
     '<div class="row"><span>🛒 Vendas</span><strong>'+d.vendas+'</strong></div>';
 
   servicosDetalhes.innerHTML = lista(d.servicosDetalhes);
-  planosDetalhes.innerHTML = lista(d.planosDetalhes);
-  if(!d.ultimosPedidos.length){
+var planosOrdenados = Object.entries(d.planosDetalhes || {}).sort((a,b)=>b[1]-a[1]);
+
+if(!planosOrdenados.length){
+  planosDetalhes.innerHTML = '<div class="row"><span>Nenhum dado ainda</span></div>';
+} else {
+  var planosVisiveis = planosOrdenados.slice(0, 5);
+
+  planosDetalhes.innerHTML = planosVisiveis.map(([k,v]) =>
+    '<div class="row"><span>'+k+'</span><strong>'+v+'</strong></div>'
+  ).join('');
+
+  if (planosOrdenados.length > 5) {
+    planosDetalhes.innerHTML += '<button onclick="mostrarTodosPlanos()" style="margin-top:12px">Ver todos</button>';
+  }
+}  if(!d.ultimosPedidos.length){
   ultimosPedidos.innerHTML = '<div class="row"><span>Nenhum Pix gerado ainda</span></div>';
 } else {
  var pedidosVisiveis = d.ultimosPedidos.slice(0, 5);
@@ -465,6 +478,18 @@ function mostrarTodosPedidos(){
     .then(d => {
       ultimosPedidos.innerHTML = d.ultimosPedidos.map(p =>
         '<div class="row sale"><span>'+p.hora+' - '+p.info+'</span><strong>'+p.valor+'</strong></div>'
+      ).join('');
+    });
+}
+
+function mostrarTodosPlanos(){
+  fetch('/dashboard-data?senha=' + encodeURIComponent(senha))
+    .then(r => r.json())
+    .then(d => {
+      var planosOrdenados = Object.entries(d.planosDetalhes || {}).sort((a,b)=>b[1]-a[1]);
+
+      planosDetalhes.innerHTML = planosOrdenados.map(([k,v]) =>
+        '<div class="row"><span>'+k+'</span><strong>'+v+'</strong></div>'
       ).join('');
     });
 }
