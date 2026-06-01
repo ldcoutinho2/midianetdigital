@@ -577,9 +577,7 @@ return res.json({
   valor: valorReais.toFixed(2),
   pix: {
     copia_e_cola: pixData?.qr_code || null,
-    qr_code_image: pixData?.qr_code_base64
-      ? `data:image/png;base64,${pixData.qr_code_base64}`
-      : null,
+qr_code_image: pixData?.qr_code_base64 || null,
     expira_em: null,
   },
   paymentId: payment.id
