@@ -463,10 +463,11 @@ setInterval(carregar, 10000);
 
 app.post('/criar-pedido', async (req, res) => {
   try {
-const { nome, telefone, instagram, servico, plano, pagamento } = req.body;
+    const { nome, telefone, instagram, servico, plano, pagamento } = req.body;
+
     if (!nome || !telefone || !instagram || !servico || !plano) {
-  return res.status(400).json({ error: 'Dados incompletos' });
-}
+      return res.status(400).json({ error: 'Dados incompletos' });
+    }
 
     const chave = `${servico}__${plano}`;
     const valorCentavos = PRECOS[chave];
@@ -479,30 +480,67 @@ const { nome, telefone, instagram, servico, plano, pagamento } = req.body;
     const pedidoId = uuidv4();
     const valorReais = Number((valorCentavos / 100).toFixed(2));
 
-    const mpResp = await axios.post(
-      'https://api.mercadopago.com/v1/payments',
-      {
-        transaction_amount: valorReais,
-        description: `MidiaNetDigital - ${servico} ${plano}`,
-        payment_method_id: 'pix',
-        external_reference: pedidoId,
-        notification_url: 'https://midianetdigital.onrender.com/webhook-mercadopago',
-        payer: {
-          email: `cliente_${pedidoId.slice(0, 8)}@midianetdigital.com`,
-          first_name: nome
-        }
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.MERCADO_PAGO_ACCESS_TOKEN}`,
-          'Content-Type': 'application/json',
-          'X-Idempotency-Key': pedidoId
-        }
-      }
-    );
+    let gateway = 'pushinpay';
+    let payment = null;
+    let pixData = null;
 
-    const payment = mpResp.data;
-    const pixData = payment.point_of_interaction?.transaction_data;
+    try {
+      const pushResp = await axios.post(
+        'https://api.pushinpay.com.br/api/pix/cashIn',
+        {
+          value: valorCentavos,
+          webhook_url: 'https://midianetdigital.onrender.com/webhook-pushinpay'
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.PUSHINPAY_TOKEN}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      payment = pushResp.data;
+
+      pixData = {
+        qr_code: payment.qr_code,
+        qr_code_base64: payment.qr_code_base64
+      };
+
+      console.log(`[PUSHINPAY] Pix criado: ${payment.id}`);
+
+    } catch (pushErr) {
+      console.error('[PUSHINPAY] Erro, tentando Mercado Pago:', pushErr.response?.data || pushErr.message);
+
+      gateway = 'mercado_pago';
+
+      const mpResp = await axios.post(
+        'https://api.mercadopago.com/v1/payments',
+        {
+          transaction_amount: valorReais,
+          description: `MidiaNetDigital - ${servico} ${plano}`,
+          payment_method_id: 'pix',
+          external_reference: pedidoId,
+          notification_url: 'https://midianetdigital.onrender.com/webhook-mercadopago',
+          payer: {
+            email: `cliente_${pedidoId.slice(0, 8)}@midianetdigital.com`,
+            first_name: nome
+          }
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.MERCADO_PAGO_ACCESS_TOKEN}`,
+            'Content-Type': 'application/json',
+            'X-Idempotency-Key': pedidoId
+          }
+        }
+      );
+
+      payment = mpResp.data;
+      pixData = payment.point_of_interaction?.transaction_data;
+
+      console.log(`[MERCADO PAGO] Pix criado como backup: ${payment.id}`);
+    }
 
     pedidos[pedidoId] = {
       id: pedidoId,
@@ -511,41 +549,92 @@ const { nome, telefone, instagram, servico, plano, pagamento } = req.body;
       instagram,
       servico,
       plano,
-      pagamento,
+      pagamento: 'pix',
       valor: valorCentavos,
       smmId,
       status: 'aguardando_pagamento',
-      mercadoPagoPaymentId: payment.id,
+      gateway,
+      paymentId: payment.id,
+      mercadoPagoPaymentId: gateway === 'mercado_pago' ? payment.id : null,
+      pushinPayPaymentId: gateway === 'pushinpay' ? payment.id : null,
       criadoEm: new Date().toISOString(),
     };
 
-await registrarEvento(
-  'pix',
-  `${nome} | ${telefone} | ${instagram} | ${servico} ${plano}`,
-  valorReais
-);
-    console.log(`[PEDIDO MP] Criado: ${pedidoId} | Payment ID: ${payment.id}`);
+    await registrarEvento(
+      'pix',
+      `${nome} | ${telefone} | ${instagram} | ${servico} ${plano}`,
+      valorReais
+    );
 
     return res.json({
       success: true,
       pedidoId,
+      gateway,
       valor: valorReais.toFixed(2),
       pix: {
-        copia_e_cola: pixData?.qr_code,
+        copia_e_cola: pixData?.qr_code || null,
         qr_code_image: pixData?.qr_code_base64
           ? `data:image/png;base64,${pixData.qr_code_base64}`
           : null,
         expira_em: null,
       },
-      mercadoPagoPaymentId: payment.id,
+      paymentId: payment.id
     });
 
   } catch (err) {
-    console.error('[ERRO criar-pedido MP]', err.response?.data || err.message);
+    console.error('[ERRO criar-pedido]', err.response?.data || err.message);
     return res.status(500).json({
       error: 'Erro ao criar pedido',
       detail: err.response?.data || err.message
     });
+  }
+});
+
+app.post('/webhook-pushinpay', async (req, res) => {
+  try {
+    console.log('[WEBHOOK PUSHINPAY]', JSON.stringify(req.body, null, 2));
+
+    const paymentId = req.body?.id;
+    const status = req.body?.status;
+
+    if (!paymentId || status !== 'paid') {
+      return res.status(200).json({ received: true });
+    }
+
+    const pedido = Object.values(pedidos).find(p => p.pushinPayPaymentId == paymentId);
+
+    if (!pedido) {
+      console.warn(`[PUSHINPAY] Pedido nao encontrado: ${paymentId}`);
+      return res.status(200).json({ received: true });
+    }
+
+    if (pedido.status === 'concluido') {
+      return res.status(200).json({ received: true });
+    }
+
+    console.log(`[SMM] Enviando pedido PushinPay para EngajaMidia: ${pedido.instagram}`);
+
+    const smmData = await enviarPedidoSMM(pedido);
+
+    pedido.status = 'concluido';
+    pedido.smmOrderId = smmData.order;
+    pedido.concluidoEm = new Date().toISOString();
+
+    await registrarEvento(
+      'venda',
+      `${pedido.nome} | ${pedido.telefone} | ${pedido.instagram} | ${pedido.servico} ${pedido.plano}`,
+      Number((pedido.valor / 100).toFixed(2))
+    );
+
+    await enviarPurchaseMeta(pedido);
+
+    console.log(`[SUCESSO PUSHINPAY] Pedido ${pedido.id} concluido. SMM: ${smmData.order}`);
+
+    return res.status(200).json({ received: true, smmOrder: smmData.order });
+
+  } catch (err) {
+    console.error('[ERRO webhook PushinPay]', err.response?.data || err.message);
+    return res.status(200).json({ received: true });
   }
 });
 
