@@ -155,7 +155,8 @@ function montarDashboard(eventos) {
     faturamento: 0,
     servicosDetalhes: {},
     planosDetalhes: {},
-    ultimasVendas: []
+    ultimasVendas: [],
+    ultimosPedidos: []
   };
 
   eventos.forEach(e => {
@@ -172,8 +173,15 @@ function montarDashboard(eventos) {
     }
 
     if (e.tipo === 'checkout') dados.checkout++;
-    if (e.tipo === 'pix') dados.pix++;
+if (e.tipo === 'pix') {
+  dados.pix++;
 
+  dados.ultimosPedidos.push({
+    hora: new Date(e.created_at).toLocaleString('pt-BR'),
+    info: e.nome || 'Pedido',
+    valor: dinheiroBR(Math.round(Number(e.valor || 0) * 100))
+  });
+}
     if (e.tipo === 'venda') {
       dados.vendas++;
       dados.faturamento += Math.round(Number(e.valor || 0) * 100);
