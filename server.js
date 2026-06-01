@@ -292,95 +292,44 @@ app.get('/dashboard-data', async (req, res) => {
   }
 });
 
-const usuario = req.query.usuario;
-const senha = req.query.senha;
+app.get('/dashboard', (req, res) => {
+  const usuario = req.query.usuario;
+  const senha = req.query.senha;
 
-if (
-  usuario !== 'admin' ||
-  senha !== process.env.DASHBOARD_PASSWORD
-) {
-  return res.send(`
+  if (
+    usuario !== 'admin' ||
+    senha !== process.env.DASHBOARD_PASSWORD
+  ) {
+    return res.send(`
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <title>Dashboard MidiaNet</title>
-
 <style>
-body{
-  background:#0f172a;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-  font-family:Arial,sans-serif;
-}
-
-.box{
-  width:350px;
-  background:#111827;
-  padding:30px;
-  border-radius:15px;
-}
-
-h2{
-  color:white;
-  text-align:center;
-  margin-bottom:20px;
-}
-
-input{
-  width:100%;
-  padding:12px;
-  margin-top:10px;
-  border:none;
-  border-radius:8px;
-}
-
-button{
-  width:100%;
-  padding:12px;
-  margin-top:15px;
-  background:#22c55e;
-  color:white;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
-  font-weight:bold;
-}
+body{background:#0f172a;display:flex;justify-content:center;align-items:center;height:100vh;font-family:Arial,sans-serif}
+.box{width:350px;background:#111827;padding:30px;border-radius:15px}
+h2{color:white;text-align:center;margin-bottom:20px}
+input{width:100%;padding:12px;margin-top:10px;border:none;border-radius:8px}
+button{width:100%;padding:12px;margin-top:15px;background:#22c55e;color:white;border:none;border-radius:8px;cursor:pointer;font-weight:bold}
 </style>
 </head>
-
 <body>
   <div class="box">
     <h2>Dashboard MidiaNet</h2>
-
     <form action="/dashboard">
-      <input
-        type="text"
-        name="usuario"
-        placeholder="Usuário"
-        required
-      >
-
-      <input
-        type="password"
-        name="senha"
-        placeholder="Senha"
-        required
-      >
-
-      <button type="submit">
-        Entrar
-      </button>
+      <input type="text" name="usuario" placeholder="Usuário" required>
+      <input type="password" name="senha" placeholder="Senha" required>
+      <button type="submit">Entrar</button>
     </form>
   </div>
 </body>
 </html>
-  `);
-}
+    `);
+  }
 
   res.send(`
+  
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
