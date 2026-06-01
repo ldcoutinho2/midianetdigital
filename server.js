@@ -323,10 +323,7 @@ button{width:100%;padding:12px;margin-top:15px;background:#22c55e;color:white;bo
 </style>
 </head>
 <body>
-<div class="box">
-  <h2>Últimos Pix Gerados</h2>
-  <div id="ultimosPedidos"></div>
-</div>
+
   <div class="box">
     <h2>Dashboard MidiaNet</h2>
     <form action="/dashboard">
@@ -395,6 +392,11 @@ button{background:#e8ff47;color:#080810;border:0;padding:10px 18px;border-radius
 <div class="box">
   <h2>Planos mais clicados</h2>
   <div id="planosDetalhes"></div>
+</div>
+
+<div class="box">
+  <h2>Últimos Pix Gerados</h2>
+  <div id="ultimosPedidos"></div>
 </div>
 
 <div class="box">
