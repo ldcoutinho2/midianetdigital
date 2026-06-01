@@ -830,12 +830,13 @@ if (servicoPublicacao) {
 
     async function criarPedido() {
       var nome = document.getElementById("nome").value.trim();
-      var ig = document.getElementById("instagram").value.trim();
+var telefone = document.getElementById("telefone").value.trim();
+var ig = document.getElementById("instagram").value.trim();
 
-      if (!nome || !ig) {
-        alert("Preencha nome e Instagram.");
-        return;
-      }
+      if (!nome || !telefone || !ig) {
+  alert("Preencha nome, WhatsApp e Instagram/link.");
+  return;
+}
 
       if (!servico || !plano) {
         alert("Volte e selecione serviço e plano.");
@@ -850,8 +851,14 @@ if (servicoPublicacao) {
         var r = await fetch(BACKEND + "/criar-pedido", {
           method:"POST",
           headers:{"Content-Type":"application/json"},
-          body: JSON.stringify({nome, instagram:ig, servico, plano, pagamento:payAtual})
-        });
+body: JSON.stringify({
+  nome: nome,
+  telefone: telefone,
+  instagram: ig,
+  servico: servico,
+  plano: plano,
+  pagamento: "pix"
+})        });
 
         var d = await r.json();
 
