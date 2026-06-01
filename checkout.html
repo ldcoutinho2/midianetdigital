@@ -884,9 +884,14 @@ body: JSON.stringify({
 if (d.pix && d.pix.qr_code_image) {
   img.src = d.pix.qr_code_image;
   img.style.display = "block";
+  console.log("QR por imagem base64");
 } else if (d.pix && d.pix.copia_e_cola) {
   img.src = "https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=" + encodeURIComponent(d.pix.copia_e_cola);
   img.style.display = "block";
+  console.log("QR gerado pelo copia e cola");
+} else {
+  img.style.display = "none";
+  console.log("Sem QR recebido", d);
 }
           
 
