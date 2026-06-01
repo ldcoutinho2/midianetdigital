@@ -442,11 +442,10 @@ setInterval(carregar, 10000);
 
 app.post('/criar-pedido', async (req, res) => {
   try {
-    const { nome, instagram, servico, plano, pagamento } = req.body;
-
-    if (!nome || !instagram || !servico || !plano) {
-      return res.status(400).json({ error: 'Dados incompletos' });
-    }
+const { nome, telefone, instagram, servico, plano, pagamento } = req.body;
+    if (!nome || !telefone || !instagram || !servico || !plano) {
+  return res.status(400).json({ error: 'Dados incompletos' });
+}
 
     const chave = `${servico}__${plano}`;
     const valorCentavos = PRECOS[chave];
@@ -487,6 +486,7 @@ app.post('/criar-pedido', async (req, res) => {
     pedidos[pedidoId] = {
       id: pedidoId,
       nome,
+      telefone,
       instagram,
       servico,
       plano,
