@@ -890,9 +890,10 @@ if (d.pix && d.pix.qr_code_image) {
 }
           
 
-          iniciarTimer(1800);
+                    iniciarTimer(1800);
           pollInt = setInterval(checarStatus, 5000);
         }
+      }
 
       } catch(e) {
         alert("Erro: " + e.message);
