@@ -664,9 +664,14 @@ setTimeout(function(){
         </div>
 
         <div class="fg">
-          <label for="instagram">@ ou link do Instagram</label>
-          <input type="text" id="instagram" placeholder="@seuusuario" required/>
-        </div>
+  <label for="telefone">WhatsApp</label>
+  <input type="tel" id="telefone" placeholder="(21) 99999-9999" required/>
+</div>
+
+<div class="fg">
+  <label for="instagram" id="label-instagram">@ ou link do Instagram</label>
+  <input type="text" id="instagram" placeholder="@seuusuario" required/>
+</div>
 
         <div style="margin-bottom:1.5rem">
           <div style="font-size:.78rem;font-weight:600;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;margin-bottom:.6rem">Pagamento</div>
@@ -676,12 +681,7 @@ setTimeout(function(){
               <div class="pay-tab-name">Pix</div>
               <div class="pay-tab-sub">Aprovação imediata</div>
             </div>
-
-            <div class="pay-tab" id="tab-cartao" onclick="selPay('cartao')">
-              <div class="pay-tab-icon">&#128179;</div>
-              <div class="pay-tab-name">Cartão</div>
-              <div class="pay-tab-sub">Crédito / Débito</div>
-            </div>
+            
           </div>
         </div>
 
@@ -802,12 +802,20 @@ setTimeout(function(){
     document.getElementById("r-plano").textContent = PL[plano] || plano || "-";
     document.getElementById("r-valor").textContent = "R$ " + valor.toFixed(2).replace(".",",");
     document.getElementById("pix-valor").textContent = "R$ " + valor.toFixed(2).replace(".",",");
+    var servicoPublicacao = ["curtidas-brasileiras", "visualizacoes", "comentarios"].includes(servico);
+
+if (servicoPublicacao) {
+  document.getElementById("label-instagram").textContent = "Link da publicação ou Reels";
+  document.getElementById("instagram").placeholder = "https://www.instagram.com/p/...";
+} else {
+  document.getElementById("label-instagram").textContent = "@ ou link do perfil";
+  document.getElementById("instagram").placeholder = "@seuusuario ou link do perfil";
+}
 
     function selPay(t) {
-      payAtual = t;
-      document.getElementById("tab-pix").classList.toggle("active", t==="pix");
-      document.getElementById("tab-cartao").classList.toggle("active", t==="cartao");
-    }
+  payAtual = "pix";
+  document.getElementById("tab-pix").classList.add("active");
+}
 
     function trackPixGerado(valorPedido){
       if (typeof fbq === "function") {
