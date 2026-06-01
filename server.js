@@ -501,6 +501,8 @@ app.post('/criar-pedido', async (req, res) => {
       );
 
       payment = pushResp.data;
+      console.log("PUSHIN RETORNO:");
+console.log(JSON.stringify(payment, null, 2));
 
       pixData = {
         qr_code: payment.qr_code,
