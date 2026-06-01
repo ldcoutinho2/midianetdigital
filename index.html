@@ -60,34 +60,32 @@
     @media(max-width:600px){.trust-bar{gap:1.2rem;padding:.7rem 4%}.trust-bar-item{font-size:.72rem}}
 
     /* HERO */
-    .hero{position:relative;z-index:1;padding:5rem 5% 4rem;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;max-width:1280px;margin:0 auto;min-height:calc(100vh - 100px)}
-    .hero-left{display:flex;flex-direction:column;gap:1.5rem}
-    .hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(232,255,71,.07);border:1px solid rgba(232,255,71,.2);color:var(--ac);font-size:.75rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:.4rem 1rem;border-radius:100px;width:fit-content}
-    .hero h1{font-size:clamp(2.4rem,5vw,3.8rem);font-weight:900;line-height:1.05;letter-spacing:-.05em}
+    .hero{position:relative;z-index:1;padding:5rem 5% 4.5rem;max-width:1100px;margin:0 auto;min-height:calc(100vh - 100px);display:flex;flex-direction:column;justify-content:center}
+    .hero-top-pills{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin-bottom:1.5rem}
+    .hero-pill{display:inline-flex;align-items:center;gap:.4rem;background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--muted);font-size:.78rem;font-weight:600;padding:.35rem .9rem;border-radius:100px}
+    .hero-pill .dot-live{width:7px;height:7px;background:#34d399;border-radius:50%;animation:pulse 2s infinite;flex-shrink:0}
+    .hero-pill.ac{background:rgba(232,255,71,.07);border-color:rgba(232,255,71,.2);color:var(--ac)}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}
+    .hero h1{font-size:clamp(3.5rem,9vw,7.5rem);font-weight:900;line-height:.97;letter-spacing:-.06em;margin-bottom:1.5rem}
     .hero h1 .hl{color:var(--ac)}
-    .hero-sub{font-size:1rem;color:var(--muted);max-width:480px;line-height:1.7}
-    .social-proof{display:flex;align-items:center;gap:1rem}
+    .hero-sub{font-size:clamp(1rem,1.8vw,1.15rem);color:var(--muted);max-width:580px;line-height:1.7;margin-bottom:2rem}
+    .hero-bottom{display:flex;align-items:center;gap:2rem;flex-wrap:wrap}
+    .btn-p{display:inline-flex;align-items:center;gap:.5rem;background:var(--ac);color:#080810;font-weight:800;font-size:1rem;padding:.9rem 2.2rem;border-radius:100px;text-decoration:none;transition:transform .2s,box-shadow .2s;box-shadow:0 0 28px rgba(232,255,71,.25)}
+    .btn-p:hover{transform:translateY(-2px);box-shadow:0 0 44px rgba(232,255,71,.4)}
+    .social-proof{display:flex;align-items:center;gap:.9rem}
     .avatars{display:flex}
-    .avatars img,.avatars .av{width:36px;height:36px;border-radius:50%;border:2px solid var(--bg);margin-left:-10px;object-fit:cover}
-    .avatars .av{display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.75rem;color:#080810}
+    .avatars img,.avatars .av{width:34px;height:34px;border-radius:50%;border:2px solid var(--bg);margin-left:-10px;object-fit:cover}
+    .avatars .av{display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.72rem;color:#080810}
     .avatars .av:first-child{margin-left:0}
     .proof-text{display:flex;flex-direction:column}
-    .stars-row{color:#fbbf24;font-size:.9rem}
-    .proof-text small{font-size:.78rem;color:var(--muted)}
-    .hero-cta{display:flex;gap:1rem;flex-wrap:wrap}
-    .btn-p{display:inline-flex;align-items:center;gap:.5rem;background:var(--ac);color:#080810;font-weight:800;font-size:1rem;padding:.85rem 2rem;border-radius:100px;text-decoration:none;transition:transform .2s,box-shadow .2s;box-shadow:0 0 28px rgba(232,255,71,.25)}
-    .btn-p:hover{transform:translateY(-2px);box-shadow:0 0 44px rgba(232,255,71,.4)}
-    .notification-toast{display:flex;align-items:center;gap:.75rem;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:14px;padding:.85rem 1.1rem;width:fit-content}
-    .toast-icon{width:36px;height:36px;background:rgba(16,185,129,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-    .toast-icon svg{width:18px;height:18px;fill:#10b981}
-    .toast-text{display:flex;flex-direction:column}
-    .toast-text strong{font-size:.82rem;font-weight:700;color:var(--text)}
-    .toast-text span{font-size:.75rem;color:var(--muted)}
-    .hero-right{position:relative;display:flex;align-items:center;justify-content:center}
-    .hero-img-wrap{position:relative;width:100%;max-width:520px}
-    .hero-img-wrap img{width:100%;height:auto;object-fit:contain;filter:drop-shadow(0 30px 80px rgba(124,92,252,.3))}
-    .hero-glow{position:absolute;width:400px;height:400px;background:radial-gradient(circle,rgba(124,92,252,.25) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;border-radius:50%}
-    @media(max-width:900px){.hero{grid-template-columns:1fr;min-height:auto;padding:4rem 5% 3rem}.hero-right{order:-1;max-width:340px;margin:0 auto}}
+    .stars-row{color:#fbbf24;font-size:.85rem}
+    .proof-text small{font-size:.75rem;color:var(--muted)}
+    .notification-toast{display:flex;align-items:center;gap:.65rem;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:100px;padding:.55rem 1rem;width:fit-content;margin-top:1.5rem}
+    .toast-icon{width:24px;height:24px;background:rgba(16,185,129,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .toast-icon svg{width:13px;height:13px;fill:#10b981}
+    .toast-text strong{font-size:.78rem;font-weight:700;color:var(--text)}
+    .toast-text span{font-size:.75rem;color:var(--muted);margin-left:.3rem}
+    @media(max-width:600px){.hero{padding:4rem 5% 3rem}.hero h1{font-size:clamp(2.8rem,13vw,4rem)}.hero-bottom{gap:1rem}.notification-toast{flex-wrap:wrap}}
 
     /* METRICS BAR */
     .metrics-bar{background:var(--s1);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
@@ -216,10 +214,24 @@
   <!-- HERO -->
   <div style="position:relative;z-index:1;background:var(--bg)">
     <div class="hero">
-      <div class="hero-left">
-        <div class="hero-badge">⚡ Entrega rápida e segura</div>
-        <h1>Potencialize sua<br>presença <span class="hl">Digital</span></h1>
-        <p class="hero-sub">Seguidores, curtidas e visualizações para impulsionar sua marca de forma rápida, segura e confiável.</p>
+
+      <!-- Pills de prova social no topo -->
+      <div class="hero-top-pills">
+        <div class="hero-pill"><span class="dot-live"></span> <span id="online-count">271</span> clientes online agora</div>
+        <div class="hero-pill">🛒 Pacotes vendidos agora: <strong style="color:var(--text);margin-left:.2rem" id="vendidos-count">32</strong></div>
+        <div class="hero-pill ac">⚡ Entrega automática</div>
+        <div class="hero-pill">🔒 Sem pedir senha</div>
+        <div class="hero-pill">⭐ +10.000 clientes</div>
+      </div>
+
+      <!-- Título gigante -->
+      <h1>Potencialize<br>sua presença<br><span class="hl">Digital</span></h1>
+
+      <p class="hero-sub">Seguidores, curtidas e visualizações para impulsionar sua marca de forma rápida, segura e confiável.</p>
+
+      <!-- CTA + social proof lado a lado -->
+      <div class="hero-bottom">
+        <a href="#servicos" class="btn-p">Ver Serviços ↓</a>
         <div class="social-proof">
           <div class="avatars">
             <img class="av" src="foto1.jpg" alt="Cliente 1" style="margin-left:0">
@@ -228,103 +240,23 @@
             <img class="av" src="foto4.jpg" alt="Cliente 4">
           </div>
           <div class="proof-text">
-            <div class="stars-row">★★★★★ <span style="font-size:.78rem;font-weight:700;color:var(--text)">4,9 de 5</span></div>
+            <div class="stars-row">★★★★★ <span style="font-size:.75rem;font-weight:700;color:var(--text)">4,9 de 5</span></div>
             <small>+10.000 clientes satisfeitos</small>
           </div>
         </div>
-        <div class="notification-toast">
-          <div class="toast-icon">
-            <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          </div>
-          <div class="toast-text">
-            <strong>Pedido concluído</strong>
-            <span>@joaosilva comprou 500 seguidores brasileiros</span>
-          </div>
+      </div>
+
+      <!-- Toast de notificação -->
+      <div class="notification-toast">
+        <div class="toast-icon">
+          <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
         </div>
-        <div class="hero-cta">
-          <a href="#servicos" class="btn-p">Ver Serviços ↓</a>
+        <div class="toast-text">
+          <strong>Pedido concluído</strong>
+          <span id="toast-msg">@joaosilva comprou 500 seguidores brasileiros</span>
         </div>
       </div>
-      <div class="hero-right">
-        <div class="hero-img-wrap">
-          <div class="hero-glow"></div>
-          <!-- SVG illustration substituindo imagem externa -->
-          <svg viewBox="0 0 520 480" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">
-            <defs>
-              <radialGradient id="phoneGrad" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="#1a1a2e"/>
-                <stop offset="100%" stop-color="#0d0d16"/>
-              </radialGradient>
-              <radialGradient id="glowPurple" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="#7c5cfc" stop-opacity=".5"/>
-                <stop offset="100%" stop-color="#7c5cfc" stop-opacity="0"/>
-              </radialGradient>
-              <radialGradient id="glowYellow" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="#e8ff47" stop-opacity=".3"/>
-                <stop offset="100%" stop-color="#e8ff47" stop-opacity="0"/>
-              </radialGradient>
-              <filter id="blur20"><feGaussianBlur stdDeviation="20"/></filter>
-              <filter id="blur8"><feGaussianBlur stdDeviation="8"/></filter>
-              <linearGradient id="screenGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#1e1b4b"/>
-                <stop offset="100%" stop-color="#0f0c1a"/>
-              </linearGradient>
-            </defs>
-            <!-- Glow background -->
-            <ellipse cx="280" cy="250" rx="180" ry="160" fill="url(#glowPurple)" filter="url(#blur20)"/>
-            <ellipse cx="160" cy="360" rx="100" ry="80" fill="url(#glowYellow)" filter="url(#blur20)"/>
-            <!-- Phone body -->
-            <rect x="190" y="60" width="180" height="340" rx="28" fill="url(#phoneGrad)" stroke="rgba(255,255,255,.12)" stroke-width="1.5"/>
-            <!-- Screen -->
-            <rect x="198" y="80" width="164" height="300" rx="18" fill="url(#screenGrad)"/>
-            <!-- Notch -->
-            <rect x="250" y="74" width="60" height="12" rx="6" fill="#0d0d16"/>
-            <!-- Screen content -->
-            <rect x="212" y="100" width="136" height="12" rx="6" fill="rgba(232,255,71,.15)"/>
-            <rect x="212" y="118" width="90" height="8" rx="4" fill="rgba(255,255,255,.06)"/>
-            <!-- Chart bars -->
-            <rect x="215" y="200" width="18" height="60" rx="4" fill="rgba(124,92,252,.5)"/>
-            <rect x="238" y="175" width="18" height="85" rx="4" fill="rgba(124,92,252,.6)"/>
-            <rect x="261" y="155" width="18" height="105" rx="4" fill="rgba(124,92,252,.7)"/>
-            <rect x="284" y="140" width="18" height="120" rx="4" fill="var(--ac)" opacity=".9"/>
-            <rect x="307" y="160" width="18" height="100" rx="4" fill="rgba(124,92,252,.6)"/>
-            <!-- Trend line -->
-            <polyline points="224,230 247,210 270,195 293,175 316,188" fill="none" stroke="var(--ac)" stroke-width="2.5" stroke-linecap="round"/>
-            <!-- Stats pills on screen -->
-            <rect x="212" y="275" width="136" height="28" rx="8" fill="rgba(232,255,71,.08)" stroke="rgba(232,255,71,.2)" stroke-width="1"/>
-            <text x="222" y="293" fill="var(--ac)" font-size="9" font-weight="700" font-family="Poppins,sans-serif">↑ +2.450 seguidores hoje</text>
-            <!-- Floating icons -->
-            <!-- Instagram -->
-            <circle cx="100" cy="150" r="32" fill="rgba(124,92,252,.15)" stroke="rgba(124,92,252,.3)" stroke-width="1.5"/>
-            <rect x="88" y="138" width="24" height="24" rx="6" fill="none" stroke="#c084fc" stroke-width="2"/>
-            <circle cx="100" cy="150" r="6" fill="none" stroke="#c084fc" stroke-width="2"/>
-            <circle cx="107" cy="143" r="1.5" fill="#c084fc"/>
-            <!-- TikTok -->
-            <circle cx="400" cy="100" r="28" fill="rgba(6,182,212,.12)" stroke="rgba(6,182,212,.25)" stroke-width="1.5"/>
-            <text x="400" y="107" text-anchor="middle" fill="#22d3ee" font-size="18" font-weight="900">♪</text>
-            <!-- YouTube -->
-            <circle cx="430" cy="220" r="26" fill="rgba(239,68,68,.12)" stroke="rgba(239,68,68,.25)" stroke-width="1.5"/>
-            <polygon points="422,213 422,227 437,220" fill="#f87171"/>
-            <!-- Like bubble -->
-            <circle cx="110" cy="300" r="24" fill="rgba(232,255,71,.1)" stroke="rgba(232,255,71,.25)" stroke-width="1.5"/>
-            <text x="110" y="308" text-anchor="middle" fill="var(--ac)" font-size="16">♥</text>
-            <!-- Floating dots -->
-            <circle cx="150" cy="220" r="5" fill="var(--ac)" opacity=".5"/>
-            <circle cx="380" cy="320" r="4" fill="#7c5cfc" opacity=".6"/>
-            <circle cx="450" cy="160" r="3" fill="var(--ac)" opacity=".4"/>
-            <circle cx="80" cy="380" r="4" fill="#06b6d4" opacity=".5"/>
-            <!-- Rocket -->
-            <g transform="translate(330,320) rotate(-30)">
-              <ellipse cx="0" cy="0" rx="14" ry="26" fill="#7c5cfc" opacity=".8"/>
-              <polygon points="-8,18 0,30 8,18" fill="#a78bfa" opacity=".7"/>
-              <ellipse cx="0" cy="-6" rx="7" ry="9" fill="rgba(255,255,255,.15)"/>
-              <!-- flame -->
-              <ellipse cx="0" cy="32" rx="6" ry="10" fill="var(--ac)" opacity=".7"/>
-              <ellipse cx="0" cy="34" rx="4" ry="7" fill="#fbbf24" opacity=".8"/>
-            </g>
-          </svg>
-        </div>
-      </div>
+
     </div>
   </div>
 
@@ -338,7 +270,14 @@
     </div>
   </div>
 
-  <div class="testi-card">
+  <!-- TESTIMONIALS -->
+  <section class="testi-section">
+    <div class="section-inner">
+      <div class="sec-header">
+        <div class="sec-tag">Depoimentos</div>
+        <h2 class="sec-h">Q que nossos <span class="hl">clientes</span> dizem</h2>
+      </div>
+      <div class="testi-card">
   <div class="stars">★★★★★</div>
   <p>Serviço excelente! Entrega rápida e muita qualidade. Meu perfil cresceu muito em poucos dias.</p>
   <div class="testi-author">
@@ -373,6 +312,12 @@
     <div class="testi-info"><div class="name">Juliana T.</div><div class="role">Influenciadora</div></div>
   </div>
 </div>
+      </div>
+      <div class="testi-dots">
+        <span></span><span></span><span class="active"></span><span></span><span></span>
+      </div>
+    </div>
+  </section>
 
   <!-- SERVICES -->
   <section class="services-section" id="servicos">
@@ -383,17 +328,6 @@
         <p class="sec-p">Entrega rápida, segura e com a qualidade que você precisa.</p>
       </div>
       <div class="srv-grid">
-
-                <a href="planos.html?servico=seguidores-mundiais" class="srv-card service-track" data-service="Seguidores Mundiais" data-slug="seguidores-mundiais">
-          <div class="srv-icon-wrap" style="background:rgba(6,182,212,.12)">🌐</div>
-          <h3>Seguidores Mundiais</h3>
-          <p class="srv-desc">Aumente sua audiência com seguidores do mundo todo.</p>
-          <ul class="srv-list">
-            <li>Entrega rápida</li>
-            <li>Alta qualidade</li>
-            <li><strong>A partir de R$ 4,50</strong></li>
-          </ul>
-        </a>
 
         <a href="planos.html?servico=seguidores-brasileiros" class="srv-card service-track" data-service="Seguidores Brasileiros" data-slug="seguidores-brasileiros">
           <div class="srv-icon-wrap" style="background:rgba(124,92,252,.12)">👥</div>
@@ -406,14 +340,14 @@
           </ul>
         </a>
 
-        <a href="planos.html?servico=seguidores-organicos" class="srv-card service-track" data-service="Seguidores Orgânicos" data-slug="seguidores-organicos">
-          <div class="srv-icon-wrap" style="background:rgba(52,211,153,.12)">🌱</div>
-          <h3>Seguidores Orgânicos</h3>
-          <p class="srv-desc">Seguidores com alta retenção e perfis mais ativos.</p>
+        <a href="planos.html?servico=seguidores-mundiais" class="srv-card service-track" data-service="Seguidores Mundiais" data-slug="seguidores-mundiais">
+          <div class="srv-icon-wrap" style="background:rgba(6,182,212,.12)">🌐</div>
+          <h3>Seguidores Mundiais</h3>
+          <p class="srv-desc">Aumente sua audiência com seguidores do mundo todo.</p>
           <ul class="srv-list">
-            <li>Entrega gradual</li>
-            <li>Alta retenção</li>
-            <li><strong>A partir de R$ 8,00</strong></li>
+            <li>Entrega rápida</li>
+            <li>Alta qualidade</li>
+            <li><strong>A partir de R$ 4,50</strong></li>
           </ul>
         </a>
 
@@ -447,6 +381,39 @@
             <li>Entrega rápida</li>
             <li>Alta qualidade</li>
             <li><strong>A partir de R$ 6,00</strong></li>
+          </ul>
+        </a>
+
+        <a href="planos.html?servico=seguidores-organicos" class="srv-card service-track" data-service="Seguidores Orgânicos" data-slug="seguidores-organicos">
+          <div class="srv-icon-wrap" style="background:rgba(52,211,153,.12)">🌱</div>
+          <h3>Seguidores Orgânicos</h3>
+          <p class="srv-desc">Seguidores com alta retenção e perfis mais ativos.</p>
+          <ul class="srv-list">
+            <li>Entrega gradual</li>
+            <li>Alta retenção</li>
+            <li><strong>A partir de R$ 8,00</strong></li>
+          </ul>
+        </a>
+
+        <a href="planos.html?servico=salvamentos" class="srv-card service-track" data-service="Salvamentos" data-slug="salvamentos">
+          <div class="srv-icon-wrap" style="background:rgba(99,102,241,.12)">🔖</div>
+          <h3>Salvamentos</h3>
+          <p class="srv-desc">Mais salvamentos reais para suas publicações e Reels.</p>
+          <ul class="srv-list">
+            <li>Entrega rápida</li>
+            <li>Alta qualidade</li>
+            <li><strong>A partir de R$ 3,00</strong></li>
+          </ul>
+        </a>
+
+        <a href="planos.html?servico=compartilhamentos" class="srv-card service-track" data-service="Compartilhamentos" data-slug="compartilhamentos">
+          <div class="srv-icon-wrap" style="background:rgba(251,146,60,.12)">📤</div>
+          <h3>Compartilhamentos</h3>
+          <p class="srv-desc">Aumente o alcance com compartilhamentos reais e engajados.</p>
+          <ul class="srv-list">
+            <li>Entrega rápida</li>
+            <li>Alta qualidade</li>
+            <li><strong>A partir de R$ 4,00</strong></li>
           </ul>
         </a>
 
@@ -563,6 +530,38 @@
       }).catch(()=>{});
       sessionStorage.setItem('visitante_enviado','1');
     }
+
+    // Contadores animados
+    (function(){
+      function randomBetween(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+      var online = randomBetween(180,320);
+      var vendidos = randomBetween(20,50);
+      document.getElementById("online-count").textContent = online;
+      document.getElementById("vendidos-count").textContent = vendidos;
+      setInterval(function(){
+        online += randomBetween(-3,5);
+        online = Math.max(150, Math.min(400, online));
+        vendidos += randomBetween(0,2);
+        document.getElementById("online-count").textContent = online;
+        document.getElementById("vendidos-count").textContent = vendidos;
+      }, 4000);
+    })();
+
+    // Toast rotativo
+    (function(){
+      var toasts = [
+        "@joaosilva comprou 500 seguidores brasileiros",
+        "@mariana.fit comprou 1.000 curtidas",
+        "@lucas_music comprou visualizações de Reels",
+        "@ana.moda comprou 250 seguidores orgânicos",
+        "@pedro.shop comprou 2.000 seguidores mundiais"
+      ];
+      var i = 0;
+      setInterval(function(){
+        i = (i+1) % toasts.length;
+        document.getElementById("toast-msg").textContent = toasts[i];
+      }, 5000);
+    })();
 
     // Smooth scroll for nav links
     document.querySelectorAll('a[href^="#"]').forEach(a=>{
