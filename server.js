@@ -434,8 +434,21 @@ async function carregar(){
     '<div class="row"><span>🟢 Pix Gerados</span><strong>'+d.pix+'</strong></div>'+
     '<div class="row"><span>🛒 Vendas</span><strong>'+d.vendas+'</strong></div>';
 
-  servicosDetalhes.innerHTML = lista(d.servicosDetalhes);
-var planosOrdenados = Object.entries(d.planosDetalhes || {}).sort((a,b)=>b[1]-a[1]);
+var servicosOrdenados = Object.entries(d.servicosDetalhes || {}).sort((a,b)=>b[1]-a[1]);
+
+if(!servicosOrdenados.length){
+  servicosDetalhes.innerHTML = '<div class="row"><span>Nenhum dado ainda</span></div>';
+} else {
+  var servicosVisiveis = servicosOrdenados.slice(0, 5);
+
+  servicosDetalhes.innerHTML = servicosVisiveis.map(([k,v]) =>
+    '<div class="row"><span>'+k+'</span><strong>'+v+'</strong></div>'
+  ).join('');
+
+  if (servicosOrdenados.length > 5) {
+    servicosDetalhes.innerHTML += '<button onclick="mostrarTodosServicos()" style="margin-top:12px">Ver todos</button>';
+  }
+}var planosOrdenados = Object.entries(d.planosDetalhes || {}).sort((a,b)=>b[1]-a[1]);
 
 if(!planosOrdenados.length){
   planosDetalhes.innerHTML = '<div class="row"><span>Nenhum dado ainda</span></div>';
@@ -489,6 +502,18 @@ function mostrarTodosPlanos(){
       var planosOrdenados = Object.entries(d.planosDetalhes || {}).sort((a,b)=>b[1]-a[1]);
 
       planosDetalhes.innerHTML = planosOrdenados.map(([k,v]) =>
+        '<div class="row"><span>'+k+'</span><strong>'+v+'</strong></div>'
+      ).join('');
+    });
+}
+
+function mostrarTodosServicos(){
+  fetch('/dashboard-data?senha=' + encodeURIComponent(senha))
+    .then(r => r.json())
+    .then(d => {
+      var servicosOrdenados = Object.entries(d.servicosDetalhes || {}).sort((a,b)=>b[1]-a[1]);
+
+      servicosDetalhes.innerHTML = servicosOrdenados.map(([k,v]) =>
         '<div class="row"><span>'+k+'</span><strong>'+v+'</strong></div>'
       ).join('');
     });
