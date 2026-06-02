@@ -568,13 +568,15 @@ app.get('/instagram/perfil', async (req, res) => {
     }
 
     return res.json({
-      success:true,
-      username: perfil.username,
-      nome: perfil.fullName || perfil.username,
-      seguidores: perfil.followersCount || 0,
-      foto: perfil.profilePicUrl,
-      link: `https://instagram.com/${perfil.username}`
-    });
+  success:true,
+  username: perfil.username,
+  nome: perfil.fullName || perfil.username,
+  seguidores: perfil.followersCount || 0,
+  seguindo: perfil.followsCount || 0,
+  posts: perfil.postsCount || 0,
+  foto: perfil.profilePicUrl,
+  link: `https://instagram.com/${perfil.username}`
+});
 
   } catch(err) {
     console.error(err.response?.data || err.message);
