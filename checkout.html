@@ -241,6 +241,11 @@
     <div>
       <div id="perfil-nome" style="font-weight:800;color:var(--text);">Perfil encontrado</div>
       <div id="perfil-user" style="font-size:.85rem;color:var(--muted);">@usuario</div>
+      <div id="perfil-stats" style="font-size:.78rem;color:var(--muted);margin-top:.25rem;"></div>
+
+<a id="perfil-link" href="#" target="_blank" style="display:inline-block;margin-top:.35rem;color:var(--ac);font-size:.8rem;font-weight:700;text-decoration:none;">
+  Ver perfil ↗
+</a>
     </div>
   </div>
 
@@ -516,6 +521,10 @@ async function verificarInstagram(){
 
     document.getElementById("perfil-nome").textContent = d.nome || "Perfil encontrado";
     document.getElementById("perfil-user").textContent = "@" + d.username;
+    document.getElementById("perfil-stats").textContent =
+  (d.seguidores || 0).toLocaleString("pt-BR") + " seguidores";
+
+document.getElementById("perfil-link").href = d.link;
     document.getElementById("perfil-verificado").style.display = "block";
     document.getElementById("link_final_instagram").value = d.link;
 
