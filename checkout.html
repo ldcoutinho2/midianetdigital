@@ -477,7 +477,7 @@
       el.focus();
     }
 
-    var instagramConfirmado = false;
+   var instagramConfirmado = false;
 
 function limparUsuarioInstagram(valor){
   return valor
@@ -508,18 +508,18 @@ async function verificarInstagram(){
       throw new Error(d.error || "Perfil não encontrado.");
     }
 
-    var foto = d.foto || "https://ui-avatars.com/api/?name=" + encodeURIComponent(d.username);
-document.getElementById("perfil-foto").src = foto;
-document.getElementById("perfil-foto").onerror = function(){
-  this.src = "https://ui-avatars.com/api/?name=" + encodeURIComponent(d.username) + "&background=e8ff47&color=080810";
-}; || "https://ui-avatars.com/api/?name=" + encodeURIComponent(user);
+    var imgPerfil = document.getElementById("perfil-foto");
+    imgPerfil.src = d.foto || "https://ui-avatars.com/api/?name=" + encodeURIComponent(d.username) + "&background=e8ff47&color=080810";
+    imgPerfil.onerror = function(){
+      this.src = "https://ui-avatars.com/api/?name=" + encodeURIComponent(d.username) + "&background=e8ff47&color=080810";
+    };
+
     document.getElementById("perfil-nome").textContent = d.nome || "Perfil encontrado";
     document.getElementById("perfil-user").textContent = "@" + d.username;
-
     document.getElementById("perfil-verificado").style.display = "block";
     document.getElementById("link_final_instagram").value = d.link;
 
-    if(servicoPublicacao){
+    if(isPublicacao){
       carregarPostsInstagram(d.username);
     }
 
@@ -537,14 +537,13 @@ function confirmarPerfilInstagram(){
   campo.style.opacity = "0.75";
 
   document.getElementById("msg-instagram").textContent = "Perfil confirmado ✅";
+  document.getElementById("msg-instagram").className = "field-msg show ok";
 
   var btn = document.querySelector("#perfil-verificado button");
   if(btn){
     btn.textContent = "✅ Perfil confirmado";
     btn.style.background = "#34d399";
   }
-}  instagramConfirmado = true;
-  document.getElementById("msg-instagram").textContent = "Perfil confirmado ✅";
 }
 
 async function carregarPostsInstagram(user){
@@ -582,6 +581,7 @@ function selecionarPostInstagram(url, el){
 
   el.style.borderColor = "#e8ff47";
   document.getElementById("msg-instagram").textContent = "Publicação selecionada ✅";
+  document.getElementById("msg-instagram").className = "field-msg show ok";
 }
 
     async function criarPedido() {
