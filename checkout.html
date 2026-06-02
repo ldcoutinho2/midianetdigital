@@ -508,7 +508,11 @@ async function verificarInstagram(){
       throw new Error(d.error || "Perfil não encontrado.");
     }
 
-    document.getElementById("perfil-foto").src = d.foto || "https://ui-avatars.com/api/?name=" + encodeURIComponent(user);
+    var foto = d.foto || "https://ui-avatars.com/api/?name=" + encodeURIComponent(d.username);
+document.getElementById("perfil-foto").src = foto;
+document.getElementById("perfil-foto").onerror = function(){
+  this.src = "https://ui-avatars.com/api/?name=" + encodeURIComponent(d.username) + "&background=e8ff47&color=080810";
+}; || "https://ui-avatars.com/api/?name=" + encodeURIComponent(user);
     document.getElementById("perfil-nome").textContent = d.nome || "Perfil encontrado";
     document.getElementById("perfil-user").textContent = "@" + d.username;
 
@@ -527,6 +531,19 @@ async function verificarInstagram(){
 
 function confirmarPerfilInstagram(){
   instagramConfirmado = true;
+
+  var campo = document.getElementById("instagram");
+  campo.readOnly = true;
+  campo.style.opacity = "0.75";
+
+  document.getElementById("msg-instagram").textContent = "Perfil confirmado ✅";
+
+  var btn = document.querySelector("#perfil-verificado button");
+  if(btn){
+    btn.textContent = "✅ Perfil confirmado";
+    btn.style.background = "#34d399";
+  }
+}  instagramConfirmado = true;
   document.getElementById("msg-instagram").textContent = "Perfil confirmado ✅";
 }
 
