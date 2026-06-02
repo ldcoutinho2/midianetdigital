@@ -521,10 +521,13 @@ async function verificarInstagram(){
 
     document.getElementById("perfil-nome").textContent = d.nome || "Perfil encontrado";
     document.getElementById("perfil-user").textContent = "@" + d.username;
-    document.getElementById("perfil-stats").textContent =
-  (d.seguidores || 0).toLocaleString("pt-BR") + " seguidores";
+  document.getElementById("perfil-stats").textContent =
+  (d.posts || 0).toLocaleString("pt-BR") + " posts • " +
+  (d.seguidores || 0).toLocaleString("pt-BR") + " seguidores • " +
+  (d.seguindo || 0).toLocaleString("pt-BR") + " seguindo";
 
 document.getElementById("perfil-link").href = d.link;
+document.getElementById("perfil-link").textContent = "Ver perfil ↗";
     document.getElementById("perfil-verificado").style.display = "block";
     document.getElementById("link_final_instagram").value = d.link;
 
