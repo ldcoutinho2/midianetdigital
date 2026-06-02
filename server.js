@@ -591,6 +591,8 @@ app.get('/instagram/posts', async (req, res) => {
   try {
     const user = String(req.query.user || '')
       .replace('@', '')
+      .replace('https://www.instagram.com/', '')
+      .replace('https://instagram.com/', '')
       .split('/')[0]
       .split('?')[0]
       .trim();
@@ -599,12 +601,35 @@ app.get('/instagram/posts', async (req, res) => {
       return res.status(400).json({ success:false, posts:[] });
     }
 
+    const run = await axios.post(
+      'https://api.apify.com/v2/acts/apify~instagram-profile-scraper/run-sync-get-dataset-items',
+      {
+        usernames: [user]
+      },
+      {
+        params: {
+          token: APIFY_TOKEN
+        }
+      }
+    );
+
+    const perfil = run.data?.[0];
+
+    const posts = (perfil?.latestPosts || perfil?.posts || [])
+      .slice(0, 9)
+      .map(post => ({
+        url: post.url || `https://www.instagram.com/p/${post.shortCode || post.shortcode}/`,
+        thumb: post.displayUrl || post.imageUrl || post.thumbnailUrl || post.url
+      }))
+      .filter(post => post.url && post.thumb);
+
     return res.json({
       success: true,
-      posts: []
+      posts
     });
 
   } catch (err) {
+    console.error('[ERRO instagram posts]', err.response?.data || err.message);
     return res.status(500).json({ success:false, posts:[] });
   }
 });
