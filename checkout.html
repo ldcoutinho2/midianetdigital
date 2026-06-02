@@ -570,13 +570,13 @@ async function carregarPostsInstagram(user){
       throw new Error("Sem publicações.");
     }
 
-    document.getElementById("posts-grid").innerHTML = d.posts.map(function(post){
-      return `
-        <div onclick="selecionarPostInstagram('${post.url}', this)" style="cursor:pointer;border:2px solid transparent;border-radius:12px;overflow:hidden;background:#111120;">
-          <img src="${post.thumb}" referrerpolicy="no-referrer" style="width:100%;aspect-ratio:1/1;object-fit:cover;display:block;" onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=\'height:100%;min-height:90px;display:flex;align-items:center;justify-content:center;color:#e8ff47;font-size:.75rem;text-align:center;padding:.5rem;\'>Ver post</div>';">
-        </div>
-      `;
-    }).join("");
+   document.getElementById("posts-grid").innerHTML = d.posts.map(function(post, i){
+  return `
+    <div onclick="selecionarPostInstagram('${post.url}', this)" style="cursor:pointer;border:2px solid transparent;border-radius:12px;background:#181828;min-height:86px;display:flex;align-items:center;justify-content:center;text-align:center;color:#e8ff47;font-size:.72rem;font-weight:800;padding:.5rem;">
+      Selecionar<br>post ${i + 1}
+    </div>
+  `;
+}).join("");
 
   } catch(e){
     document.getElementById("posts-grid").innerHTML = "<div style='color:var(--muted);font-size:.85rem;'>Não foi possível carregar publicações. Cole o link da publicação manualmente.</div>";
