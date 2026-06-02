@@ -1,4 +1,5 @@
 require('dotenv').config();
+const APIFY_TOKEN = process.env.APIFY_TOKEN;
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
@@ -529,6 +530,7 @@ setInterval(carregar, 10000);
 
 app.get('/instagram/perfil', async (req, res) => {
   try {
+
     const user = String(req.query.user || '')
       .replace('@', '')
       .replace('https://www.instagram.com/', '')
@@ -538,22 +540,51 @@ app.get('/instagram/perfil', async (req, res) => {
       .trim();
 
     if (!user) {
-      return res.status(400).json({ success:false, error:'Usuário inválido' });
+      return res.status(400).json({
+        success:false,
+        error:'Usuário inválido'
+      });
+    }
+
+    const run = await axios.post(
+      'https://api.apify.com/v2/acts/apify~instagram-profile-scraper/run-sync-get-dataset-items',
+      {
+        usernames: [user]
+      },
+      {
+        params: {
+          token: APIFY_TOKEN
+        }
+      }
+    );
+
+    const perfil = run.data?.[0];
+
+    if (!perfil) {
+      return res.json({
+        success:false,
+        error:'Perfil não encontrado'
+      });
     }
 
     return res.json({
-      success: true,
-      username: user,
-      nome: '@' + user,
-      foto: `https://ui-avatars.com/api/?name=${encodeURIComponent(user)}&background=e8ff47&color=080810`,
-      link: `https://instagram.com/${user}`
+      success:true,
+      username: perfil.username,
+      nome: perfil.fullName || perfil.username,
+      seguidores: perfil.followersCount || 0,
+      foto: perfil.profilePicUrl,
+      link: `https://instagram.com/${perfil.username}`
     });
 
-  } catch (err) {
-    return res.status(500).json({ success:false, error:'Erro ao buscar perfil' });
+  } catch(err) {
+    console.error(err.response?.data || err.message);
+
+    return res.status(500).json({
+      success:false,
+      error:'Erro ao consultar Instagram'
+    });
   }
 });
-
 app.get('/instagram/posts', async (req, res) => {
   try {
     const user = String(req.query.user || '')
