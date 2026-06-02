@@ -527,6 +527,55 @@ setInterval(carregar, 10000);
   `);
 });
 
+app.get('/instagram/perfil', async (req, res) => {
+  try {
+    const user = String(req.query.user || '')
+      .replace('@', '')
+      .replace('https://www.instagram.com/', '')
+      .replace('https://instagram.com/', '')
+      .split('/')[0]
+      .split('?')[0]
+      .trim();
+
+    if (!user) {
+      return res.status(400).json({ success:false, error:'Usuário inválido' });
+    }
+
+    return res.json({
+      success: true,
+      username: user,
+      nome: '@' + user,
+      foto: `https://ui-avatars.com/api/?name=${encodeURIComponent(user)}&background=e8ff47&color=080810`,
+      link: `https://instagram.com/${user}`
+    });
+
+  } catch (err) {
+    return res.status(500).json({ success:false, error:'Erro ao buscar perfil' });
+  }
+});
+
+app.get('/instagram/posts', async (req, res) => {
+  try {
+    const user = String(req.query.user || '')
+      .replace('@', '')
+      .split('/')[0]
+      .split('?')[0]
+      .trim();
+
+    if (!user) {
+      return res.status(400).json({ success:false, posts:[] });
+    }
+
+    return res.json({
+      success: true,
+      posts: []
+    });
+
+  } catch (err) {
+    return res.status(500).json({ success:false, posts:[] });
+  }
+});
+
 app.post('/criar-pedido', async (req, res) => {
   try {
     const { nome, telefone, instagram, servico, plano, pagamento } = req.body;
