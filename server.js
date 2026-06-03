@@ -637,6 +637,33 @@ app.get('/instagram/posts', async (req, res) => {
   }
 });
 
+app.get('/proxy-img', async (req, res) => {
+  try {
+    const url = req.query.url;
+
+    if (!url || !url.startsWith('https://')) {
+      return res.status(400).send('URL inválida');
+    }
+
+    const img = await axios.get(url, {
+      responseType: 'arraybuffer',
+      headers: {
+        'User-Agent': 'Mozilla/5.0',
+        'Referer': 'https://www.instagram.com/'
+      }
+    });
+
+    res.set('Content-Type', img.headers['content-type'] || 'image/jpeg');
+    res.set('Cache-Control', 'public, max-age=86400');
+
+    return res.send(img.data);
+
+  } catch (err) {
+    console.error('[ERRO proxy-img]', err.message);
+    return res.status(500).send('Erro ao carregar imagem');
+  }
+});
+
 app.post('/criar-pedido', async (req, res) => {
   try {
     const { nome, telefone, instagram, servico, plano, pagamento } = req.body;
