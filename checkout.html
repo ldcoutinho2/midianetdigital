@@ -394,12 +394,20 @@
       "25000":"25.000 un","10":"10 un","25":"25 un"
     };
 
-    var pedidoId = null, pollInt = null, cdInt = null;
+var pedidoId = null, pollInt = null, cdInt = null;
+var linksSelecionados = [];
+var maxPublicacoes = 1;
     var p = new URLSearchParams(location.search);
     var servico = p.get("servico") || sessionStorage.getItem("servico") || "";
     var plano = p.get("plano") || sessionStorage.getItem("plano") || "";
     var chave = servico + "__" + plano;
     var valor = PRECOS[chave] || 0;
+    if(servico === "visualizacoes" || servico === "curtidas-brasileiras"){
+  if(plano === "500") maxPublicacoes = 1;
+  else if(plano === "1000") maxPublicacoes = 2;
+  else if(plano === "2500") maxPublicacoes = 3;
+  else maxPublicacoes = 5;
+}
 
     document.getElementById("r-icon").textContent = ICONS[servico] || "";
     document.getElementById("r-servico").textContent = SL[servico] || servico || "-";
@@ -637,7 +645,7 @@ if(!r.ok || !d.success || !d.posts.length){
           cursor:pointer;
         "
       >
-        Confirmar publicação
+        Confirmar publicações
       </button>
     `);
 
@@ -654,27 +662,37 @@ if(!r.ok || !d.success || !d.posts.length){
 
 function selecionarPostInstagram(url, el){
 
-  document.getElementById("link_final_instagram").value = url;
+  var index = linksSelecionados.indexOf(url);
 
-  document.querySelectorAll("#posts-grid > div").forEach(function(card){
-    card.style.borderColor = "transparent";
-  });
+  if(index >= 0){
+    linksSelecionados.splice(index, 1);
+    el.style.borderColor = "transparent";
+  } else {
+    if(linksSelecionados.length >= maxPublicacoes){
+      alert("Você pode selecionar no máximo " + maxPublicacoes + " publicações neste plano.");
+      return;
+    }
 
-  el.style.borderColor = "#e8ff47";
+    linksSelecionados.push(url);
+    el.style.borderColor = "#e8ff47";
+  }
+
+  document.getElementById("link_final_instagram").value =
+    JSON.stringify(linksSelecionados);
 
   var btnPub = document.getElementById("btn-confirmar-publicacao");
   if(btnPub){
-    btnPub.style.display = "block";
+    btnPub.style.display = linksSelecionados.length > 0 ? "block" : "none";
   }
 
   document.getElementById("msg-instagram").textContent =
-    "Publicação selecionada ✅";
+    "Selecionadas: " + linksSelecionados.length + "/" + maxPublicacoes + " publicações";
 
   document.getElementById("msg-instagram").className =
     "field-msg show ok";
 }
 
-function confirmarPublicacaoInstagram(){
+function confirmarPublicacaoInstagram(){    if(!linksSelecionados.length){     alert("Selecione pelo menos uma publicação.");     return;   }    instagramConfirmado = true;    var btn = document.getElementById("btn-confirmar-publicacao");    btn.textContent = "✅ Publicações confirmadas";   btn.style.background = "#34d399";    document.getElementById("msg-instagram").textContent =     "Publicações confirmadas ✅ Agora é só gerar o Pix.";    document.getElementById("msg-instagram").className =     "field-msg show ok"; }
 
   if(!document.getElementById("link_final_instagram").value){
     alert("Selecione uma publicação primeiro.");
