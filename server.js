@@ -602,9 +602,12 @@ app.get('/instagram/posts', async (req, res) => {
     }
 
     const run = await axios.post(
-      'https://api.apify.com/v2/acts/apify~instagram-profile-scraper/run-sync-get-dataset-items',
+      'https://api.apify.com/v2/acts/apify~instagram-scraper/run-sync-get-dataset-items',
       {
-        usernames: [user]
+        directUrls: [`https://www.instagram.com/${user}/`],
+        resultsType: 'posts',
+        resultsLimit: 12,
+        searchType: 'user'
       },
       {
         params: {
@@ -613,15 +616,15 @@ app.get('/instagram/posts', async (req, res) => {
       }
     );
 
-    const perfil = run.data?.[0];
-
-    const posts = (perfil?.latestPosts || perfil?.posts || [])
-      .slice(0, 9)
+    const posts = (run.data || [])
+      .slice(0, 12)
       .map(post => ({
         url: post.url || `https://www.instagram.com/p/${post.shortCode || post.shortcode}/`,
-        thumb: post.displayUrl || post.imageUrl || post.thumbnailUrl || post.url
+        thumb: post.displayUrl || post.imageUrl || post.thumbnailUrl || post.videoUrl || '',
+        caption: post.caption || '',
+        tipo: post.type || post.productType || ''
       }))
-      .filter(post => post.url && post.thumb);
+      .filter(post => post.url);
 
     return res.json({
       success: true,
