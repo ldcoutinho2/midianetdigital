@@ -570,12 +570,33 @@ async function carregarPostsInstagram(user){
       throw new Error("Sem publicações.");
     }
 
-   document.getElementById("posts-grid").innerHTML = d.posts.map(function(post, i){
+document.getElementById("posts-grid").innerHTML = d.posts.map(function(post){
+
   return `
-    <div onclick="selecionarPostInstagram('${post.url}', this)" style="cursor:pointer;border:2px solid transparent;border-radius:12px;background:#181828;min-height:86px;display:flex;align-items:center;justify-content:center;text-align:center;color:#e8ff47;font-size:.72rem;font-weight:800;padding:.5rem;">
-      Selecionar<br>post ${i + 1}
+    <div
+      onclick="selecionarPostInstagram('${post.url}', this)"
+      style="
+        cursor:pointer;
+        border:2px solid transparent;
+        border-radius:12px;
+        overflow:hidden;
+        background:#181828;
+      "
+    >
+
+      <img
+        src="${post.thumb}"
+        style="
+          width:100%;
+          aspect-ratio:1/1;
+          object-fit:cover;
+          display:block;
+        "
+      >
+
     </div>
   `;
+
 }).join("");
 
   } catch(e){
@@ -584,7 +605,9 @@ async function carregarPostsInstagram(user){
 }
 
 function selecionarPostInstagram(url, el){
+
   document.getElementById("link_final_instagram").value = url;
+
   instagramConfirmado = true;
 
   document.querySelectorAll("#posts-grid > div").forEach(function(card){
@@ -592,8 +615,12 @@ function selecionarPostInstagram(url, el){
   });
 
   el.style.borderColor = "#e8ff47";
-  document.getElementById("msg-instagram").textContent = "Publicação selecionada ✅";
-  document.getElementById("msg-instagram").className = "field-msg show ok";
+
+  document.getElementById("msg-instagram").textContent =
+  "Publicação selecionada ✅";
+
+  document.getElementById("msg-instagram").className =
+  "field-msg show ok";
 }
 
     async function criarPedido() {
