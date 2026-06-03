@@ -210,23 +210,55 @@ if (e.tipo === 'pix') {
 }
 
 async function enviarPedidoSMM(pedido) {
-  const smmResp = await axios.post(
-    process.env.SMM_API_URL,
-    new URLSearchParams({
-      key: process.env.SMM_API_KEY,
-      action: 'add',
-      service: pedido.smmId,
-      link: pedido.instagram.startsWith('http')
-        ? pedido.instagram
-        : `https://instagram.com/${pedido.instagram.replace('@', '')}`,
-      quantity: pedido.plano,
-    }),
-    { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
-  );
+  let links = [];
 
-  return smmResp.data;
+  try {
+    links = JSON.parse(pedido.instagram);
+    if (!Array.isArray(links)) links = [pedido.instagram];
+  } catch (e) {
+    links = [pedido.instagram];
+  }
+
+  links = links.filter(link => link && String(link).trim());
+
+  if (!links.length) {
+    throw new Error('Nenhum link válido para enviar ao SMM');
+  }
+
+  const quantidadeTotal = Number(pedido.plano);
+  const quantidadePorLink = Math.floor(quantidadeTotal / links.length);
+
+  const resultados = [];
+
+  for (const linkOriginal of links) {
+    const link = String(linkOriginal).trim();
+
+    const smmResp = await axios.post(
+      process.env.SMM_API_URL,
+      new URLSearchParams({
+        key: process.env.SMM_API_KEY,
+        action: 'add',
+        service: pedido.smmId,
+        link: link.startsWith('http')
+          ? link
+          : `https://instagram.com/${link.replace('@', '')}`,
+        quantity: quantidadePorLink,
+      }),
+      { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+    );
+
+    resultados.push(smmResp.data);
+  }
+
+  return {
+    multiplos: links.length > 1,
+    quantidadeTotal,
+    quantidadePorLink,
+    totalLinks: links.length,
+    pedidos: resultados,
+    order: resultados.map(r => r.order).filter(Boolean).join(', ')
+  };
 }
-
 async function enviarPurchaseMeta(pedido) {
   try {
     if (!process.env.META_PIXEL_ID || !process.env.META_ACCESS_TOKEN) {
