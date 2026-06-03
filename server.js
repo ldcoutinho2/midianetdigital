@@ -32,12 +32,12 @@ const SERVICO_MAP = {
   'seguidores-organicos__1000': '1125',
   'seguidores-organicos__2000': '1125',
 
-  'curtidas-brasileiras__50': '1234',
-  'curtidas-brasileiras__100': '1234',
-  'curtidas-brasileiras__250': '1234',
-  'curtidas-brasileiras__500': '1234',
+    'curtidas-brasileiras__500': '1234',
   'curtidas-brasileiras__1000': '1234',
-  'curtidas-brasileiras__2000': '1234',
+  'curtidas-brasileiras__2500': '1234',
+  'curtidas-brasileiras__5000': '1234',
+  'curtidas-brasileiras__10000': '1234',
+  'curtidas-brasileiras__20000': '1234',
 
   'visualizacoes__500': '1013',
   'visualizacoes__1000': '1013',
