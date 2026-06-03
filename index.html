@@ -31,8 +31,8 @@
     html{scroll-behavior:smooth}
     body{background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6}
 
-    /* NAV */
-    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:.9rem 5%;background:rgba(10,10,15,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+    /* ── NAV ── */
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:.9rem 5%;background:rgba(10,10,15,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
     .logo{font-weight:800;font-size:1.25rem;letter-spacing:-.03em;color:var(--text);text-decoration:none}
     .logo em{color:var(--ac);font-style:normal}
     .nav-links{display:flex;align-items:center;gap:2rem}
@@ -40,222 +40,182 @@
     .nav-links a:hover{color:var(--text)}
     @media(max-width:768px){.nav-links{display:none}}
 
-    /* TRUST BAR */
-    .trust-bar{margin-top:64px;background:rgba(255,255,255,.025);border-bottom:1px solid var(--border);padding:.7rem 5%;display:flex;justify-content:center;gap:3rem;flex-wrap:wrap}
-    .trust-bar-item{display:flex;align-items:center;gap:.5rem;font-size:.8rem;color:var(--muted);font-weight:500}
-    .trust-bar-item svg{width:16px;height:16px;opacity:.6}
-    @media(max-width:600px){.trust-bar{gap:1.2rem;padding:.7rem 4%}.trust-bar-item{font-size:.72rem}}
-
-    /* HERO */
-    .hero{position:relative;z-index:1;padding:5rem 5% 4.5rem;max-width:1100px;margin:0 auto;min-height:calc(100vh - 100px);display:flex;flex-direction:column;justify-content:center}
-    .hero-top-pills{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin-bottom:1.5rem}
-    .hero-pill{display:inline-flex;align-items:center;gap:.4rem;background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--muted);font-size:.78rem;font-weight:600;padding:.35rem .9rem;border-radius:100px}
-    .hero-pill .dot-live{width:7px;height:7px;background:#34d399;border-radius:50%;animation:pulse 2s infinite;flex-shrink:0}
-    .hero-pill.ac{background:rgba(232,255,71,.07);border-color:rgba(232,255,71,.2);color:var(--ac)}
-    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}
-    .hero h1{font-size:clamp(3.5rem,9vw,7.5rem);font-weight:900;line-height:.97;letter-spacing:-.06em;margin-bottom:1.5rem}
+    /* ── HERO ── */
+    .hero{padding:6.5rem 5% 2.5rem;max-width:900px;margin:0 auto;text-align:center}
+    .hero h1{font-size:clamp(2.8rem,8vw,6rem);font-weight:900;line-height:1;letter-spacing:-.05em;margin-bottom:1.5rem}
     .hero h1 .hl{color:var(--ac)}
-    .hero-sub{font-size:clamp(1rem,1.8vw,1.15rem);color:var(--muted);max-width:580px;line-height:1.7;margin-bottom:2rem}
-    .hero-bottom{display:flex;align-items:center;gap:2rem;flex-wrap:wrap}
-    .btn-p{display:inline-flex;align-items:center;gap:.5rem;background:var(--ac);color:#080810;font-weight:800;font-size:1rem;padding:.9rem 2.2rem;border-radius:100px;text-decoration:none;transition:transform .2s,box-shadow .2s;box-shadow:0 0 28px rgba(232,255,71,.25)}
-    .btn-p:hover{transform:translateY(-2px);box-shadow:0 0 44px rgba(232,255,71,.4)}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}
+
+    /* ── PILLS ── */
+    .pills-row{display:flex;justify-content:center;gap:.6rem;flex-wrap:wrap;margin-bottom:2rem}
+    .pill{display:inline-flex;align-items:center;gap:.4rem;background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--muted);font-size:.78rem;font-weight:600;padding:.38rem .9rem;border-radius:100px}
+    .pill.ac{background:rgba(232,255,71,.07);border-color:rgba(232,255,71,.2);color:var(--ac)}
+    .dot-live{width:7px;height:7px;background:#34d399;border-radius:50%;animation:pulse 2s infinite;flex-shrink:0}
+
+    /* ── STORIES SECTION ── */
+    .stories-section{padding:1rem 5% 3rem;max-width:1000px;margin:0 auto}
+    .stories-sec-label{display:flex;align-items:center;justify-content:center;gap:.6rem;font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ac);margin-bottom:1.25rem}
+    .stories-sec-label::before,.stories-sec-label::after{content:"";flex:1;max-width:80px;height:1px;background:rgba(232,255,71,.25)}
+    .stories-sec-h{font-size:clamp(1.4rem,3.5vw,2rem);font-weight:900;letter-spacing:-.03em;text-align:center;margin-bottom:.5rem;line-height:1.2}
+    .stories-sec-h .hl{color:var(--ac)}
+    .stories-sec-sub{text-align:center;color:var(--muted);font-size:.9rem;margin-bottom:2rem}
+    .stories-sec-sub strong{color:var(--text)}
+
+    /* Circles row */
+    .stories-row{display:flex;justify-content:center;gap:1.75rem;flex-wrap:wrap;padding:.5rem 0 1rem}
+    .story-bubble{display:flex;flex-direction:column;align-items:center;gap:.6rem;cursor:pointer;-webkit-tap-highlight-color:transparent}
+    .story-ring{width:110px;height:110px;border-radius:50%;padding:3px;
+      background:conic-gradient(var(--ac) 0deg,var(--ac2) 120deg,#f472b6 240deg,var(--ac) 360deg);
+      animation:spinRing 4s linear infinite;transition:transform .2s,filter .2s}
+    .story-bubble:hover .story-ring{transform:scale(1.06);filter:brightness(1.15)}
+    @keyframes spinRing{to{transform:rotate(360deg)}}
+    .story-circle{width:100%;height:100%;border-radius:50%;overflow:hidden;border:3px solid var(--bg);background:#111;position:relative}
+    .story-circle video{width:100%;height:100%;object-fit:cover;pointer-events:none}
+    /* play icon overlay */
+    .story-play-icon{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.28)}
+    .story-play-icon svg{width:32px;height:32px;filter:drop-shadow(0 2px 8px rgba(0,0,0,.6))}
+    .story-bubble.watched .story-ring{background:rgba(255,255,255,.15);animation:none}
+    .story-name{font-size:.82rem;font-weight:700;color:var(--text)}
+    .story-handle{font-size:.7rem;color:var(--muted)}
+    .story-stars-sm{font-size:.68rem;color:#fbbf24}
+    .story-quote{font-size:.7rem;color:var(--muted);text-align:center;max-width:110px;line-height:1.4;font-style:italic}
+
+    /* ── CTA + SOCIAL PROOF ── */
+    .cta-block{text-align:center;padding:0 5% 2.5rem;display:flex;flex-direction:column;align-items:center;gap:1.25rem}
+    .btn-p{display:inline-flex;align-items:center;gap:.5rem;background:var(--ac);color:#080810;font-weight:800;font-size:1.05rem;padding:.95rem 2.5rem;border-radius:100px;text-decoration:none;transition:transform .2s,box-shadow .2s;box-shadow:0 0 32px rgba(232,255,71,.28)}
+    .btn-p:hover{transform:translateY(-2px);box-shadow:0 0 50px rgba(232,255,71,.42)}
     .social-proof{display:flex;align-items:center;gap:.9rem}
     .avatars{display:flex}
-    .avatars img,.avatars .av{width:34px;height:34px;border-radius:50%;border:2px solid var(--bg);margin-left:-10px;object-fit:cover}
-    .avatars .av{display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.72rem;color:#080810}
+    .avatars .av{width:34px;height:34px;border-radius:50%;border:2px solid var(--bg);margin-left:-10px;object-fit:cover;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.72rem;color:#080810}
     .avatars .av:first-child{margin-left:0}
-    .proof-text{display:flex;flex-direction:column}
-    .stars-row{color:#fbbf24;font-size:.85rem}
     .proof-text small{font-size:.75rem;color:var(--muted)}
-    .notification-toast{display:flex;align-items:center;gap:.65rem;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:100px;padding:.55rem 1rem;width:fit-content;margin-top:1.5rem}
-    .toast-icon{width:24px;height:24px;background:rgba(16,185,129,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-    .toast-icon svg{width:13px;height:13px;fill:#10b981}
-    .toast-text strong{font-size:.78rem;font-weight:700;color:var(--text)}
-    .toast-text span{font-size:.75rem;color:var(--muted);margin-left:.3rem}
-    @media(max-width:600px){.hero{padding:4rem 5% 3rem}.hero h1{font-size:clamp(2.8rem,13vw,4rem)}.hero-bottom{gap:1rem}}
+    .stars-row{color:#fbbf24;font-size:.85rem}
 
-    /* METRICS */
-    .metrics-bar{background:var(--s1);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
-    .metrics-inner{max-width:1100px;margin:0 auto;padding:2.5rem 5%;display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
-    .metric{text-align:center;padding:1rem}
-    .metric-num{font-size:2.2rem;font-weight:900;color:var(--ac);letter-spacing:-.04em;line-height:1}
-    .metric-lbl{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:.35rem}
-    @media(max-width:600px){.metrics-inner{grid-template-columns:repeat(2,1fr)}.metric-num{font-size:1.8rem}}
+    /* ── LIVE ACTIVITY BAR ── */
+    .activity-bar{background:var(--s1);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:.9rem 5%}
+    .activity-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+    .activity-item{display:flex;align-items:center;gap:.65rem;font-size:.8rem}
+    .activity-fire{font-size:1rem}
+    .activity-text strong{color:var(--ac);font-weight:700}
+    .activity-text span{color:var(--muted);font-size:.72rem;display:block}
+    @media(max-width:600px){.activity-inner{grid-template-columns:1fr;gap:.6rem}}
 
-    /* SECTIONS */
-    section{position:relative;z-index:1;padding:5.5rem 5%}
+    /* ── SERVICES ── */
+    .services-section{padding:4rem 5%;background:var(--s1)}
     .section-inner{max-width:1200px;margin:0 auto}
-    .sec-header{text-align:center;margin-bottom:3rem}
+    .sec-header{text-align:center;margin-bottom:2.5rem}
     .sec-tag{display:inline-block;font-size:.7rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--ac);margin-bottom:.6rem}
     .sec-h{font-size:clamp(1.8rem,4vw,2.6rem);font-weight:900;letter-spacing:-.04em;line-height:1.1}
     .sec-h .hl{color:var(--ac)}
-    .sec-p{color:var(--muted);margin-top:.75rem;font-size:.95rem}
+    .sec-p{color:var(--muted);margin-top:.6rem;font-size:.92rem}
+    .srv-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem}
+    .srv-card{background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:1.5rem 1.4rem;text-decoration:none;color:var(--text);transition:transform .25s,border-color .25s,box-shadow .25s;display:flex;align-items:flex-start;gap:1rem}
+    .srv-card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.14);box-shadow:0 16px 40px rgba(0,0,0,.4)}
+    .srv-icon-wrap{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0}
+    .srv-body h3{font-size:.95rem;font-weight:800;margin-bottom:.3rem}
+    .srv-body .srv-desc{color:var(--muted);font-size:.78rem;line-height:1.5;margin-bottom:.7rem}
+    .srv-list{list-style:none;display:flex;flex-direction:column;gap:.25rem}
+    .srv-list li{font-size:.76rem;color:var(--muted);display:flex;align-items:center;gap:.35rem}
+    .srv-list li::before{content:"✓";color:var(--ac);font-weight:800;flex-shrink:0;font-size:.72rem}
+    .srv-list li strong{color:var(--text)}
+    @media(max-width:600px){.srv-grid{grid-template-columns:1fr}}
 
-    /* ── STORIES CIRCLES ── */
-    .stories-section{background:var(--bg)}
-    .stories-row{display:flex;justify-content:center;gap:2.5rem;flex-wrap:wrap;padding:.5rem 0}
-    .story-bubble{display:flex;flex-direction:column;align-items:center;gap:.65rem;cursor:pointer;-webkit-tap-highlight-color:transparent}
-    /* Animated gradient ring */
-    .story-ring{width:90px;height:90px;border-radius:50%;padding:3px;
-      background:conic-gradient(var(--ac) 0deg,var(--ac2) 120deg,#f472b6 240deg,var(--ac) 360deg);
-      animation:spinRing 4s linear infinite;
-      transition:transform .2s,filter .2s}
-    .story-bubble:hover .story-ring{transform:scale(1.06);filter:brightness(1.15)}
-    @keyframes spinRing{to{transform:rotate(360deg)}}
-    /* Inner circle with video thumbnail */
-    .story-circle{width:100%;height:100%;border-radius:50%;overflow:hidden;border:3px solid var(--bg);background:#111;position:relative}
-    .story-circle video{width:100%;height:100%;object-fit:cover;pointer-events:none}
-    /* Watched state */
-    .story-bubble.watched .story-ring{background:rgba(255,255,255,.15);animation:none}
-    /* Label */
-    .story-label{font-size:.78rem;font-weight:700;color:var(--text);text-align:center;max-width:90px;line-height:1.3}
-    .story-stars-sm{font-size:.65rem;color:#fbbf24;margin-top:.1rem;text-align:center}
+    /* ── METRICS ── */
+    .metrics-bar{background:var(--bg);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+    .metrics-inner{max-width:1100px;margin:0 auto;padding:2rem 5%;display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+    .metric{text-align:center;padding:.75rem}
+    .metric-num{font-size:2rem;font-weight:900;color:var(--ac);letter-spacing:-.04em;line-height:1}
+    .metric-lbl{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:.3rem}
+    @media(max-width:600px){.metrics-inner{grid-template-columns:repeat(2,1fr)}}
 
-    /* ── STORY LIGHTBOX ── */
+    /* ── TRUST ── */
+    .trust-section{padding:3.5rem 5%;background:var(--s1);border-top:1px solid var(--border)}
+    .trust-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;max-width:1100px;margin:0 auto}
+    .trust-card{display:flex;flex-direction:column;align-items:center;text-align:center;gap:.6rem}
+    .trust-icon{width:48px;height:48px;border-radius:14px;background:rgba(232,255,71,.07);border:1px solid rgba(232,255,71,.12);display:flex;align-items:center;justify-content:center}
+    .trust-icon svg{width:22px;height:22px}
+    .trust-card h4{font-size:.88rem;font-weight:800}
+    .trust-card p{font-size:.75rem;color:var(--muted);line-height:1.5}
+    @media(max-width:900px){.trust-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:500px){.trust-grid{grid-template-columns:1fr}}
+
+    /* ── FAQ ── */
+    details{background:var(--bg);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+    summary{padding:1.1rem 1.4rem;font-weight:700;cursor:pointer;display:flex;justify-content:space-between;align-items:center;list-style:none;font-size:.9rem}
+    summary::after{content:"+";font-size:1.2rem;color:var(--ac);transition:transform .3s;flex-shrink:0}
+    details[open] summary::after{transform:rotate(45deg)}
+    details p{padding:0 1.4rem 1.1rem;color:var(--muted);font-size:.86rem;line-height:1.7}
+
+    /* ── FOOTER ── */
+    footer{background:var(--s1);border-top:1px solid var(--border);padding:1.75rem 5%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+    footer p{color:var(--muted);font-size:.76rem}
+    .footer-links{display:flex;gap:1.5rem}
+    .footer-links a{color:var(--muted);font-size:.76rem;text-decoration:none;transition:color .2s}
+    .footer-links a:hover{color:var(--text)}
+    @media(max-width:600px){footer{flex-direction:column;text-align:center}.footer-links{justify-content:center}}
+
+    /* ── WA FLOAT ── */
+    .wa-float{position:fixed;bottom:1.5rem;right:1.5rem;z-index:200;width:54px;height:54px;background:#25d366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,211,102,.4);transition:transform .2s;text-decoration:none}
+    .wa-float:hover{transform:scale(1.1)}
+    .wa-float svg{width:26px;height:26px;fill:white}
+
+    /* ── LIGHTBOX ── */
     .story-lb{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.95);display:none;align-items:center;justify-content:center;backdrop-filter:blur(10px)}
     .story-lb.open{display:flex}
     .story-lb-wrap{position:relative;width:min(400px,100vw);height:min(710px,100dvh);border-radius:20px;overflow:hidden;background:#000;box-shadow:0 0 80px rgba(0,0,0,.8)}
     @media(max-width:440px){.story-lb-wrap{border-radius:0;width:100vw;height:100dvh}}
-
-    /* Progress bars */
     .lb-progress{position:absolute;top:10px;left:10px;right:10px;z-index:20;display:flex;gap:4px}
     .lb-prog-bar{flex:1;height:3px;background:rgba(255,255,255,.25);border-radius:2px;overflow:hidden}
     .lb-prog-fill{height:100%;width:0%;background:#fff;border-radius:2px;transition:width .08s linear}
     .lb-prog-fill.done{width:100%;transition:none}
-
-    /* Header */
     .lb-header{position:absolute;top:20px;left:12px;right:12px;z-index:20;display:flex;align-items:center;justify-content:space-between}
     .lb-user{display:flex;align-items:center;gap:.55rem}
     .lb-avatar{width:34px;height:34px;border-radius:50%;background:var(--ac);color:#080810;font-weight:900;font-size:.78rem;display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,.25);flex-shrink:0}
     .lb-name{font-size:.82rem;font-weight:700;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.6)}
     .lb-verified{font-size:.65rem;color:#fbbf24;display:block}
-    .lb-close{background:rgba(0,0,0,.45);border:none;color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:.82rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s}
+    .lb-close{background:rgba(0,0,0,.45);border:none;color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:.82rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
     .lb-close:hover{background:rgba(255,255,255,.15)}
-
-    /* Video */
     .lb-video{width:100%;height:100%;object-fit:cover;display:block}
-
-    /* Tap zones */
     .lb-prev{position:absolute;left:0;top:60px;bottom:90px;width:38%;z-index:15;cursor:pointer}
     .lb-next{position:absolute;right:0;top:60px;bottom:90px;width:38%;z-index:15;cursor:pointer}
-
-    /* Footer CTA */
-    .lb-footer{position:absolute;bottom:0;left:0;right:0;z-index:20;padding:1.2rem 1rem 1.1rem;background:linear-gradient(to top,rgba(0,0,0,.9) 0%,transparent 100%);display:flex;flex-direction:column;align-items:center;gap:.5rem}
+    .lb-footer{position:absolute;bottom:0;left:0;right:0;z-index:20;padding:1.2rem 1rem 1.1rem;background:linear-gradient(to top,rgba(0,0,0,.9),transparent);display:flex;flex-direction:column;align-items:center;gap:.5rem}
     .lb-cta{display:block;width:100%;text-align:center;background:var(--ac);color:#080810;font-weight:800;font-size:.9rem;padding:.75rem 1rem;border-radius:100px;text-decoration:none;transition:opacity .2s}
     .lb-cta:hover{opacity:.88}
     .lb-skip{font-size:.72rem;color:rgba(255,255,255,.45);cursor:pointer;background:none;border:none;padding:.2rem}
-
-    /* SERVICES */
-    .services-section{background:var(--s1)}
-    .srv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
-    .srv-card{background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:1.75rem 1.5rem;text-decoration:none;color:var(--text);transition:transform .25s,border-color .25s,box-shadow .25s;position:relative;overflow:hidden;display:block}
-    .srv-card:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.14);box-shadow:0 16px 40px rgba(0,0,0,.4)}
-    .srv-icon-wrap{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;font-size:1.4rem}
-    .srv-card h3{font-size:.95rem;font-weight:800;margin-bottom:.5rem}
-    .srv-card .srv-desc{color:var(--muted);font-size:.8rem;line-height:1.55;margin-bottom:1rem}
-    .srv-list{list-style:none;display:flex;flex-direction:column;gap:.3rem}
-    .srv-list li{font-size:.78rem;color:var(--muted);display:flex;align-items:center;gap:.4rem}
-    .srv-list li::before{content:"✓";color:var(--ac);font-weight:800;flex-shrink:0;font-size:.75rem}
-    .srv-list li strong{color:var(--text)}
-    @media(max-width:900px){.srv-grid{grid-template-columns:repeat(2,1fr)}}
-    @media(max-width:500px){.srv-grid{grid-template-columns:1fr}}
-
-    /* TRUST */
-    .trust-section{background:var(--bg);border-top:1px solid var(--border)}
-    .trust-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem}
-    .trust-card{display:flex;align-items:flex-start;gap:1rem}
-    .trust-icon{width:44px;height:44px;border-radius:12px;background:rgba(232,255,71,.07);border:1px solid rgba(232,255,71,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-    .trust-icon svg{width:20px;height:20px}
-    .trust-card h4{font-size:.9rem;font-weight:800;margin-bottom:.2rem}
-    .trust-card p{font-size:.78rem;color:var(--muted);line-height:1.5}
-    @media(max-width:1024px){.trust-grid{grid-template-columns:repeat(2,1fr)}}
-    @media(max-width:500px){.trust-grid{grid-template-columns:1fr}}
-
-    /* FAQ */
-    details{background:var(--bg);border:1px solid var(--border);border-radius:16px;overflow:hidden}
-    summary{padding:1.2rem 1.5rem;font-weight:700;cursor:pointer;display:flex;justify-content:space-between;align-items:center;list-style:none;font-size:.92rem}
-    summary::after{content:"+";font-size:1.3rem;color:var(--ac);transition:transform .3s;flex-shrink:0}
-    details[open] summary::after{transform:rotate(45deg)}
-    details p{padding:0 1.5rem 1.2rem;color:var(--muted);font-size:.88rem;line-height:1.7}
-
-    /* FOOTER */
-    footer{background:var(--s1);border-top:1px solid var(--border);padding:2rem 5%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
-    footer p{color:var(--muted);font-size:.78rem}
-    .footer-links{display:flex;gap:1.5rem}
-    .footer-links a{color:var(--muted);font-size:.78rem;text-decoration:none;transition:color .2s}
-    .footer-links a:hover{color:var(--text)}
-    @media(max-width:600px){footer{flex-direction:column;text-align:center}.footer-links{justify-content:center}}
-
-    /* WA FLOAT */
-    .wa-float{position:fixed;bottom:1.5rem;right:1.5rem;z-index:200;width:54px;height:54px;background:#25d366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,211,102,.4);transition:transform .2s;text-decoration:none}
-    .wa-float:hover{transform:scale(1.1)}
-    .wa-float svg{width:26px;height:26px;fill:white}
   </style>
 </head>
 <body>
 
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="logo">MidiaNet<em>Digital</em></a>
+    <div class="nav-links">
+      <a href="#servicos">Serviços</a>
+      <a href="#faq">FAQ</a>
+    </div>
+  </nav>
 
-  <!-- HERO -->
-  <div style="position:relative;z-index:1;background:var(--bg)">
+  <!-- ① HERO: logo + título + pills -->
+  <div style="background:var(--bg)">
     <div class="hero">
-      <div class="hero-top-pills">
-        <div class="hero-pill"><span class="dot-live"></span> <span id="online-count">271</span> clientes online agora</div>
-        <div class="hero-pill">🛒 Pacotes vendidos: <strong style="color:var(--text);margin-left:.2rem" id="vendidos-count">32</strong></div>
-        <div class="hero-pill ac">⚡ Entrega automática</div>
-        <div class="hero-pill">🔒 Sem pedir senha</div>
-        <div class="hero-pill">⭐ +10.000 clientes</div>
-      </div>
-
-      <h1>Potencialize<br>sua presença<br><span class="hl">Digital</span></h1>
-
-      <p class="hero-sub">Seguidores, curtidas e visualizações para impulsionar sua marca de forma rápida, segura e confiável.</p>
-
-      <div class="hero-bottom">
-        <a href="#servicos" class="btn-p">Ver Serviços ↓</a>
-        <div class="social-proof">
-          <div class="avatars">
-            <img class="av" src="foto1.jpg" alt="Cliente 1" style="margin-left:0">
-            <img class="av" src="foto2.jpg" alt="Cliente 2">
-            <img class="av" src="foto3.jpg" alt="Cliente 3">
-            <img class="av" src="foto4.jpg" alt="Cliente 4">
-          </div>
-          <div class="proof-text">
-            <div class="stars-row">★★★★★ <span style="font-size:.75rem;font-weight:700;color:var(--text)">4,9 de 5</span></div>
-            <small>+10.000 clientes satisfeitos</small>
-          </div>
-        </div>
-      </div>
-
-      <div class="notification-toast">
-        <div class="toast-icon">
-          <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        </div>
-        <div class="toast-text">
-          <strong>Pedido concluído</strong>
-          <span id="toast-msg">@joaosilva comprou 500 seguidores brasileiros</span>
-        </div>
+      <div style="font-size:.85rem;font-weight:800;color:var(--ac);letter-spacing:.04em;margin-bottom:.75rem">MidiaNet<span style="color:var(--text)">digital</span></div>
+      <h1>Potencialize sua<br>presença <span class="hl">Digital</span></h1>
+      <div class="pills-row">
+        <div class="pill"><span class="dot-live"></span> <span id="online-count">428</span> clientes online agora</div>
+        <div class="pill">🛒 <span id="vendidos-count">149</span> pacotes vendidos</div>
+        <div class="pill ac">⚡ Entrega automática</div>
+        <div class="pill">🔒 Sem pedir senha</div>
+        <div class="pill">⭐ +10.000 clientes satisfeitos</div>
       </div>
     </div>
   </div>
 
-  <!-- METRICS -->
-  <div class="metrics-bar">
-    <div class="metrics-inner">
-      <div class="metric"><div class="metric-num">+10K</div><div class="metric-lbl">Pedidos entregues</div></div>
-      <div class="metric"><div class="metric-num">24h</div><div class="metric-lbl">Suporte ativo</div></div>
-      <div class="metric"><div class="metric-num">100%</div><div class="metric-lbl">Entrega garantida</div></div>
-      <div class="metric"><div class="metric-num">2h</div><div class="metric-lbl">Início rápido</div></div>
-    </div>
-  </div>
-
-  <!-- ★ DEPOIMENTOS EM STORIES ★ -->
-  <section class="stories-section">
-    <div class="section-inner">
-      <div class="sec-header">
-        <div class="sec-tag">Depoimentos</div>
-        <h2 class="sec-h">O que nossos <span class="hl">clientes</span> dizem</h2>
-        <p class="sec-p">Clique para ver os depoimentos reais em vídeo.</p>
-      </div>
+  <!-- ② STORIES: depoimentos em vídeo -->
+  <div style="background:var(--bg);padding-bottom:1rem">
+    <div class="stories-section">
+      <div class="stories-sec-label">👥 Veja o que os clientes estão falando</div>
+      <h2 class="stories-sec-h">Mais de 10.000 clientes já impulsionaram<br>seus perfis com a <span class="hl">MidiaNetDigital</span></h2>
+      <p class="stories-sec-sub">Veja <strong>resultados reais</strong> de quem já comprou!</p>
 
       <div class="stories-row">
 
@@ -263,82 +223,94 @@
           <div class="story-ring">
             <div class="story-circle">
               <video src="https://files.catbox.moe/b5crpp.mp4" muted playsinline preload="metadata"></video>
+              <div class="story-play-icon"><svg viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div>
             </div>
           </div>
-          <div class="story-label">Cliente 1</div>
+          <div class="story-name">Ana Souza</div>
+          <div class="story-handle">@ana.moda</div>
           <div class="story-stars-sm">★★★★★</div>
+          <div class="story-quote">"Chegou tudo certinho e muito rápido!"</div>
         </div>
 
         <div class="story-bubble" onclick="openStory(1)">
           <div class="story-ring">
             <div class="story-circle">
               <video src="https://files.catbox.moe/07jztb.mp4" muted playsinline preload="metadata"></video>
+              <div class="story-play-icon"><svg viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div>
             </div>
           </div>
-          <div class="story-label">Cliente 2</div>
+          <div class="story-name">Lucas Oliveira</div>
+          <div class="story-handle">@lucas.vendas</div>
           <div class="story-stars-sm">★★★★★</div>
+          <div class="story-quote">"A entrega foi automática e o resultado incrível!"</div>
         </div>
 
         <div class="story-bubble" onclick="openStory(2)">
           <div class="story-ring">
             <div class="story-circle">
               <video src="https://files.catbox.moe/v0musc.mp4" muted playsinline preload="metadata"></video>
+              <div class="story-play-icon"><svg viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div>
             </div>
           </div>
-          <div class="story-label">Cliente 3</div>
+          <div class="story-name">Mariana Costa</div>
+          <div class="story-handle">@marianacosta</div>
           <div class="story-stars-sm">★★★★★</div>
+          <div class="story-quote">"Já sou cliente há meses e recomendo demais!"</div>
         </div>
 
         <div class="story-bubble" onclick="openStory(3)">
           <div class="story-ring">
             <div class="story-circle">
               <video src="https://files.catbox.moe/d3ntxs.mp4" muted playsinline preload="metadata"></video>
+              <div class="story-play-icon"><svg viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div>
             </div>
           </div>
-          <div class="story-label">Cliente 4</div>
+          <div class="story-name">Felipe Santos</div>
+          <div class="story-handle">@felipe.sntos</div>
           <div class="story-stars-sm">★★★★★</div>
+          <div class="story-quote">"Serviço confiável e com muita qualidade!"</div>
         </div>
 
       </div>
-    </div>
-  </section>
-
-  <!-- LIGHTBOX -->
-  <div class="story-lb" id="storyLb" onclick="lbBgClick(event)">
-    <div class="story-lb-wrap">
-
-      <div class="lb-progress" id="lbProgress">
-        <div class="lb-prog-bar"><div class="lb-prog-fill" id="lbp0"></div></div>
-        <div class="lb-prog-bar"><div class="lb-prog-fill" id="lbp1"></div></div>
-        <div class="lb-prog-bar"><div class="lb-prog-fill" id="lbp2"></div></div>
-        <div class="lb-prog-bar"><div class="lb-prog-fill" id="lbp3"></div></div>
-      </div>
-
-      <div class="lb-header">
-        <div class="lb-user">
-          <div class="lb-avatar" id="lbAvatar">C</div>
-          <div>
-            <div class="lb-name" id="lbName">Cliente</div>
-            <span class="lb-verified">★★★★★ Cliente verificado</span>
-          </div>
-        </div>
-        <button class="lb-close" onclick="closeStory()">✕</button>
-      </div>
-
-      <video id="lbVideo" class="lb-video" playsinline></video>
-
-      <div class="lb-prev" onclick="prevStory(event)"></div>
-      <div class="lb-next" onclick="nextStory(event)"></div>
-
-      <div class="lb-footer">
-        <a href="#servicos" class="lb-cta" onclick="closeStory()">Quero crescer também →</a>
-        <button class="lb-skip" onclick="nextStory(event)">Próximo ›</button>
-      </div>
-
     </div>
   </div>
 
-  <!-- SERVICES -->
+  <!-- ③ CTA + SOCIAL PROOF -->
+  <div class="cta-block" style="background:var(--bg)">
+    <a href="#servicos" class="btn-p">Ver Serviços ↓</a>
+    <div class="social-proof">
+      <div class="avatars">
+        <img class="av" src="foto1.jpg" alt="Cliente 1" style="margin-left:0">
+        <img class="av" src="foto2.jpg" alt="Cliente 2">
+        <img class="av" src="foto3.jpg" alt="Cliente 3">
+        <img class="av" src="foto4.jpg" alt="Cliente 4">
+      </div>
+      <div class="proof-text">
+        <div class="stars-row">★★★★★ <span style="font-size:.75rem;font-weight:700;color:var(--text)">4,9 de 5</span></div>
+        <small>+10.000 clientes satisfeitos</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- ④ LIVE ACTIVITY (3 colunas como no print) -->
+  <div class="activity-bar">
+    <div class="activity-inner" id="activityBar">
+      <div class="activity-item">
+        <div class="activity-fire">🔥</div>
+        <div class="activity-text"><strong>João V.</strong> acabou de comprar<br><span>500 seguidores brasileiros &nbsp;·&nbsp; há 1 min</span></div>
+      </div>
+      <div class="activity-item">
+        <div class="activity-fire">🔥</div>
+        <div class="activity-text"><strong>Ana Moda</strong> acabou de comprar<br><span>1.000 seguidores &nbsp;·&nbsp; há 2 min</span></div>
+      </div>
+      <div class="activity-item">
+        <div class="activity-fire">🔥</div>
+        <div class="activity-text"><strong>Lucas S.</strong> acabou de comprar<br><span>200 curtidas &nbsp;·&nbsp; há 3 min</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑤ SERVICES -->
   <section class="services-section" id="servicos">
     <div class="section-inner">
       <div class="sec-header">
@@ -349,83 +321,103 @@
       <div class="srv-grid">
 
         <a href="planos.html?servico=seguidores-mundiais" class="srv-card service-track" data-service="Seguidores Mundiais" data-slug="seguidores-mundiais">
-          <div class="srv-icon-wrap" style="background:rgba(6,182,212,.12)">🌐</div>
-          <h3>Seguidores Mundiais</h3>
-          <p class="srv-desc">Aumente sua audiência com seguidores do mundo todo.</p>
-          <ul class="srv-list"><li>Entrega rápida</li><li>Alta qualidade</li><li><strong>A partir de R$ 4,50</strong></li></ul>
+          <div class="srv-icon-wrap" style="background:rgba(6,182,212,.15)">🌐</div>
+          <div class="srv-body">
+            <h3>Seguidores Mundiais</h3>
+            <p class="srv-desc">Aumente sua audiência com seguidores do mundo todo.</p>
+            <ul class="srv-list"><li>Entrega rápida</li><li>Alta qualidade</li><li><strong>A partir de R$ 4,50</strong></li></ul>
+          </div>
         </a>
 
         <a href="planos.html?servico=seguidores-brasileiros" class="srv-card service-track" data-service="Seguidores Brasileiros" data-slug="seguidores-brasileiros">
-          <div class="srv-icon-wrap" style="background:rgba(124,92,252,.12)">👥</div>
-          <h3>Seguidores Brasileiros</h3>
-          <p class="srv-desc">Perfis brasileiros reais e ativos para crescer com qualidade.</p>
-          <ul class="srv-list"><li>Entrega rápida</li><li>Alta qualidade</li><li><strong>A partir de R$ 5,00</strong></li></ul>
-        </a>
-
-        <a href="planos.html?servico=seguidores-organicos" class="srv-card service-track" data-service="Seguidores Orgânicos" data-slug="seguidores-organicos">
-          <div class="srv-icon-wrap" style="background:rgba(52,211,153,.12)">🌱</div>
-          <h3>Seguidores Orgânicos</h3>
-          <p class="srv-desc">Seguidores com alta retenção e perfis mais ativos.</p>
-          <ul class="srv-list"><li>Entrega gradual</li><li>Alta retenção</li><li><strong>A partir de R$ 8,00</strong></li></ul>
+          <div class="srv-icon-wrap" style="background:rgba(124,92,252,.15)">👥</div>
+          <div class="srv-body">
+            <h3>Seguidores Brasileiros</h3>
+            <p class="srv-desc">Perfis brasileiros reais e ativos para crescer com qualidade.</p>
+            <ul class="srv-list"><li>Entrega rápida</li><li>Alta qualidade</li><li><strong>A partir de R$ 5,50</strong></li></ul>
+          </div>
         </a>
 
         <a href="planos.html?servico=curtidas-brasileiras" class="srv-card service-track" data-service="Curtidas Brasileiras" data-slug="curtidas-brasileiras">
-          <div class="srv-icon-wrap" style="background:rgba(239,68,68,.12)">❤️</div>
-          <h3>Curtidas Brasileiras</h3>
-          <p class="srv-desc">Mais curtidas reais em suas publicações para maior engajamento.</p>
-          <ul class="srv-list"><li>Entrega rápida</li><li>Alta qualidade</li><li><strong>A partir de R$ 3,50</strong></li></ul>
+          <div class="srv-icon-wrap" style="background:rgba(239,68,68,.15)">❤️</div>
+          <div class="srv-body">
+            <h3>Curtidas Brasileiras</h3>
+            <p class="srv-desc">Mais engajamento e relevância para suas publicações.</p>
+            <ul class="srv-list"><li>Entrega rápida</li><li>Alta qualidade</li><li><strong>A partir de R$ 2,90</strong></li></ul>
+          </div>
         </a>
 
         <a href="planos.html?servico=visualizacoes" class="srv-card service-track" data-service="Visualizações de Reels" data-slug="visualizacoes">
-          <div class="srv-icon-wrap" style="background:rgba(16,185,129,.12)">▶️</div>
-          <h3>Visualizações de Reels</h3>
-          <p class="srv-desc">Mais visualizações para seus Reels e ganhe mais alcance.</p>
-          <ul class="srv-list"><li>Entrega rápida</li><li>Alta qualidade</li><li><strong>A partir de R$ 2,50</strong></li></ul>
+          <div class="srv-icon-wrap" style="background:rgba(16,185,129,.15)">👁️</div>
+          <div class="srv-body">
+            <h3>Visualizações</h3>
+            <p class="srv-desc">Aumente as visualizações dos seus stories e vídeos.</p>
+            <ul class="srv-list"><li>Entrega rápida</li><li>Alta qualidade</li><li><strong>A partir de R$ 3,90</strong></li></ul>
+          </div>
+        </a>
+
+        <a href="planos.html?servico=seguidores-organicos" class="srv-card service-track" data-service="Seguidores Orgânicos" data-slug="seguidores-organicos">
+          <div class="srv-icon-wrap" style="background:rgba(52,211,153,.15)">🌱</div>
+          <div class="srv-body">
+            <h3>Seguidores Orgânicos</h3>
+            <p class="srv-desc">Seguidores com alta retenção e perfis mais ativos.</p>
+            <ul class="srv-list"><li>Entrega gradual</li><li>Alta retenção</li><li><strong>A partir de R$ 8,00</strong></li></ul>
+          </div>
         </a>
 
         <a href="planos.html?servico=comentarios" class="srv-card service-track" data-service="Comentários" data-slug="comentarios">
-          <div class="srv-icon-wrap" style="background:rgba(232,255,71,.1)">💬</div>
-          <h3>Comentários</h3>
-          <p class="srv-desc">Comentários reais para aumentar o engajamento nas suas publicações.</p>
-          <ul class="srv-list"><li>Entrega rápida</li><li>Alta qualidade</li><li><strong>A partir de R$ 6,00</strong></li></ul>
+          <div class="srv-icon-wrap" style="background:rgba(232,255,71,.12)">💬</div>
+          <div class="srv-body">
+            <h3>Comentários</h3>
+            <p class="srv-desc">Comentários reais para aumentar o engajamento nas publicações.</p>
+            <ul class="srv-list"><li>Entrega rápida</li><li>Alta qualidade</li><li><strong>A partir de R$ 6,00</strong></li></ul>
+          </div>
         </a>
 
       </div>
     </div>
   </section>
 
-  <!-- TRUST -->
-  <section class="trust-section" id="como-funciona">
-    <div class="section-inner">
-      <div class="trust-grid">
-        <div class="trust-card">
-          <div class="trust-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-          <div><h4>Ambiente 100% Seguro</h4><p>Seus dados sempre protegidos</p></div>
-        </div>
-        <div class="trust-card">
-          <div class="trust-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
-          <div><h4>Entrega Automática</h4><p>Após a confirmação do pagamento</p></div>
-        </div>
-        <div class="trust-card">
-          <div class="trust-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
-          <div><h4>Suporte via WhatsApp</h4><p>Atendimento rápido e humano</p></div>
-        </div>
-        <div class="trust-card">
-          <div class="trust-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
-          <div><h4>Satisfação Garantida</h4><p>Ou seu dinheiro de volta</p></div>
-        </div>
+  <!-- ⑥ METRICS -->
+  <div class="metrics-bar">
+    <div class="metrics-inner">
+      <div class="metric"><div class="metric-num">+10K</div><div class="metric-lbl">Pedidos entregues</div></div>
+      <div class="metric"><div class="metric-num">24h</div><div class="metric-lbl">Suporte ativo</div></div>
+      <div class="metric"><div class="metric-num">100%</div><div class="metric-lbl">Entrega garantida</div></div>
+      <div class="metric"><div class="metric-num">2h</div><div class="metric-lbl">Início rápido</div></div>
+    </div>
+  </div>
+
+  <!-- ⑦ TRUST -->
+  <section class="trust-section">
+    <div class="trust-grid">
+      <div class="trust-card">
+        <div class="trust-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <h4>Compra 100% Segura</h4><p>Seus dados sempre protegidos</p>
+      </div>
+      <div class="trust-card">
+        <div class="trust-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+        <h4>Entrega Automática</h4><p>Após a confirmação do pagamento</p>
+      </div>
+      <div class="trust-card">
+        <div class="trust-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="2"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3zM3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z"/></svg></div>
+        <h4>Suporte Especializado</h4><p>Atendimento rápido e humano</p>
+      </div>
+      <div class="trust-card">
+        <div class="trust-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+        <h4>Garantia de Satisfação</h4><p>Ou seu dinheiro de volta</p>
       </div>
     </div>
   </section>
 
-  <!-- FAQ -->
-  <section id="faq" style="background:var(--s1)">
-    <div class="section-inner">
-      <div class="sec-header">
+  <!-- ⑧ FAQ -->
+  <section id="faq" style="padding:4rem 5%;background:var(--bg)">
+    <div style="max-width:720px;margin:0 auto">
+      <div style="text-align:center;margin-bottom:2rem">
         <div class="sec-tag">Dúvidas</div>
         <h2 class="sec-h">Perguntas frequentes</h2>
       </div>
-      <div style="max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:1rem">
+      <div style="display:flex;flex-direction:column;gap:1rem">
         <details><summary>Preciso informar minha senha?</summary><p>Não. Precisamos apenas do seu usuário ou link do perfil público.</p></details>
         <details><summary>Em quanto tempo a entrega começa?</summary><p>A maioria dos pedidos começa após a confirmação do pagamento.</p></details>
         <details><summary>Minha conta pode ser banida?</summary><p>Não pedimos senha e usamos métodos seguros de entrega.</p></details>
@@ -446,123 +438,137 @@
   </footer>
 
   <!-- WA FLOAT -->
-  <a href="https://wa.me/5521991689838?text=Ol%C3%A1%2C%20quero%20saber%20mais%20sobre%20os%20planos" target="_blank" class="wa-float" title="Falar no WhatsApp">
+  <a href="https://wa.me/5521991689838?text=Ol%C3%A1%2C%20quero%20saber%20mais%20sobre%20os%20planos" target="_blank" class="wa-float">
     <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
   </a>
 
+  <!-- LIGHTBOX -->
+  <div class="story-lb" id="storyLb" onclick="lbBgClick(event)">
+    <div class="story-lb-wrap">
+      <div class="lb-progress">
+        <div class="lb-prog-bar"><div class="lb-prog-fill" id="lbp0"></div></div>
+        <div class="lb-prog-bar"><div class="lb-prog-fill" id="lbp1"></div></div>
+        <div class="lb-prog-bar"><div class="lb-prog-fill" id="lbp2"></div></div>
+        <div class="lb-prog-bar"><div class="lb-prog-fill" id="lbp3"></div></div>
+      </div>
+      <div class="lb-header">
+        <div class="lb-user">
+          <div class="lb-avatar" id="lbAvatar">A</div>
+          <div><div class="lb-name" id="lbName">Cliente</div><span class="lb-verified">★★★★★ Cliente verificado</span></div>
+        </div>
+        <button class="lb-close" onclick="closeStory()">✕</button>
+      </div>
+      <video id="lbVideo" class="lb-video" playsinline></video>
+      <div class="lb-prev" onclick="prevStory(event)"></div>
+      <div class="lb-next" onclick="nextStory(event)"></div>
+      <div class="lb-footer">
+        <a href="#servicos" class="lb-cta" onclick="closeStory()">Quero crescer também →</a>
+        <button class="lb-skip" onclick="nextStory(event)">Próximo ›</button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    /* ── STORIES ── */
-    var STORIES = [
-      {src:"https://files.catbox.moe/b5crpp.mp4", name:"Cliente 1", av:"C1"},
-      {src:"https://files.catbox.moe/07jztb.mp4", name:"Cliente 2", av:"C2"},
-      {src:"https://files.catbox.moe/v0musc.mp4", name:"Cliente 3", av:"C3"},
-      {src:"https://files.catbox.moe/d3ntxs.mp4", name:"Cliente 4", av:"C4"}
+    /* STORIES */
+    var STORIES=[
+      {src:"https://files.catbox.moe/b5crpp.mp4",name:"Ana Souza",av:"AS"},
+      {src:"https://files.catbox.moe/07jztb.mp4",name:"Lucas Oliveira",av:"LO"},
+      {src:"https://files.catbox.moe/v0musc.mp4",name:"Mariana Costa",av:"MC"},
+      {src:"https://files.catbox.moe/d3ntxs.mp4",name:"Felipe Santos",av:"FS"}
     ];
-    var cur = 0, progInt = null, progVal = 0;
+    var cur=0,progInt=null,progVal=0;
 
     function openStory(idx){
-      cur = idx;
+      cur=idx;
       document.getElementById("storyLb").classList.add("open");
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow="hidden";
       loadStory(idx);
-      // mark bubble watched
       document.querySelectorAll(".story-bubble")[idx].classList.add("watched");
     }
-
     function closeStory(){
-      var v = document.getElementById("lbVideo");
-      v.pause(); v.src = "";
+      var v=document.getElementById("lbVideo");
+      v.pause();v.src="";
       clearInterval(progInt);
       document.getElementById("storyLb").classList.remove("open");
-      document.body.style.overflow = "";
-      resetProgress();
+      document.body.style.overflow="";
+      resetProg();
     }
-
-    function lbBgClick(e){
-      if(e.target === document.getElementById("storyLb")) closeStory();
-    }
-
+    function lbBgClick(e){if(e.target===document.getElementById("storyLb"))closeStory();}
     function loadStory(idx){
       clearInterval(progInt);
-      var s = STORIES[idx];
-      var v = document.getElementById("lbVideo");
-      document.getElementById("lbName").textContent = s.name;
-      document.getElementById("lbAvatar").textContent = s.av;
-      v.src = s.src;
-      v.currentTime = 0;
-      v.play().catch(function(){});
-      resetProgress();
-      for(var i=0;i<idx;i++) document.getElementById("lbp"+i).classList.add("done");
-      progVal = 0;
-      var fill = document.getElementById("lbp"+idx);
-      fill.style.width = "0%";
-      v.onloadedmetadata = function(){
-        var dur = v.duration || 30;
-        var step = 100/(dur*10);
-        progInt = setInterval(function(){
-          if(v.paused) return;
-          progVal += step;
-          fill.style.width = Math.min(progVal,100)+"%";
-          if(progVal >= 100){ clearInterval(progInt); autoNext(); }
-        }, 100);
+      var s=STORIES[idx],v=document.getElementById("lbVideo");
+      document.getElementById("lbName").textContent=s.name;
+      document.getElementById("lbAvatar").textContent=s.av;
+      v.src=s.src;v.currentTime=0;v.play().catch(function(){});
+      resetProg();
+      for(var i=0;i<idx;i++)document.getElementById("lbp"+i).classList.add("done");
+      progVal=0;
+      var fill=document.getElementById("lbp"+idx);
+      fill.style.width="0%";
+      v.onloadedmetadata=function(){
+        var dur=v.duration||30,step=100/(dur*10);
+        progInt=setInterval(function(){
+          if(v.paused)return;
+          progVal+=step;fill.style.width=Math.min(progVal,100)+"%";
+          if(progVal>=100){clearInterval(progInt);autoNext();}
+        },100);
       };
     }
+    function autoNext(){if(cur<STORIES.length-1){cur++;loadStory(cur);}else closeStory();}
+    function nextStory(e){e&&e.stopPropagation();autoNext();}
+    function prevStory(e){e&&e.stopPropagation();if(cur>0){cur--;loadStory(cur);}}
+    function resetProg(){for(var i=0;i<STORIES.length;i++){var f=document.getElementById("lbp"+i);f.style.width="0%";f.classList.remove("done");}}
 
-    function autoNext(){
-      if(cur < STORIES.length-1){ cur++; loadStory(cur); }
-      else closeStory();
-    }
-
-    function nextStory(e){ e && e.stopPropagation(); autoNext(); }
-    function prevStory(e){
-      e && e.stopPropagation();
-      if(cur > 0){ cur--; loadStory(cur); }
-    }
-
-    function resetProgress(){
-      for(var i=0;i<STORIES.length;i++){
-        var f=document.getElementById("lbp"+i);
-        f.style.width="0%"; f.classList.remove("done");
-      }
-    }
-
-    /* ── CONTADORES ── */
+    /* CONTADORES */
     (function(){
       function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
-      var on=rnd(180,320), vd=rnd(20,50);
+      var on=rnd(300,500),vd=rnd(100,200);
       document.getElementById("online-count").textContent=on;
       document.getElementById("vendidos-count").textContent=vd;
       setInterval(function(){
-        on+=rnd(-3,5); on=Math.max(150,Math.min(400,on));
+        on+=rnd(-3,6);on=Math.max(200,Math.min(600,on));
         vd+=rnd(0,2);
         document.getElementById("online-count").textContent=on;
         document.getElementById("vendidos-count").textContent=vd;
       },4000);
     })();
 
-    /* ── TOAST ── */
+    /* ACTIVITY ROTATIVA */
     (function(){
-      var msgs=["@joaosilva comprou 500 seguidores brasileiros","@mariana.fit comprou 1.000 curtidas","@lucas_music comprou visualizações de Reels","@ana.moda comprou 250 seguidores orgânicos","@pedro.shop comprou 2.000 seguidores mundiais"];
-      var i=0;
-      setInterval(function(){ i=(i+1)%msgs.length; document.getElementById("toast-msg").textContent=msgs[i]; },5000);
+      var acts=[
+        ["João V.","500 seguidores brasileiros","1 min"],
+        ["Ana Moda","1.000 seguidores","2 min"],
+        ["Lucas S.","200 curtidas","3 min"],
+        ["Carla R.","500 visualizações","1 min"],
+        ["Pedro T.","250 seguidores mundiais","2 min"],
+        ["Bianca F.","100 curtidas","4 min"]
+      ];
+      var bar=document.getElementById("activityBar");
+      setInterval(function(){
+        var items=bar.querySelectorAll(".activity-item");
+        var idx=Math.floor(Math.random()*acts.length);
+        var a=acts[idx];
+        var pick=Math.floor(Math.random()*3);
+        items[pick].querySelector("strong").textContent=a[0];
+        items[pick].querySelector("span").textContent=a[1]+" · há "+a[2];
+      },5000);
     })();
 
-    /* ── SERVICE TRACKING ── */
+    /* SERVICE TRACKING */
     document.querySelectorAll('.service-track').forEach(function(c){
       c.addEventListener('click',function(){
-        var nome=this.dataset.service, slug=this.dataset.slug;
+        var nome=this.dataset.service,slug=this.dataset.slug;
         sessionStorage.setItem('servico',slug);
         fetch('https://midianetdigital.onrender.com/evento',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tipo:'servico',servico:nome})}).catch(()=>{});
-        if(typeof fbq==='function') fbq('track','ViewContent',{content_name:nome,content_category:'Servico'});
+        if(typeof fbq==='function')fbq('track','ViewContent',{content_name:nome,content_category:'Servico'});
       });
     });
-
     if(!sessionStorage.getItem('visitante_enviado')){
       fetch('https://midianetdigital.onrender.com/evento',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tipo:'visitante'})}).catch(()=>{});
       sessionStorage.setItem('visitante_enviado','1');
     }
 
-    /* ── SMOOTH SCROLL ── */
+    /* SMOOTH SCROLL */
     document.querySelectorAll('a[href^="#"]').forEach(function(a){
       a.addEventListener('click',function(e){
         var t=document.querySelector(this.getAttribute('href'));
