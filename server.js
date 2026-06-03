@@ -806,7 +806,9 @@ app.post('/webhook-pushinpay', async (req, res) => {
       return res.status(200).json({ received: true });
     }
 
-    const pedido = Object.values(pedidos).find(p => p.pushinPayPaymentId == paymentId);
+    const pedido = Object.values(pedidos).find(p =>
+  String(p.pushinPayPaymentId).toLowerCase() === String(paymentId).toLowerCase()
+);
 
     if (!pedido) {
       console.warn(`[PUSHINPAY] Pedido nao encontrado: ${paymentId}`);
