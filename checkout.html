@@ -255,7 +255,18 @@
     Escolha a publicação
   </div>
 
-  <div id="posts-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;"></div>
+
+  <div id="info-publicacoes"
+style="
+margin-bottom:.7rem;
+font-size:.78rem;
+color:var(--ac);
+font-weight:700;
+line-height:1.5;
+">
+</div>
+
+<div id="posts-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;"></div>
 </div>
 
 </div> <!-- FECHA perfil-verificado -->
@@ -402,11 +413,47 @@ var maxPublicacoes = 1;
     var plano = p.get("plano") || sessionStorage.getItem("plano") || "";
     var chave = servico + "__" + plano;
     var valor = PRECOS[chave] || 0;
-    if(servico === "visualizacoes" || servico === "curtidas-brasileiras"){
+   if(servico === "visualizacoes" || servico === "curtidas-brasileiras"){
   if(plano === "500") maxPublicacoes = 1;
   else if(plano === "1000") maxPublicacoes = 2;
   else if(plano === "2500") maxPublicacoes = 3;
   else maxPublicacoes = 5;
+}
+
+var info = document.getElementById("info-publicacoes");
+
+if(info){
+
+  if(plano === "500"){
+    info.innerHTML =
+      "500 visualizações/curtidas → escolha 1 publicação";
+  }
+
+  else if(plano === "1000"){
+    info.innerHTML =
+      "1.000 visualizações/curtidas → até 2 publicações (500 em cada)";
+  }
+
+  else if(plano === "2500"){
+    info.innerHTML =
+      "2.500 visualizações/curtidas → até 3 publicações (833 em cada)";
+  }
+
+  else if(plano === "5000"){
+    info.innerHTML =
+      "5.000 visualizações/curtidas → até 5 publicações (1.000 em cada)";
+  }
+
+  else if(plano === "10000"){
+    info.innerHTML =
+      "10.000 visualizações/curtidas → até 5 publicações (2.000 em cada)";
+  }
+
+  else if(plano === "20000"){
+    info.innerHTML =
+      "20.000 visualizações/curtidas → até 5 publicações (4.000 em cada)";
+  }
+
 }
 
     document.getElementById("r-icon").textContent = ICONS[servico] || "";
@@ -669,7 +716,12 @@ function selecionarPostInstagram(url, el){
     el.style.borderColor = "transparent";
   } else {
     if(linksSelecionados.length >= maxPublicacoes){
-      alert("Você pode selecionar no máximo " + maxPublicacoes + " publicações neste plano.");
+     alert(
+  "Limite atingido.\n\n" +
+  "Plano de " + plano + " visualizações permite até " +
+  maxPublicacoes + " publicações.\n\n" +
+  "Desmarque uma publicação para selecionar outra."
+);
       return;
     }
 
@@ -724,10 +776,12 @@ function confirmarPublicacaoInstagram(){
   servico === "visualizacoes" ||
   servico === "comentarios"
 ){
-  if(!ig.includes("instagram.com")){
-    alert("Selecione uma publicação ou informe o link do post/Reels.");
-    return;
-  }
+  if(!linksSelecionados.length){
+  alert("Selecione pelo menos uma publicação.");
+  return;
+}
+
+ig = JSON.stringify(linksSelecionados);
 } else {
   if(!ig.includes("instagram.com")){
     ig = "https://instagram.com/" + limparUsuarioInstagram(ig);
