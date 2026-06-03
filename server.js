@@ -606,7 +606,7 @@ app.get('/instagram/posts', async (req, res) => {
       {
         directUrls: [`https://www.instagram.com/${user}/`],
         resultsType: 'posts',
-        resultsLimit: 12,
+       resultsLimit: 50,
         searchType: 'user'
       },
       {
