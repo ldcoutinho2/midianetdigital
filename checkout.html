@@ -562,12 +562,12 @@ async function carregarPostsInstagram(user){
   grid.innerHTML = "<div style='color:var(--ac);font-size:.85rem;font-weight:700;'>⏳ Buscando publicações...</div>";
 
   try{
-    var r = await fetch(BACKEND + "/instagram/posts?user=" + encodeURIComponent(user));
+var r = await fetch(BACKEND + "/instagram/posts?user=" + encodeURIComponent(user));
 var d = await r.json();
 
 if(servico === "visualizacoes"){
   d.posts = d.posts.filter(function(post){
-    return post.tipo === "Video";
+    return String(post.tipo || "").toLowerCase().includes("video");
   });
 }
 
