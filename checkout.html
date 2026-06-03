@@ -692,10 +692,10 @@ function selecionarPostInstagram(url, el){
     "field-msg show ok";
 }
 
-function confirmarPublicacaoInstagram(){    if(!linksSelecionados.length){     alert("Selecione pelo menos uma publicação.");     return;   }    instagramConfirmado = true;    var btn = document.getElementById("btn-confirmar-publicacao");    btn.textContent = "✅ Publicações confirmadas";   btn.style.background = "#34d399";    document.getElementById("msg-instagram").textContent =     "Publicações confirmadas ✅ Agora é só gerar o Pix.";    document.getElementById("msg-instagram").className =     "field-msg show ok"; }
+function confirmarPublicacaoInstagram(){
 
-  if(!document.getElementById("link_final_instagram").value){
-    alert("Selecione uma publicação primeiro.");
+  if(!linksSelecionados.length){
+    alert("Selecione pelo menos uma publicação.");
     return;
   }
 
@@ -703,11 +703,11 @@ function confirmarPublicacaoInstagram(){    if(!linksSelecionados.length){     a
 
   var btn = document.getElementById("btn-confirmar-publicacao");
 
-  btn.textContent = "✅ Publicação confirmada";
+  btn.textContent = "✅ Publicações confirmadas";
   btn.style.background = "#34d399";
 
   document.getElementById("msg-instagram").textContent =
-    "Publicação confirmada ✅ Agora é só gerar o Pix.";
+    "Publicações confirmadas ✅ Agora é só gerar o Pix.";
 
   document.getElementById("msg-instagram").className =
     "field-msg show ok";
