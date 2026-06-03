@@ -249,14 +249,6 @@
     </div>
   </div>
 
-  <button
-    type="button"
-    onclick="confirmarPerfilInstagram()"
-    style="margin-top:.9rem;width:100%;border:none;border-radius:999px;background:var(--ac);color:#080810;font-weight:800;padding:.75rem;cursor:pointer;"
-  >
-    Confirmar perfil
-  </button>
-</div>
 
 <div id="posts-instagram" style="display:none;margin-top:1rem;">
   <div style="font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:.7rem;">
@@ -415,9 +407,9 @@
 
     var isPublicacao = ["curtidas-brasileiras","visualizacoes","comentarios","salvamentos","compartilhamentos"].includes(servico);
     if (isPublicacao) {
-      document.getElementById("label-instagram").textContent = "🔗 Link da publicação ou Reels";
-      document.getElementById("instagram").placeholder = "https://www.instagram.com/p/...";
-    }
+  document.getElementById("label-instagram").textContent = "📸 @ do perfil do Instagram";
+  document.getElementById("instagram").placeholder = "@seuusuario";
+}
 
     // Máscara de telefone
     document.getElementById("telefone").addEventListener("input", function(){
@@ -503,7 +495,7 @@ async function verificarInstagram(){
     return;
   }
 
-  document.getElementById("msg-instagram").textContent = "Verificando perfil...";
+  document.getElementById("msg-instagram").textContent = "🔎 Buscando perfil..."; document.getElementById("msg-instagram").className = "field-msg show ok";
 
   try{
     var r = await fetch(BACKEND + "/instagram/perfil?user=" + encodeURIComponent(user));
@@ -531,9 +523,10 @@ document.getElementById("perfil-link").textContent = "Ver perfil ↗";
     document.getElementById("perfil-verificado").style.display = "block";
     document.getElementById("link_final_instagram").value = d.link;
 
-    if(isPublicacao){
-      carregarPostsInstagram(d.username);
-    }
+   if(isPublicacao){
+  document.getElementById("msg-instagram").textContent = "✅ Perfil encontrado. Buscando publicações...";
+  carregarPostsInstagram(d.username);
+}
 
     document.getElementById("msg-instagram").textContent = "";
   } catch(e){
@@ -559,8 +552,11 @@ function confirmarPerfilInstagram(){
 }
 
 async function carregarPostsInstagram(user){
-  document.getElementById("posts-instagram").style.display = "block";
-  document.getElementById("posts-grid").innerHTML = "Carregando publicações...";
+  const area = document.getElementById("posts-instagram");
+  const grid = document.getElementById("posts-grid");
+
+  area.style.display = "block";
+  grid.innerHTML = "<div style='color:var(--ac);font-size:.85rem;font-weight:700;'>⏳ Buscando publicações...</div>";
 
   try{
     var r = await fetch(BACKEND + "/instagram/posts?user=" + encodeURIComponent(user));
@@ -570,45 +566,86 @@ async function carregarPostsInstagram(user){
       throw new Error("Sem publicações.");
     }
 
-document.getElementById("posts-grid").innerHTML = d.posts.map(function(post){
+    grid.style.display = "flex";
+    grid.style.overflowX = "auto";
+    grid.style.gap = ".75rem";
+    grid.style.scrollSnapType = "x mandatory";
+    grid.style.paddingBottom = ".5rem";
 
-  return `
-    <div
-      onclick="selecionarPostInstagram('${post.url}', this)"
-      style="
-        cursor:pointer;
-        border:2px solid transparent;
-        border-radius:12px;
-        overflow:hidden;
-        background:#181828;
-      "
-    >
+    grid.innerHTML = d.posts.map(function(post, i){
+      return `
+        <div
+          onclick="selecionarPostInstagram('${post.url}', this)"
+          style="
+            min-width:120px;
+            max-width:120px;
+            cursor:pointer;
+            border:2px solid transparent;
+            border-radius:14px;
+            overflow:hidden;
+            background:#181828;
+            scroll-snap-align:start;
+            position:relative;
+          "
+        >
+          <img
+            src="${BACKEND}/proxy-img?url=${encodeURIComponent(post.thumb)}"
+            style="
+              width:100%;
+              aspect-ratio:1/1;
+              object-fit:cover;
+              display:block;
+            "
+          >
+          <div style="
+            padding:.45rem;
+            font-size:.65rem;
+            text-align:center;
+            color:var(--muted);
+            font-weight:700;
+          ">
+            Publicação ${i + 1}
+          </div>
+        </div>
+      `;
+    }).join("");
 
-      <img
-       src="${BACKEND}/proxy-img?url=${encodeURIComponent(post.thumb)}"
+    grid.insertAdjacentHTML("afterend", `
+      <button
+        id="btn-confirmar-publicacao"
+        type="button"
+        onclick="confirmarPublicacaoInstagram()"
         style="
+          display:none;
+          margin-top:.9rem;
           width:100%;
-          aspect-ratio:1/1;
-          object-fit:cover;
-          display:block;
+          border:none;
+          border-radius:999px;
+          background:var(--ac);
+          color:#080810;
+          font-weight:800;
+          padding:.75rem;
+          cursor:pointer;
         "
       >
+        Confirmar publicação
+      </button>
+    `);
 
-    </div>
-  `;
-
-}).join("");
+    document.getElementById("msg-instagram").textContent = "👇 Selecione a publicação desejada";
+    document.getElementById("msg-instagram").className = "field-msg show ok";
 
   } catch(e){
-    document.getElementById("posts-grid").innerHTML = "<div style='color:var(--muted);font-size:.85rem;'>Não foi possível carregar publicações. Cole o link da publicação manualmente.</div>";
+    grid.innerHTML = "<div style='color:var(--muted);font-size:.85rem;'>Não foi possível carregar publicações. Tente outro perfil.</div>";
   }
 }
+
+
+    
 
 function selecionarPostInstagram(url, el){
 
   document.getElementById("link_final_instagram").value = url;
-
-  instagramConfirmado = true;
 
   document.querySelectorAll("#posts-grid > div").forEach(function(card){
     card.style.borderColor = "transparent";
@@ -616,11 +653,37 @@ function selecionarPostInstagram(url, el){
 
   el.style.borderColor = "#e8ff47";
 
+  var btnPub = document.getElementById("btn-confirmar-publicacao");
+  if(btnPub){
+    btnPub.style.display = "block";
+  }
+
   document.getElementById("msg-instagram").textContent =
-  "Publicação selecionada ✅";
+    "Publicação selecionada ✅";
 
   document.getElementById("msg-instagram").className =
-  "field-msg show ok";
+    "field-msg show ok";
+}
+
+function confirmarPublicacaoInstagram(){
+
+  if(!document.getElementById("link_final_instagram").value){
+    alert("Selecione uma publicação primeiro.");
+    return;
+  }
+
+  instagramConfirmado = true;
+
+  var btn = document.getElementById("btn-confirmar-publicacao");
+
+  btn.textContent = "✅ Publicação confirmada";
+  btn.style.background = "#34d399";
+
+  document.getElementById("msg-instagram").textContent =
+    "Publicação confirmada ✅ Agora é só gerar o Pix.";
+
+  document.getElementById("msg-instagram").className =
+    "field-msg show ok";
 }
 
     async function criarPedido() {
