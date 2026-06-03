@@ -275,6 +275,28 @@ line-height:1.5;
 </div>
 
 <div id="posts-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;"></div>
+  <div id="manual-post" style="margin-top:.8rem;">
+  <div style="font-size:.78rem;color:var(--muted);margin-bottom:.4rem;">
+    Não encontrou a publicação? Cole o link abaixo.
+  </div>
+
+  <div style="display:flex;gap:.5rem;">
+    <input
+      type="text"
+      id="link-manual-instagram"
+      placeholder="https://www.instagram.com/p/..."
+      style="flex:1;background:var(--s2);border:1px solid var(--border);border-radius:10px;color:var(--text);padding:.75rem;"
+    >
+
+    <button
+      type="button"
+      onclick="adicionarLinkManual()"
+      style="background:var(--ac);border:none;border-radius:10px;color:#080810;font-weight:800;padding:0 .9rem;cursor:pointer;"
+    >
+      +
+    </button>
+  </div>
+</div>
 </div>
 
 </div> <!-- FECHA perfil-verificado -->
@@ -716,7 +738,43 @@ if(!r.ok || !d.success || !d.posts.length){
   }
 }
 
+function adicionarLinkManual(){
+  var campo = document.getElementById("link-manual-instagram");
+  var url = campo.value.trim();
 
+  if(!url.includes("instagram.com/")){
+    alert("Cole um link válido do Instagram.");
+    return;
+  }
+
+  if(linksSelecionados.length >= maxPublicacoes){
+    alert("Você já selecionou o máximo de publicações deste plano.");
+    return;
+  }
+
+  if(linksSelecionados.includes(url)){
+    alert("Esse link já foi adicionado.");
+    return;
+  }
+
+  linksSelecionados.push(url);
+
+  document.getElementById("link_final_instagram").value =
+    JSON.stringify(linksSelecionados);
+
+  campo.value = "";
+
+  var btnPub = document.getElementById("btn-confirmar-publicacao");
+  if(btnPub){
+    btnPub.style.display = "block";
+  }
+
+  document.getElementById("msg-instagram").textContent =
+    "Selecionadas: " + linksSelecionados.length + "/" + maxPublicacoes + " publicações";
+
+  document.getElementById("msg-instagram").className =
+    "field-msg show ok";
+}
     
 
 function selecionarPostInstagram(url, el){
