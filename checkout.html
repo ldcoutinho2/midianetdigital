@@ -258,6 +258,8 @@
   <div id="posts-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;"></div>
 </div>
 
+</div> <!-- FECHA perfil-verificado -->
+
         <div style="margin-bottom:1.1rem">
           <div class="pay-label">Forma de pagamento</div>
           <div class="pay-tabs">
@@ -500,6 +502,7 @@ async function verificarInstagram(){
   try{
     var r = await fetch(BACKEND + "/instagram/perfil?user=" + encodeURIComponent(user));
     var d = await r.json();
+   
 
     if(!r.ok || !d.success){
       throw new Error(d.error || "Perfil não encontrado.");
@@ -560,11 +563,17 @@ async function carregarPostsInstagram(user){
 
   try{
     var r = await fetch(BACKEND + "/instagram/posts?user=" + encodeURIComponent(user));
-    var d = await r.json();
+var d = await r.json();
 
-    if(!r.ok || !d.success || !d.posts.length){
-      throw new Error("Sem publicações.");
-    }
+if(servico === "visualizacoes"){
+  d.posts = d.posts.filter(function(post){
+    return post.tipo === "Video";
+  });
+}
+
+if(!r.ok || !d.success || !d.posts.length){
+  throw new Error("Sem publicações.");
+}
 
     grid.style.display = "flex";
     grid.style.overflowX = "auto";
