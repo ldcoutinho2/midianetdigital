@@ -13,38 +13,43 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const SERVICO_MAP = {
-  'seguidores-brasileiros__100': '1095',
-  'seguidores-brasileiros__250': '1095',
-  'seguidores-brasileiros__500': '1095',
-  'seguidores-brasileiros__1000': '1095',
-  'seguidores-brasileiros__2000': '1095',
-  'seguidores-brasileiros__5000': '1095',
+ 'seguidores-brasileiros__250': '1821',
+  'seguidores-brasileiros__500': '1821',
+  'seguidores-brasileiros__1000': '1821',
+  'seguidores-brasileiros__2000': '1821',
+  'seguidores-brasileiros__3000': '1821',
+  'seguidores-brasileiros__4000': '1821',
+  'seguidores-brasileiros__5000': '1821',
+  'seguidores-brasileiros__10000': '1821',
 
-  'seguidores-mundiais__100': '1172',
-  'seguidores-mundiais__250': '1172',
-  'seguidores-mundiais__500': '1172',
-  'seguidores-mundiais__1000': '1172',
-  'seguidores-mundiais__2000': '1172',
-  'seguidores-mundiais__5000': '1172',
 
-  'seguidores-organicos__250': '1125',
-  'seguidores-organicos__500': '1125',
-  'seguidores-organicos__1000': '1125',
-  'seguidores-organicos__2000': '1125',
+  'seguidores-mundiais__500': '1876',
+  'seguidores-mundiais__1000': '1876',
+  'seguidores-mundiais__2000': '1876',
+  'seguidores-mundiais__3000': '1876',
+  'seguidores-mundiais__4000': '1876',
+  'seguidores-mundiais__5000': '1876',
+  'seguidores-mundiais__10000': '1876',
 
-  'curtidas-brasileiras__500': '1234',
-  'curtidas-brasileiras__1000': '1234',
-  'curtidas-brasileiras__2500': '1234',
-  'curtidas-brasileiras__5000': '1234',
-  'curtidas-brasileiras__10000': '1234',
-  'curtidas-brasileiras__20000': '1234',
 
-  'visualizacoes__500': '1013',
-  'visualizacoes__1000': '1013',
-  'visualizacoes__2500': '1013',
-  'visualizacoes__5000': '1013',
-  'visualizacoes__10000': '1013',
-  'visualizacoes__25000': '1013',
+  'seguidores-organicos__250': '1619',
+  'seguidores-organicos__500': '1619',
+  'seguidores-organicos__1000': '1619',
+  'seguidores-organicos__2000': '1619',
+
+  'curtidas-brasileiras__500': '1824',
+  'curtidas-brasileiras__1000': '1824',
+  'curtidas-brasileiras__2500': '1824',
+  'curtidas-brasileiras__5000': '1824',
+  'curtidas-brasileiras__10000': '1824',
+  'curtidas-brasileiras__20000': '1824',
+
+  'visualizacoes__500': '692',
+  'visualizacoes__1000': '692',
+  'visualizacoes__2000': '692',
+  'visualizacoes__5000': '692',
+  'visualizacoes__10000': '692',
+  'visualizacoes__20000': '692',
 
   'comentarios__10': '580',
   'comentarios__25': '580',
@@ -53,45 +58,51 @@ const SERVICO_MAP = {
 };
 
 const PRECOS = {
-  'seguidores-brasileiros__100': 890,
-  'seguidores-brasileiros__250': 1490,
-  'seguidores-brasileiros__500': 2490,
-  'seguidores-brasileiros__1000': 3990,
-  'seguidores-brasileiros__2000': 6990,
-  'seguidores-brasileiros__5000': 14990,
+  'seguidores-brasileiros__250': 1999,
+  'seguidores-brasileiros__500': 3999,
+  'seguidores-brasileiros__1000': 7999,
+  'seguidores-brasileiros__2000': 15999,
+  'seguidores-brasileiros__3000': 23999,
+  'seguidores-brasileiros__4000': 31999,
+  'seguidores-brasileiros__5000': 39999,
+  'seguidores-brasileiros__10000': 79999,
 
-  'seguidores-mundiais__100': 490,
-  'seguidores-mundiais__250': 890,
-  'seguidores-mundiais__500': 1490,
-  'seguidores-mundiais__1000': 2490,
-  'seguidores-mundiais__2000': 4490,
-  'seguidores-mundiais__5000': 8990,
+
+
+  'seguidores-mundiais__500': 799,
+  'seguidores-mundiais__1000': 1599,
+  'seguidores-mundiais__2000': 3199,
+  'seguidores-mundiais__3000': 4799,
+  'seguidores-mundiais__4000': 5399,
+  'seguidores-mundiais__5000': 7999,
+  'seguidores-mundiais__10000': 15999,
+
 
   'seguidores-organicos__250': 2490,
   'seguidores-organicos__500': 4490,
   'seguidores-organicos__1000': 7990,
   'seguidores-organicos__2000': 13990,
 
-  'curtidas-brasileiras__500': 1490,
-  'curtidas-brasileiras__1000': 2490,
-  'curtidas-brasileiras__2500': 4990,
-  'curtidas-brasileiras__5000': 8990,
-  'curtidas-brasileiras__10000': 14990,
-  'curtidas-brasileiras__20000': 24990,
+  'curtidas-brasileiras__500': 1199,
+  'curtidas-brasileiras__1000': 2299,
+  'curtidas-brasileiras__2500': 5599,
+  'curtidas-brasileiras__5000': 11299,
+  'curtidas-brasileiras__10000': 22599,
+  'curtidas-brasileiras__20000': 40000,
 
-  'visualizacoes__500': 390,
-  'visualizacoes__1000': 590,
-  'visualizacoes__2500': 990,
-  'visualizacoes__5000': 1490,
-  'visualizacoes__10000': 2490,
-  'visualizacoes__25000': 4490,
+  'visualizacoes__500': 599,
+  'visualizacoes__1000': 1099,
+  'visualizacoes__2000': 1599,
+  'visualizacoes__5000': 2599,
+  'visualizacoes__10000': 3999,
+  'visualizacoes__20000': 5599,
+
 
   'comentarios__10': 1290,
   'comentarios__25': 2490,
   'comentarios__50': 3990,
   'comentarios__100': 6990,
 };
-
 const pedidos = {};
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
