@@ -847,13 +847,16 @@ app.post('/webhook-pushinpay', async (req, res) => {
       return res.status(200).json({ received: true });
     }
 
-    if (pedido.status === 'concluido') {
-      return res.status(200).json({ received: true });
-    }
+    if (pedido.status !== 'aguardando_pagamento') {
+  console.log(`[PUSHINPAY] Pedido ${pedido.id} já está em processamento ou concluído: ${pedido.status}`);
+  return res.status(200).json({ received: true });
+}
 
-    console.log(`[SMM] Enviando pedido PushinPay para EngajaMidia: ${pedido.instagram}`);
+pedido.status = 'processando_smm';
 
-    const smmData = await enviarPedidoSMM(pedido);
+console.log(`[SMM] Enviando pedido PushinPay para plataforma SMM: ${pedido.instagram}`);
+
+const smmData = await enviarPedidoSMM(pedido);
 
     pedido.status = 'concluido';
     pedido.smmOrderId = smmData.order;
@@ -914,13 +917,16 @@ app.post('/webhook-mercadopago', async (req, res) => {
       return res.status(200).json({ received: true });
     }
 
-    if (pedido.status === 'concluido') {
-      return res.status(200).json({ received: true });
-    }
+    if (pedido.status !== 'aguardando_pagamento') {
+  console.log(`[MP] Pedido ${pedidoId} já está em processamento ou concluído: ${pedido.status}`);
+  return res.status(200).json({ received: true });
+}
 
-    console.log(`[SMM] Enviando pedido para EngajaMidia: ${pedido.instagram}`);
+pedido.status = 'processando_smm';
 
-    const smmData = await enviarPedidoSMM(pedido);
+console.log(`[SMM] Enviando pedido para plataforma SMM: ${pedido.instagram}`);
+
+const smmData = await enviarPedidoSMM(pedido);
 
     pedidos[pedidoId].status = 'concluido';
     pedidos[pedidoId].smmOrderId = smmData.order;
