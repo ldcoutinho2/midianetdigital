@@ -78,10 +78,10 @@ const PRECOS = {
   'seguidores-mundiais__10000': 15999,
 
 
-  'seguidores-organicos__250': 2490,
-  'seguidores-organicos__500': 4490,
-  'seguidores-organicos__1000': 7990,
-  'seguidores-organicos__2000': 13990,
+  'seguidores-organicos__250': 3999,
+  'seguidores-organicos__500': 7999,
+  'seguidores-organicos__1000': 15999,
+  'seguidores-organicos__2000': 21999,
 
   'curtidas-brasileiras__500': 1199,
   'curtidas-brasileiras__1000': 2299,
@@ -96,12 +96,6 @@ const PRECOS = {
   'visualizacoes__5000': 2599,
   'visualizacoes__10000': 3999,
   'visualizacoes__20000': 5599,
-
-
-  'comentarios__10': 1290,
-  'comentarios__25': 2490,
-  'comentarios__50': 3990,
-  'comentarios__100': 6990,
 };
 const pedidos = {};
 
