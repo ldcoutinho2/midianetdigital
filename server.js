@@ -23,8 +23,8 @@ const SERVICO_MAP = {
   'seguidores-brasileiros__10000': '1821',
 
 
-  'seguidores-mundiais__500': '1876',
-  'seguidores-mundiais__1000': '1876',
+  'seguidores-mundiais__500': '321',
+  'seguidores-mundiais__1000': '321',
   'seguidores-mundiais__2000': '1876',
   'seguidores-mundiais__3000': '1876',
   'seguidores-mundiais__4000': '1876',
@@ -69,7 +69,7 @@ const PRECOS = {
 
 
 
-  'seguidores-mundiais__500': 799,
+  'seguidores-mundiais__500': 5,
   'seguidores-mundiais__1000': 1599,
   'seguidores-mundiais__2000': 3199,
   'seguidores-mundiais__3000': 4799,
