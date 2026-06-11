@@ -69,7 +69,7 @@ const PRECOS = {
 
 
 
-  'seguidores-mundiais__500': 5,
+  'seguidores-mundiais__500': 500,
   'seguidores-mundiais__1000': 1599,
   'seguidores-mundiais__2000': 3199,
   'seguidores-mundiais__3000': 4799,
