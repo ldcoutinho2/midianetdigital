@@ -409,6 +409,10 @@ app.get('/dashboard-data', async (req, res) => {
   }
 });
 
+
+
+
+
 app.get('/dashboard', (req, res) => {
   const usuario = req.query.usuario;
   const senha = req.query.senha;
@@ -458,7 +462,7 @@ h1{font-size:28px}
 .filters{display:flex;gap:8px;flex-wrap:wrap;align-items:end;background:#111120;border:1px solid rgba(255,255,255,.08);padding:14px;border-radius:16px}
 .filters label{font-size:12px;color:#8888aa;display:block;margin-bottom:4px}
 input,select{background:#181828;color:#fff;border:1px solid rgba(255,255,255,.12);padding:10px;border-radius:10px}
-button{background:#e8ff47;color:#080810;border:0;padding:11px 16px;border-radius:999px;font-weight:800;cursor:pointer}
+button{background:#e8ff47;color:#080810;border:0;padding:10px 15px;border-radius:999px;font-weight:800;cursor:pointer}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:18px}
 .card{background:#111120;border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:18px}
 .num{font-size:27px;font-weight:900;color:#e8ff47}
@@ -470,10 +474,12 @@ button{background:#e8ff47;color:#080810;border:0;padding:11px 16px;border-radius
 .bar{height:11px;background:#181828;border-radius:999px;overflow:hidden;margin-top:6px}
 .fill{height:100%;background:#e8ff47;border-radius:999px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-@media(max-width:800px){.two{grid-template-columns:1fr}.top{align-items:flex-start}}
+.paginacao{display:flex;gap:8px;align-items:center;margin-top:14px;flex-wrap:wrap}
+.paginacao span{color:#8888aa;font-size:13px}
 .bad{color:#ff6b6b}
 .good{color:#34d399}
 .small{font-size:12px;color:#8888aa}
+@media(max-width:800px){.two{grid-template-columns:1fr}.top{align-items:flex-start}}
 </style>
 </head>
 <body>
@@ -481,7 +487,7 @@ button{background:#e8ff47;color:#080810;border:0;padding:11px 16px;border-radius
 <div class="top">
   <div>
     <h1>MidiaNetDigital Dashboard</h1>
-    <div class="sub">Funil, vendas, faturamento e gargalos de conversão</div>
+    <div class="sub">Funil, pedidos, vendas e gargalos de conversão</div>
   </div>
 
   <div class="filters">
@@ -522,7 +528,7 @@ button{background:#e8ff47;color:#080810;border:0;padding:11px 16px;border-radius
 <div class="section">
   <h2>⚠️ Principal ponto de perda</h2>
   <div class="row"><span id="gargalo">Calculando...</span><strong class="bad" id="gargaloPct">0%</strong></div>
-  <div class="small">Esse é o ponto onde mais clientes estão parando no período selecionado.</div>
+  <div class="small">Mostra onde mais clientes estão parando no período escolhido.</div>
 </div>
 
 <div class="section">
@@ -534,33 +540,49 @@ button{background:#e8ff47;color:#080810;border:0;padding:11px 16px;border-radius
   <div class="section">
     <h2>🔥 Serviços mais clicados</h2>
     <div id="servicosDetalhes"></div>
+    <div id="pagServicos" class="paginacao"></div>
   </div>
 
   <div class="section">
     <h2>🏆 Planos mais clicados</h2>
     <div id="planosDetalhes"></div>
+    <div id="pagPlanos" class="paginacao"></div>
   </div>
 </div>
 
 <div class="two">
   <div class="section">
-    <h2>🟢 Últimos Pix Gerados</h2>
+    <h2>🟢 Pedidos / Pix Gerados</h2>
     <div id="ultimosPix"></div>
+    <div id="pagPix" class="paginacao"></div>
   </div>
 
   <div class="section">
-    <h2>🛒 Últimas Vendas</h2>
+    <h2>🛒 Vendas Confirmadas</h2>
     <div id="ultimasVendas"></div>
+    <div id="pagVendas" class="paginacao"></div>
   </div>
 </div>
 
 <div class="section">
   <h2>📅 Resultado por dia</h2>
   <div id="dias"></div>
+  <div id="pagDias" class="paginacao"></div>
 </div>
 
 <script>
 const senha = new URLSearchParams(location.search).get('senha') || '';
+let dadosGlobais = null;
+
+const paginas = {
+  servicos: 0,
+  planos: 0,
+  pix: 0,
+  vendas: 0,
+  dias: 0
+};
+
+const porPagina = 10;
 
 function brDate(d){
   return d.toISOString().slice(0,10);
@@ -572,30 +594,11 @@ function setPreset(){
   let ini = new Date();
   let fim = new Date();
 
-  if(p === 'today'){
-    ini = hoje;
-    fim = hoje;
-  }
-
-  if(p === 'yesterday'){
-    ini.setDate(hoje.getDate() - 1);
-    fim.setDate(hoje.getDate() - 1);
-  }
-
-  if(p === '7'){
-    ini.setDate(hoje.getDate() - 6);
-    fim = hoje;
-  }
-
-  if(p === '30'){
-    ini.setDate(hoje.getDate() - 29);
-    fim = hoje;
-  }
-
-  if(p === 'month'){
-    ini = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
-    fim = hoje;
-  }
+  if(p === 'today'){ ini = hoje; fim = hoje; }
+  if(p === 'yesterday'){ ini.setDate(hoje.getDate() - 1); fim.setDate(hoje.getDate() - 1); }
+  if(p === '7'){ ini.setDate(hoje.getDate() - 6); fim = hoje; }
+  if(p === '30'){ ini.setDate(hoje.getDate() - 29); fim = hoje; }
+  if(p === 'month'){ ini = new Date(hoje.getFullYear(), hoje.getMonth(), 1); fim = hoje; }
 
   if(p !== 'custom'){
     document.getElementById('start').value = brDate(ini);
@@ -604,21 +607,80 @@ function setPreset(){
   }
 }
 
-function lista(obj){
-  const entries = Object.entries(obj || {}).sort((a,b)=>b[1]-a[1]);
-  if(!entries.length) return '<div class="row"><span>Nenhum dado</span><strong>0</strong></div>';
-
-  return entries.map(([k,v]) =>
-    '<div><div class="row"><span>'+k+'</span><strong>'+v+'</strong></div></div>'
-  ).join('');
+function paginar(arr, pagina){
+  const inicio = pagina * porPagina;
+  return arr.slice(inicio, inicio + porPagina);
 }
 
-function listaEventos(arr){
-  if(!arr || !arr.length) return '<div class="row"><span>Nenhum dado</span><strong>-</strong></div>';
+function botoesPaginacao(total, pagina, tipo, el){
+  const totalPaginas = Math.ceil(total / porPagina) || 1;
 
-  return arr.slice(0,10).map(i =>
+  document.getElementById(el).innerHTML =
+    '<button onclick="mudarPagina(\\''+tipo+'\\', -1)">← Anterior</button>' +
+    '<span>Página '+(pagina + 1)+' de '+totalPaginas+'</span>' +
+    '<button onclick="mudarPagina(\\''+tipo+'\\', 1)">Próximos 10 →</button>';
+}
+
+function mudarPagina(tipo, dir){
+  const listas = montarListas();
+  const total = listas[tipo].length;
+  const max = Math.max(0, Math.ceil(total / porPagina) - 1);
+
+  paginas[tipo] = Math.min(max, Math.max(0, paginas[tipo] + dir));
+
+  renderizarListas();
+}
+
+function montarListas(){
+  const d = dadosGlobais || {};
+
+  return {
+    servicos: Object.entries(d.servicosDetalhes || {}).sort((a,b)=>b[1]-a[1]),
+    planos: Object.entries(d.planosDetalhes || {}).sort((a,b)=>b[1]-a[1]),
+    pix: d.pixDetalhes || [],
+    vendas: d.vendasDetalhes || [],
+    dias: Object.entries(d.dias || {}).reverse()
+  };
+}
+
+function renderRanking(arr, pagina, el, pagEl, tipo){
+  const itens = paginar(arr, pagina);
+
+  document.getElementById(el).innerHTML = itens.length ? itens.map(([k,v]) =>
+    '<div class="row"><span>'+k+'</span><strong>'+v+'</strong></div>'
+  ).join('') : '<div class="row"><span>Nenhum dado</span><strong>0</strong></div>';
+
+  botoesPaginacao(arr.length, pagina, tipo, pagEl);
+}
+
+function renderEventos(arr, pagina, el, pagEl, tipo){
+  const itens = paginar(arr, pagina);
+
+  document.getElementById(el).innerHTML = itens.length ? itens.map(i =>
     '<div class="row"><span>'+i.hora+'<br><small>'+i.info+'</small></span><strong>'+i.valor+'</strong></div>'
-  ).join('');
+  ).join('') : '<div class="row"><span>Nenhum dado</span><strong>-</strong></div>';
+
+  botoesPaginacao(arr.length, pagina, tipo, pagEl);
+}
+
+function renderDias(arr, pagina){
+  const itens = paginar(arr, pagina);
+
+  document.getElementById('dias').innerHTML = itens.length ? itens.map(([dia,x]) =>
+    '<div class="row"><span>'+dia+'</span><strong>Pix: '+x.pix+' | Vendas: '+x.vendas+' | Fat: '+formatBR(x.faturamento)+'</strong></div>'
+  ).join('') : '<div class="row"><span>Nenhum dado</span><strong>-</strong></div>';
+
+  botoesPaginacao(arr.length, pagina, 'dias', 'pagDias');
+}
+
+function renderizarListas(){
+  const listas = montarListas();
+
+  renderRanking(listas.servicos, paginas.servicos, 'servicosDetalhes', 'pagServicos', 'servicos');
+  renderRanking(listas.planos, paginas.planos, 'planosDetalhes', 'pagPlanos', 'planos');
+  renderEventos(listas.pix, paginas.pix, 'ultimosPix', 'pagPix', 'pix');
+  renderEventos(listas.vendas, paginas.vendas, 'ultimasVendas', 'pagVendas', 'vendas');
+  renderDias(listas.dias, paginas.dias);
 }
 
 function etapa(nome, atual, anterior, conversao, queda){
@@ -640,6 +702,13 @@ async function carregar(){
 
   const r = await fetch(url);
   const d = await r.json();
+  dadosGlobais = d;
+
+  paginas.servicos = 0;
+  paginas.planos = 0;
+  paginas.pix = 0;
+  paginas.vendas = 0;
+  paginas.dias = 0;
 
   document.getElementById('visitantes').textContent = d.visitantes;
   document.getElementById('servicos').textContent = d.servicos;
@@ -660,15 +729,7 @@ async function carregar(){
     etapa('Checkout → Pix', d.pix, d.checkout, d.funil.checkoutPix, d.funil.quedaCheckoutPix) +
     etapa('Pix → Venda', d.vendas, d.pix, d.funil.pixVenda, d.funil.quedaPixVenda);
 
-  document.getElementById('servicosDetalhes').innerHTML = lista(d.servicosDetalhes);
-  document.getElementById('planosDetalhes').innerHTML = lista(d.planosDetalhes);
-  document.getElementById('ultimosPix').innerHTML = listaEventos(d.pixDetalhes);
-  document.getElementById('ultimasVendas').innerHTML = listaEventos(d.vendasDetalhes);
-
-  const dias = Object.entries(d.dias || {}).reverse();
-  document.getElementById('dias').innerHTML = dias.length ? dias.map(([dia,x]) =>
-    '<div class="row"><span>'+dia+'</span><strong>Pix: '+x.pix+' | Vendas: '+x.vendas+' | Fat: '+formatBR(x.faturamento)+'</strong></div>'
-  ).join('') : '<div class="row"><span>Nenhum dado</span><strong>-</strong></div>';
+  renderizarListas();
 }
 
 function formatBR(centavos){
@@ -676,13 +737,15 @@ function formatBR(centavos){
 }
 
 setPreset();
-setInterval(carregar, 15000);
+setInterval(carregar, 30000);
 </script>
 
 </body>
 </html>
   `);
 });
+
+
 
 app.get('/instagram/perfil', async (req, res) => {
   try {
