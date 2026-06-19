@@ -46,10 +46,10 @@ const SERVICO_MAP = {
 
   'visualizacoes__500': '349',
   'visualizacoes__1000': '349',
-  'visualizacoes__2000': '349',
+  'visualizacoes__2500': '349',
   'visualizacoes__5000': '349',
   'visualizacoes__10000': '349',
-  'visualizacoes__20000': '349',
+  'visualizacoes__25000': '349',
 
   'comentarios__10': '580',
   'comentarios__25': '580',
@@ -131,18 +131,25 @@ async function registrarEvento(tipo, nome = '', valor = 0) {
   );
 }
 
-async function buscarEventos() {
+async function buscarEventos(filtros = {}) {
   if (!SUPABASE_URL || !SUPABASE_KEY) return [];
 
-  const resp = await axios.get(
-    `${SUPABASE_URL}/rest/v1/eventos?select=*&order=created_at.desc&limit=10000`,
-    {
-      headers: {
-        apikey: SUPABASE_KEY,
-        Authorization: `Bearer ${SUPABASE_KEY}`
-      }
+  let url = `${SUPABASE_URL}/rest/v1/eventos?select=*&order=created_at.desc&limit=10000`;
+
+  if (filtros.start) {
+    url += `&created_at=gte.${encodeURIComponent(filtros.start + 'T00:00:00-03:00')}`;
+  }
+
+  if (filtros.end) {
+    url += `&created_at=lte.${encodeURIComponent(filtros.end + 'T23:59:59-03:00')}`;
+  }
+
+  const resp = await axios.get(url, {
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`
     }
-  );
+  });
 
   return resp.data || [];
 }
@@ -158,56 +165,121 @@ function montarDashboard(eventos) {
     faturamento: 0,
     servicosDetalhes: {},
     planosDetalhes: {},
-    ultimasVendas: [],
-    ultimosPedidos: []
+    pixDetalhes: [],
+    vendasDetalhes: [],
+    dias: {},
+    funil: {}
   };
 
   eventos.forEach(e => {
-    if (e.tipo === 'visitante') dados.visitantes++;
+    const tipo = e.tipo;
+    const nome = e.nome || '';
+    const valorCentavos = Math.round(Number(e.valor || 0) * 100);
+    const data = new Date(e.created_at);
+    const dia = data.toLocaleDateString('pt-BR');
 
-    if (e.tipo === 'servico') {
+    if (!dados.dias[dia]) {
+      dados.dias[dia] = {
+        visitantes: 0,
+        servicos: 0,
+        planos: 0,
+        checkout: 0,
+        pix: 0,
+        vendas: 0,
+        faturamento: 0
+      };
+    }
+
+    if (tipo === 'visitante') {
+      dados.visitantes++;
+      dados.dias[dia].visitantes++;
+    }
+
+    if (tipo === 'servico') {
       dados.servicos++;
-      incrementarDetalhe(dados.servicosDetalhes, e.nome);
+      dados.dias[dia].servicos++;
+      incrementarDetalhe(dados.servicosDetalhes, nome);
     }
 
-    if (e.tipo === 'plano') {
+    if (tipo === 'plano') {
       dados.planos++;
-      incrementarDetalhe(dados.planosDetalhes, e.nome);
+      dados.dias[dia].planos++;
+      incrementarDetalhe(dados.planosDetalhes, nome);
     }
 
-    if (e.tipo === 'checkout') dados.checkout++;
-if (e.tipo === 'pix') {
-  dados.pix++;
+    if (tipo === 'checkout') {
+      dados.checkout++;
+      dados.dias[dia].checkout++;
+    }
 
-  dados.ultimosPedidos.push({
-    hora: new Date(e.created_at).toLocaleString('pt-BR'),
-    info: e.nome || 'Pedido',
-    valor: dinheiroBR(Math.round(Number(e.valor || 0) * 100))
-  });
-}
-    if (e.tipo === 'venda') {
+    if (tipo === 'pix') {
+      dados.pix++;
+      dados.dias[dia].pix++;
+
+      dados.pixDetalhes.push({
+        hora: data.toLocaleString('pt-BR'),
+        info: nome || 'Pedido',
+        valor: dinheiroBR(valorCentavos)
+      });
+    }
+
+    if (tipo === 'venda') {
       dados.vendas++;
-      dados.faturamento += Math.round(Number(e.valor || 0) * 100);
-      dados.ultimasVendas.push({
-        hora: new Date(e.created_at).toLocaleTimeString('pt-BR', {
-          hour: '2-digit',
-          minute: '2-digit'
-        }),
-        servico: e.nome || 'Venda',
-        plano: '',
-        valor: dinheiroBR(Math.round(Number(e.valor || 0) * 100))
+      dados.dias[dia].vendas++;
+      dados.faturamento += valorCentavos;
+      dados.dias[dia].faturamento += valorCentavos;
+
+      dados.vendasDetalhes.push({
+        hora: data.toLocaleString('pt-BR'),
+        info: nome || 'Venda',
+        valor: dinheiroBR(valorCentavos)
       });
     }
   });
 
-  const conversao = dados.visitantes > 0
-    ? ((dados.vendas / dados.visitantes) * 100).toFixed(2)
-    : '0.00';
+  function pct(a, b) {
+    if (!b || b <= 0) return '0.00%';
+    return ((a / b) * 100).toFixed(2) + '%';
+  }
+
+  function queda(a, b) {
+    if (!a || a <= 0) return '0.00%';
+    return (((a - b) / a) * 100).toFixed(2) + '%';
+  }
+
+  dados.funil = {
+    visitanteServico: pct(dados.servicos, dados.visitantes),
+    servicoPlano: pct(dados.planos, dados.servicos),
+    planoCheckout: pct(dados.checkout, dados.planos),
+    checkoutPix: pct(dados.pix, dados.checkout),
+    pixVenda: pct(dados.vendas, dados.pix),
+
+    quedaVisitanteServico: queda(dados.visitantes, dados.servicos),
+    quedaServicoPlano: queda(dados.servicos, dados.planos),
+    quedaPlanoCheckout: queda(dados.planos, dados.checkout),
+    quedaCheckoutPix: queda(dados.checkout, dados.pix),
+    quedaPixVenda: queda(dados.pix, dados.vendas)
+  };
+
+  const etapas = [
+    { nome: 'Visitante → Serviço', queda: Number(dados.funil.quedaVisitanteServico.replace('%','')) },
+    { nome: 'Serviço → Plano', queda: Number(dados.funil.quedaServicoPlano.replace('%','')) },
+    { nome: 'Plano → Checkout', queda: Number(dados.funil.quedaPlanoCheckout.replace('%','')) },
+    { nome: 'Checkout → Pix', queda: Number(dados.funil.quedaCheckoutPix.replace('%','')) },
+    { nome: 'Pix → Venda', queda: Number(dados.funil.quedaPixVenda.replace('%','')) }
+  ];
+
+  etapas.sort((a, b) => b.queda - a.queda);
+
+  const ticketMedio = dados.vendas > 0 ? Math.round(dados.faturamento / dados.vendas) : 0;
 
   return {
     ...dados,
     faturamentoFormatado: dinheiroBR(dados.faturamento),
-    conversao: `${conversao}%`
+    ticketMedioFormatado: dinheiroBR(ticketMedio),
+    conversaoGeral: pct(dados.vendas, dados.visitantes),
+    maiorGargalo: etapas[0]?.nome || 'Sem dados',
+    maiorGargaloPercentual: etapas[0] ? etapas[0].queda.toFixed(2) + '%' : '0.00%'
   };
 }
 
@@ -320,12 +392,14 @@ app.post('/evento', async (req, res) => {
 app.get('/dashboard-data', async (req, res) => {
   try {
     const senha = req.query.senha;
+    const start = req.query.start || '';
+    const end = req.query.end || '';
 
     if (process.env.DASHBOARD_PASSWORD && senha !== process.env.DASHBOARD_PASSWORD) {
       return res.status(401).json({ error: 'Senha incorreta' });
     }
 
-    const eventos = await buscarEventos();
+    const eventos = await buscarEventos({ start, end });
     const dados = montarDashboard(eventos);
 
     return res.json(dados);
@@ -339,224 +413,272 @@ app.get('/dashboard', (req, res) => {
   const usuario = req.query.usuario;
   const senha = req.query.senha;
 
-  if (
-    usuario !== 'admin' ||
-    senha !== process.env.DASHBOARD_PASSWORD
-  ) {
+  if (usuario !== 'admin' || senha !== process.env.DASHBOARD_PASSWORD) {
     return res.send(`
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Dashboard MidiaNet</title>
+<title>Login Dashboard</title>
 <style>
-body{background:#0f172a;display:flex;justify-content:center;align-items:center;height:100vh;font-family:Arial,sans-serif}
-.box{width:350px;background:#111827;padding:30px;border-radius:15px}
-h2{color:white;text-align:center;margin-bottom:20px}
-input{width:100%;padding:12px;margin-top:10px;border:none;border-radius:8px}
-button{width:100%;padding:12px;margin-top:15px;background:#22c55e;color:white;border:none;border-radius:8px;cursor:pointer;font-weight:bold}
+body{margin:0;background:#080810;color:#fff;font-family:Arial,sans-serif;display:flex;align-items:center;justify-content:center;height:100vh}
+.box{width:360px;background:#111120;border:1px solid rgba(255,255,255,.08);padding:30px;border-radius:18px}
+h2{text-align:center;margin-bottom:20px}
+input{width:100%;padding:13px;margin:8px 0;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:#181828;color:#fff}
+button{width:100%;padding:13px;margin-top:12px;border:0;border-radius:999px;background:#e8ff47;color:#080810;font-weight:800;cursor:pointer}
 </style>
 </head>
 <body>
-
-  <div class="box">
-    <h2>Dashboard MidiaNet</h2>
-    <form action="/dashboard">
-      <input type="text" name="usuario" placeholder="Usuário" required>
-      <input type="password" name="senha" placeholder="Senha" required>
-      <button type="submit">Entrar</button>
-    </form>
-  </div>
+<div class="box">
+<h2>MidiaNetDigital Dashboard</h2>
+<form action="/dashboard">
+<input type="text" name="usuario" placeholder="Usuário" required>
+<input type="password" name="senha" placeholder="Senha" required>
+<button type="submit">Entrar</button>
+</form>
+</div>
 </body>
 </html>
     `);
   }
 
   res.send(`
-  
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Dashboard MidiaNetDigital</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Dashboard Profissional</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:Poppins,sans-serif}
-body{background:#080810;color:#f0f0f8;padding:24px}
-h1{font-size:28px;margin-bottom:6px}
-.sub{color:#8888aa;margin-bottom:24px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:24px}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{background:#080810;color:#f5f5ff;padding:22px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:22px}
+h1{font-size:28px}
+.sub{color:#8888aa;margin-top:4px}
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:end;background:#111120;border:1px solid rgba(255,255,255,.08);padding:14px;border-radius:16px}
+.filters label{font-size:12px;color:#8888aa;display:block;margin-bottom:4px}
+input,select{background:#181828;color:#fff;border:1px solid rgba(255,255,255,.12);padding:10px;border-radius:10px}
+button{background:#e8ff47;color:#080810;border:0;padding:11px 16px;border-radius:999px;font-weight:800;cursor:pointer}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:18px}
 .card{background:#111120;border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:18px}
-.num{font-size:28px;font-weight:800;color:#e8ff47}
-.lbl{color:#8888aa;font-size:13px;margin-top:4px}
-.box{background:#111120;border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:18px;margin-bottom:18px}
-.row{display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.07);padding:10px 0;color:#ddd}
+.num{font-size:27px;font-weight:900;color:#e8ff47}
+.lbl{color:#8888aa;font-size:13px;margin-top:5px}
+.section{background:#111120;border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:18px;margin-bottom:18px}
+.section h2{font-size:18px;margin-bottom:14px}
+.row{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid rgba(255,255,255,.07);padding:10px 0;color:#ddd;font-size:14px}
 .row:last-child{border-bottom:0}
-.sale{font-size:14px;color:#ccc}
-button{background:#e8ff47;color:#080810;border:0;padding:10px 18px;border-radius:999px;font-weight:800;cursor:pointer;margin-bottom:18px}
+.bar{height:11px;background:#181828;border-radius:999px;overflow:hidden;margin-top:6px}
+.fill{height:100%;background:#e8ff47;border-radius:999px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:800px){.two{grid-template-columns:1fr}.top{align-items:flex-start}}
+.bad{color:#ff6b6b}
+.good{color:#34d399}
+.small{font-size:12px;color:#8888aa}
 </style>
 </head>
 <body>
-<h1>MidiaNetDigital Dashboard</h1>
-<div class="sub">Dados salvos no Supabase</div>
 
-<button onclick="carregar()">Atualizar</button>
+<div class="top">
+  <div>
+    <h1>MidiaNetDigital Dashboard</h1>
+    <div class="sub">Funil, vendas, faturamento e gargalos de conversão</div>
+  </div>
+
+  <div class="filters">
+    <div>
+      <label>Período rápido</label>
+      <select id="preset" onchange="setPreset()">
+        <option value="today">Hoje</option>
+        <option value="yesterday">Ontem</option>
+        <option value="7">Últimos 7 dias</option>
+        <option value="30">Últimos 30 dias</option>
+        <option value="month">Este mês</option>
+        <option value="custom">Personalizado</option>
+      </select>
+    </div>
+    <div>
+      <label>Data inicial</label>
+      <input type="date" id="start">
+    </div>
+    <div>
+      <label>Data final</label>
+      <input type="date" id="end">
+    </div>
+    <button onclick="carregar()">Filtrar</button>
+  </div>
+</div>
 
 <div class="grid">
   <div class="card"><div class="num" id="visitantes">0</div><div class="lbl">👀 Visitantes</div></div>
-  <div class="card"><div class="num" id="servicos">0</div><div class="lbl">📦 Serviços</div></div>
-  <div class="card"><div class="num" id="planos">0</div><div class="lbl">📋 Planos</div></div>
-  <div class="card"><div class="num" id="checkout">0</div><div class="lbl">💳 Checkout</div></div>
-  <div class="card"><div class="num" id="pix">0</div><div class="lbl">🟢 Pix Gerados</div></div>
+  <div class="card"><div class="num" id="servicos">0</div><div class="lbl">📦 Serviços clicados</div></div>
+  <div class="card"><div class="num" id="planos">0</div><div class="lbl">📋 Planos clicados</div></div>
+  <div class="card"><div class="num" id="checkout">0</div><div class="lbl">💳 Checkouts</div></div>
+  <div class="card"><div class="num" id="pix">0</div><div class="lbl">🟢 Pix gerados</div></div>
   <div class="card"><div class="num" id="vendas">0</div><div class="lbl">🛒 Vendas</div></div>
   <div class="card"><div class="num" id="faturamento">R$0</div><div class="lbl">💰 Faturamento</div></div>
-  <div class="card"><div class="num" id="conversao">0%</div><div class="lbl">📈 Conversão</div></div>
+  <div class="card"><div class="num" id="ticket">R$0</div><div class="lbl">🎯 Ticket médio</div></div>
 </div>
 
-<div class="box">
-  <h2>Funil</h2>
+<div class="section">
+  <h2>⚠️ Principal ponto de perda</h2>
+  <div class="row"><span id="gargalo">Calculando...</span><strong class="bad" id="gargaloPct">0%</strong></div>
+  <div class="small">Esse é o ponto onde mais clientes estão parando no período selecionado.</div>
+</div>
+
+<div class="section">
+  <h2>📊 Funil de conversão</h2>
   <div id="funil"></div>
 </div>
 
-<div class="box">
-  <h2>Serviços mais clicados</h2>
-  <div id="servicosDetalhes"></div>
+<div class="two">
+  <div class="section">
+    <h2>🔥 Serviços mais clicados</h2>
+    <div id="servicosDetalhes"></div>
+  </div>
+
+  <div class="section">
+    <h2>🏆 Planos mais clicados</h2>
+    <div id="planosDetalhes"></div>
+  </div>
 </div>
 
-<div class="box">
-  <h2>Planos mais clicados</h2>
-  <div id="planosDetalhes"></div>
+<div class="two">
+  <div class="section">
+    <h2>🟢 Últimos Pix Gerados</h2>
+    <div id="ultimosPix"></div>
+  </div>
+
+  <div class="section">
+    <h2>🛒 Últimas Vendas</h2>
+    <div id="ultimasVendas"></div>
+  </div>
 </div>
 
-<div class="box">
-  <h2>Últimos Pix Gerados</h2>
-  <div id="ultimosPedidos"></div>
-</div>
-
-<div class="box">
-  <h2>Últimas vendas</h2>
-  <div id="ultimasVendas"></div>
+<div class="section">
+  <h2>📅 Resultado por dia</h2>
+  <div id="dias"></div>
 </div>
 
 <script>
 const senha = new URLSearchParams(location.search).get('senha') || '';
 
+function brDate(d){
+  return d.toISOString().slice(0,10);
+}
+
+function setPreset(){
+  const p = document.getElementById('preset').value;
+  const hoje = new Date();
+  let ini = new Date();
+  let fim = new Date();
+
+  if(p === 'today'){
+    ini = hoje;
+    fim = hoje;
+  }
+
+  if(p === 'yesterday'){
+    ini.setDate(hoje.getDate() - 1);
+    fim.setDate(hoje.getDate() - 1);
+  }
+
+  if(p === '7'){
+    ini.setDate(hoje.getDate() - 6);
+    fim = hoje;
+  }
+
+  if(p === '30'){
+    ini.setDate(hoje.getDate() - 29);
+    fim = hoje;
+  }
+
+  if(p === 'month'){
+    ini = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
+    fim = hoje;
+  }
+
+  if(p !== 'custom'){
+    document.getElementById('start').value = brDate(ini);
+    document.getElementById('end').value = brDate(fim);
+    carregar();
+  }
+}
+
 function lista(obj){
   const entries = Object.entries(obj || {}).sort((a,b)=>b[1]-a[1]);
-  if(!entries.length) return '<div class="row"><span>Nenhum dado ainda</span></div>';
-  return entries.map(([k,v]) => '<div class="row"><span>'+k+'</span><strong>'+v+'</strong></div>').join('');
+  if(!entries.length) return '<div class="row"><span>Nenhum dado</span><strong>0</strong></div>';
+
+  return entries.map(([k,v]) =>
+    '<div><div class="row"><span>'+k+'</span><strong>'+v+'</strong></div></div>'
+  ).join('');
+}
+
+function listaEventos(arr){
+  if(!arr || !arr.length) return '<div class="row"><span>Nenhum dado</span><strong>-</strong></div>';
+
+  return arr.slice(0,10).map(i =>
+    '<div class="row"><span>'+i.hora+'<br><small>'+i.info+'</small></span><strong>'+i.valor+'</strong></div>'
+  ).join('');
+}
+
+function etapa(nome, atual, anterior, conversao, queda){
+  const largura = anterior > 0 ? Math.min(100, (atual / anterior) * 100) : 0;
+
+  return '<div style="margin-bottom:14px">'+
+    '<div class="row"><span>'+nome+'</span><strong>'+atual+' <small class="good">('+conversao+')</small> <small class="bad">queda '+queda+'</small></strong></div>'+
+    '<div class="bar"><div class="fill" style="width:'+largura+'%"></div></div>'+
+  '</div>';
 }
 
 async function carregar(){
-  const r = await fetch('/dashboard-data?senha=' + encodeURIComponent(senha));
+  const start = document.getElementById('start').value;
+  const end = document.getElementById('end').value;
+
+  const url = '/dashboard-data?senha=' + encodeURIComponent(senha) +
+    '&start=' + encodeURIComponent(start) +
+    '&end=' + encodeURIComponent(end);
+
+  const r = await fetch(url);
   const d = await r.json();
 
-  visitantes.textContent = d.visitantes;
-  servicos.textContent = d.servicos;
-  planos.textContent = d.planos;
-  checkout.textContent = d.checkout;
-  pix.textContent = d.pix;
-  vendas.textContent = d.vendas;
-  faturamento.textContent = d.faturamentoFormatado;
-  conversao.textContent = d.conversao;
+  document.getElementById('visitantes').textContent = d.visitantes;
+  document.getElementById('servicos').textContent = d.servicos;
+  document.getElementById('planos').textContent = d.planos;
+  document.getElementById('checkout').textContent = d.checkout;
+  document.getElementById('pix').textContent = d.pix;
+  document.getElementById('vendas').textContent = d.vendas;
+  document.getElementById('faturamento').textContent = d.faturamentoFormatado;
+  document.getElementById('ticket').textContent = d.ticketMedioFormatado;
 
-  funil.innerHTML =
-    '<div class="row"><span>👀 Visitantes</span><strong>'+d.visitantes+'</strong></div>'+
-    '<div class="row"><span>📦 Serviço Selecionado</span><strong>'+d.servicos+'</strong></div>'+
-    '<div class="row"><span>📋 Plano Selecionado</span><strong>'+d.planos+'</strong></div>'+
-    '<div class="row"><span>💳 Checkout</span><strong>'+d.checkout+'</strong></div>'+
-    '<div class="row"><span>🟢 Pix Gerados</span><strong>'+d.pix+'</strong></div>'+
-    '<div class="row"><span>🛒 Vendas</span><strong>'+d.vendas+'</strong></div>';
+  document.getElementById('gargalo').textContent = d.maiorGargalo;
+  document.getElementById('gargaloPct').textContent = d.maiorGargaloPercentual;
 
-var servicosOrdenados = Object.entries(d.servicosDetalhes || {}).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('funil').innerHTML =
+    etapa('Visitante → Serviço', d.servicos, d.visitantes, d.funil.visitanteServico, d.funil.quedaVisitanteServico) +
+    etapa('Serviço → Plano', d.planos, d.servicos, d.funil.servicoPlano, d.funil.quedaServicoPlano) +
+    etapa('Plano → Checkout', d.checkout, d.planos, d.funil.planoCheckout, d.funil.quedaPlanoCheckout) +
+    etapa('Checkout → Pix', d.pix, d.checkout, d.funil.checkoutPix, d.funil.quedaCheckoutPix) +
+    etapa('Pix → Venda', d.vendas, d.pix, d.funil.pixVenda, d.funil.quedaPixVenda);
 
-if(!servicosOrdenados.length){
-  servicosDetalhes.innerHTML = '<div class="row"><span>Nenhum dado ainda</span></div>';
-} else {
-  var servicosVisiveis = servicosOrdenados.slice(0, 5);
+  document.getElementById('servicosDetalhes').innerHTML = lista(d.servicosDetalhes);
+  document.getElementById('planosDetalhes').innerHTML = lista(d.planosDetalhes);
+  document.getElementById('ultimosPix').innerHTML = listaEventos(d.pixDetalhes);
+  document.getElementById('ultimasVendas').innerHTML = listaEventos(d.vendasDetalhes);
 
-  servicosDetalhes.innerHTML = servicosVisiveis.map(([k,v]) =>
-    '<div class="row"><span>'+k+'</span><strong>'+v+'</strong></div>'
-  ).join('');
-
-  if (servicosOrdenados.length > 5) {
-    servicosDetalhes.innerHTML += '<button onclick="mostrarTodosServicos()" style="margin-top:12px">Ver todos</button>';
-  }
-}var planosOrdenados = Object.entries(d.planosDetalhes || {}).sort((a,b)=>b[1]-a[1]);
-
-if(!planosOrdenados.length){
-  planosDetalhes.innerHTML = '<div class="row"><span>Nenhum dado ainda</span></div>';
-} else {
-  var planosVisiveis = planosOrdenados.slice(0, 5);
-
-  planosDetalhes.innerHTML = planosVisiveis.map(([k,v]) =>
-    '<div class="row"><span>'+k+'</span><strong>'+v+'</strong></div>'
-  ).join('');
-
-  if (planosOrdenados.length > 5) {
-    planosDetalhes.innerHTML += '<button onclick="mostrarTodosPlanos()" style="margin-top:12px">Ver todos</button>';
-  }
-}  if(!d.ultimosPedidos.length){
-  ultimosPedidos.innerHTML = '<div class="row"><span>Nenhum Pix gerado ainda</span></div>';
-} else {
- var pedidosVisiveis = d.ultimosPedidos.slice(0, 5);
-
-ultimosPedidos.innerHTML = pedidosVisiveis.map(p =>
-  '<div class="row sale"><span>'+p.hora+' - '+p.info+'</span><strong>'+p.valor+'</strong></div>'
-).join('');
-
-if (d.ultimosPedidos.length > 5) {
-  ultimosPedidos.innerHTML += '<button onclick="mostrarTodosPedidos()" style="margin-top:12px">Ver todos</button>';
-}
+  const dias = Object.entries(d.dias || {}).reverse();
+  document.getElementById('dias').innerHTML = dias.length ? dias.map(([dia,x]) =>
+    '<div class="row"><span>'+dia+'</span><strong>Pix: '+x.pix+' | Vendas: '+x.vendas+' | Fat: '+formatBR(x.faturamento)+'</strong></div>'
+  ).join('') : '<div class="row"><span>Nenhum dado</span><strong>-</strong></div>';
 }
 
-  if(!d.ultimasVendas.length){
-    ultimasVendas.innerHTML = '<div class="row"><span>Nenhuma venda ainda</span></div>';
-  } else {
-    ultimasVendas.innerHTML = d.ultimasVendas.map(v =>
-      '<div class="row sale"><span>'+v.hora+' - '+v.servico+'</span><strong>'+v.valor+'</strong></div>'
-    ).join('');
-  }
+function formatBR(centavos){
+  return (centavos / 100).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 }
 
-function mostrarTodosPedidos(){
-  fetch('/dashboard-data?senha=' + encodeURIComponent(senha))
-    .then(r => r.json())
-    .then(d => {
-      ultimosPedidos.innerHTML = d.ultimosPedidos.map(p =>
-        '<div class="row sale"><span>'+p.hora+' - '+p.info+'</span><strong>'+p.valor+'</strong></div>'
-      ).join('');
-    });
-}
-
-function mostrarTodosPlanos(){
-  fetch('/dashboard-data?senha=' + encodeURIComponent(senha))
-    .then(r => r.json())
-    .then(d => {
-      var planosOrdenados = Object.entries(d.planosDetalhes || {}).sort((a,b)=>b[1]-a[1]);
-
-      planosDetalhes.innerHTML = planosOrdenados.map(([k,v]) =>
-        '<div class="row"><span>'+k+'</span><strong>'+v+'</strong></div>'
-      ).join('');
-    });
-}
-
-function mostrarTodosServicos(){
-  fetch('/dashboard-data?senha=' + encodeURIComponent(senha))
-    .then(r => r.json())
-    .then(d => {
-      var servicosOrdenados = Object.entries(d.servicosDetalhes || {}).sort((a,b)=>b[1]-a[1]);
-
-      servicosDetalhes.innerHTML = servicosOrdenados.map(([k,v]) =>
-        '<div class="row"><span>'+k+'</span><strong>'+v+'</strong></div>'
-      ).join('');
-    });
-}
-
-carregar();
-setInterval(carregar, 10000);
+setPreset();
+setInterval(carregar, 15000);
 </script>
+
 </body>
 </html>
   `);
@@ -564,7 +686,6 @@ setInterval(carregar, 10000);
 
 app.get('/instagram/perfil', async (req, res) => {
   try {
-
     const user = String(req.query.user || '')
       .replace('@', '')
       .replace('https://www.instagram.com/', '')
