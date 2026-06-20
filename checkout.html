@@ -524,15 +524,14 @@
         // Se o perfil já foi confirmado antes de ativar o bump, força a aparição do seletor de posts agora
         if(perfilVisivel){
           var username = (document.getElementById("perfil-user").textContent || "").replace("@","").trim();
-          if(username) carregarPostsInstagram(username);
+          if(username) carregarPostsInstagram(username, true);
         }
       } else {
         if(bumpAviso) bumpAviso.style.display = "none";
         // Se desativou o bump e o serviço principal não exige publicação, esconde o seletor de posts
         if(!isPublicacao){
           document.getElementById("posts-instagram").style.display = "none";
-          linksSelecionados = [];
-          document.getElementById("link_final_instagram").value = document.getElementById("perfil-link").href !== "#" ? document.getElementById("perfil-link").href : "";
+          linksBump = [];
         }
       }
     }
@@ -598,7 +597,8 @@
     }
 
     var instagramConfirmado = false;
-    var linksSelecionados = [];
+    var linksSelecionados = []; // publicações do SERVIÇO PRINCIPAL (curtidas/views/comentários)
+    var linksBump = [];         // publicações do ORDER BUMP (500 curtidas extras) — nunca se mistura com linksSelecionados
     var maxPublicacoes = 1;
 
     if(servico === "visualizacoes" || servico === "curtidas-brasileiras"){
@@ -688,12 +688,13 @@
 
         if(isPublicacao){
           document.getElementById("msg-instagram").textContent = "✅ Perfil encontrado. Buscando publicações...";
-          carregarPostsInstagram(d.username);
+          carregarPostsInstagram(d.username, false);
         } else if(bumpAtivo){
           // Serviço principal não exige publicação, mas o order bump de curtidas exige.
-          // Mostra o seletor de posts também, sem esconder o botão "Confirmar perfil".
+          // Mostra o seletor de posts também, sem esconder o botão "Confirmar perfil"
+          // e SEM tocar no link_final_instagram (que continua sendo o perfil principal).
           document.getElementById("msg-instagram").textContent = "✅ Perfil encontrado. Selecione abaixo a publicação para o bump de curtidas.";
-          carregarPostsInstagram(d.username);
+          carregarPostsInstagram(d.username, true);
         }
 
         document.getElementById("msg-instagram").textContent = isPublicacao ? "" : document.getElementById("msg-instagram").textContent;
@@ -720,7 +721,7 @@
       }
     }
 
-    async function carregarPostsInstagram(user){
+    async function carregarPostsInstagram(user, paraBump){
       const area = document.getElementById("posts-instagram");
       const grid = document.getElementById("posts-grid");
 
@@ -731,7 +732,9 @@
         var r = await fetch(BACKEND + "/instagram/posts?user=" + encodeURIComponent(user));
         var d = await r.json();
 
-        if(servico === "visualizacoes"){
+        // O filtro de vídeo só se aplica ao fluxo do serviço principal de visualizações.
+        // O bump é sempre de curtidas, então aceita foto ou vídeo normalmente.
+        if(!paraBump && servico === "visualizacoes"){
           d.posts = d.posts.filter(function(post){
             return String(post.tipo || "").toLowerCase().includes("video");
           });
@@ -750,7 +753,7 @@
         grid.innerHTML = d.posts.map(function(post, i){
           return `
             <div
-              onclick="selecionarPostInstagram('${post.url}', this)"
+              onclick="selecionarPostInstagram('${post.url}', this, ${paraBump ? "true" : "false"})"
               style="
                 min-width:120px;
                 max-width:120px;
@@ -789,7 +792,7 @@
           <button
             id="btn-confirmar-publicacao"
             type="button"
-            onclick="confirmarPublicacaoInstagram()"
+            onclick="confirmarPublicacaoInstagram(${paraBump ? "true" : "false"})"
             style="
               display:none;
               margin-top:.9rem;
@@ -803,11 +806,13 @@
               cursor:pointer;
             "
           >
-            Confirmar publicações
+            ${paraBump ? "Confirmar publicações do bump" : "Confirmar publicações"}
           </button>
         `);
 
-        document.getElementById("msg-instagram").textContent = "👇 Selecione a publicação desejada";
+        document.getElementById("msg-instagram").textContent = paraBump
+          ? "👇 Selecione a publicação para receber as curtidas do bump"
+          : "👇 Selecione a publicação desejada";
         document.getElementById("msg-instagram").className = "field-msg show ok";
 
       } catch(e){
@@ -824,19 +829,28 @@
         return;
       }
 
-      if(linksSelecionados.length >= maxPublicacoes){
+      // Decide se esse link manual é para o serviço principal ou para o bump,
+      // baseado em qual fluxo está ativo no momento (mesma regra usada no grid de posts).
+      var ehParaBump = bumpAtivo && !isPublicacao;
+      var lista = ehParaBump ? linksBump : linksSelecionados;
+
+      if(lista.length >= maxPublicacoes){
         alert("Você já selecionou o máximo de publicações deste plano.");
         return;
       }
 
-      if(linksSelecionados.includes(url)){
+      if(lista.includes(url)){
         alert("Esse link já foi adicionado.");
         return;
       }
 
-      linksSelecionados.push(url);
+      lista.push(url);
 
-      document.getElementById("link_final_instagram").value = JSON.stringify(linksSelecionados);
+      // Só atualiza o link_final_instagram (perfil/publicação do PEDIDO PRINCIPAL)
+      // quando a seleção é para o serviço principal. O bump nunca toca nesse campo.
+      if(!ehParaBump){
+        document.getElementById("link_final_instagram").value = JSON.stringify(linksSelecionados);
+      }
 
       campo.value = "";
 
@@ -846,45 +860,54 @@
       }
 
       document.getElementById("msg-instagram").textContent =
-        "Selecionadas: " + linksSelecionados.length + "/" + maxPublicacoes + " publicações";
+        "Selecionadas: " + lista.length + "/" + maxPublicacoes + " publicações" + (ehParaBump ? " (bump)" : "");
       document.getElementById("msg-instagram").className = "field-msg show ok";
     }
 
-    function selecionarPostInstagram(url, el){
-      var index = linksSelecionados.indexOf(url);
+    function selecionarPostInstagram(url, el, paraBump){
+      var lista = paraBump ? linksBump : linksSelecionados;
+      var index = lista.indexOf(url);
 
       if(index >= 0){
-        linksSelecionados.splice(index, 1);
+        lista.splice(index, 1);
         el.style.borderColor = "transparent";
       } else {
-        if(linksSelecionados.length >= maxPublicacoes){
+        if(lista.length >= maxPublicacoes){
           alert(
             "Limite atingido.\n\n" +
-            "Plano de " + plano + " visualizações permite até " +
-            maxPublicacoes + " publicações.\n\n" +
-            "Desmarque uma publicação para selecionar outra."
+            (paraBump
+              ? "O bump de 500 curtidas permite até " + maxPublicacoes + " publicações."
+              : "Plano de " + plano + " permite até " + maxPublicacoes + " publicações.") +
+            "\n\nDesmarque uma publicação para selecionar outra."
           );
           return;
         }
 
-        linksSelecionados.push(url);
+        lista.push(url);
         el.style.borderColor = "#e8ff47";
       }
 
-      document.getElementById("link_final_instagram").value = JSON.stringify(linksSelecionados);
+      // Só atualiza o link_final_instagram (perfil/publicação do PEDIDO PRINCIPAL)
+      // quando a seleção é para o serviço principal. O bump nunca toca nesse campo —
+      // isso evita que o link do perfil de "seguidores" seja sobrescrito pelos posts do bump.
+      if(!paraBump){
+        document.getElementById("link_final_instagram").value = JSON.stringify(linksSelecionados);
+      }
 
       var btnPub = document.getElementById("btn-confirmar-publicacao");
       if(btnPub){
-        btnPub.style.display = linksSelecionados.length > 0 ? "block" : "none";
+        btnPub.style.display = lista.length > 0 ? "block" : "none";
       }
 
       document.getElementById("msg-instagram").textContent =
-        "Selecionadas: " + linksSelecionados.length + "/" + maxPublicacoes + " publicações";
+        "Selecionadas: " + lista.length + "/" + maxPublicacoes + " publicações" + (paraBump ? " (bump)" : "");
       document.getElementById("msg-instagram").className = "field-msg show ok";
     }
 
-    function confirmarPublicacaoInstagram(){
-      if(!linksSelecionados.length){
+    function confirmarPublicacaoInstagram(paraBump){
+      var lista = paraBump ? linksBump : linksSelecionados;
+
+      if(!lista.length){
         alert("Selecione pelo menos uma publicação.");
         return;
       }
@@ -892,10 +915,12 @@
       instagramConfirmado = true;
 
       var btn = document.getElementById("btn-confirmar-publicacao");
-      btn.textContent = "✅ Publicações confirmadas";
+      btn.textContent = paraBump ? "✅ Publicações do bump confirmadas" : "✅ Publicações confirmadas";
       btn.style.background = "#34d399";
 
-      document.getElementById("msg-instagram").textContent = "Publicações confirmadas ✅ Agora é só gerar o Pix.";
+      document.getElementById("msg-instagram").textContent = paraBump
+        ? "Publicações do bump confirmadas ✅ Agora é só gerar o Pix."
+        : "Publicações confirmadas ✅ Agora é só gerar o Pix.";
       document.getElementById("msg-instagram").className = "field-msg show ok";
     }
 
@@ -920,16 +945,18 @@
           ig = "https://instagram.com/" + limparUsuarioInstagram(ig);
         }
         // Serviço principal não exige publicação, mas o order bump de curtidas exige.
+        // IMPORTANTE: usa linksBump (lista isolada), nunca linksSelecionados — essa
+        // separação evita que o link do perfil principal seja sobrescrito pelos posts do bump.
         if(bumpAtivo){
-          if(!linksSelecionados.length){
+          if(!linksBump.length){
             alert("Selecione a publicação que vai receber as 500 curtidas do bump antes de pagar.");
             var areaPosts = document.getElementById("posts-instagram");
             if(areaPosts) areaPosts.scrollIntoView({behavior:"smooth", block:"center"});
             return;
           }
-          // Envia todas as publicações selecionadas (até 2), não só a primeira —
+          // Envia todas as publicações selecionadas para o bump (até 2) —
           // o backend divide as 500 curtidas igualmente entre elas (250 cada se forem 2).
-          bumpPublicacao = JSON.stringify(linksSelecionados);
+          bumpPublicacao = JSON.stringify(linksBump);
         }
       }
 
