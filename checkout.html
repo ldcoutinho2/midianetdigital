@@ -489,6 +489,7 @@
         check.textContent = "";
       }
       atualizarResumo();
+      atualizarExigenciaPublicacao();
     }
 
     atualizarResumo();
@@ -499,6 +500,35 @@
       document.getElementById("instagram").placeholder = "https://www.instagram.com/p/...";
       if(servico === "curtidas-brasileiras"){
         document.getElementById("bumpBox").style.display = "none";
+      }
+    }
+
+    // Precisa de publicação selecionada quando: o serviço principal exige (curtidas/views/comentários)
+    // OU quando o order bump de curtidas está ativo (mesmo que o serviço principal seja seguidores)
+    function precisaDePublicacao(){
+      return isPublicacao || bumpAtivo;
+    }
+
+    // Quando o bump muda de estado, atualiza o aviso e (se o perfil já foi confirmado) mostra/oculta o seletor de posts
+    function atualizarExigenciaPublicacao(){
+      var perfilVisivel = document.getElementById("perfil-verificado").style.display === "block";
+      var bumpAviso = document.getElementById("bumpPublicacaoAviso");
+
+      if(bumpAtivo && !isPublicacao){
+        if(bumpAviso) bumpAviso.style.display = "block";
+        // Se o perfil já foi confirmado antes de ativar o bump, força a aparição do seletor de posts agora
+        if(perfilVisivel){
+          var username = (document.getElementById("perfil-user").textContent || "").replace("@","").trim();
+          if(username) carregarPostsInstagram(username);
+        }
+      } else {
+        if(bumpAviso) bumpAviso.style.display = "none";
+        // Se desativou o bump e o serviço principal não exige publicação, esconde o seletor de posts
+        if(!isPublicacao){
+          document.getElementById("posts-instagram").style.display = "none";
+          linksSelecionados = [];
+          document.getElementById("link_final_instagram").value = document.getElementById("perfil-link").href !== "#" ? document.getElementById("perfil-link").href : "";
+        }
       }
     }
 
@@ -639,6 +669,9 @@
 
         var btnPerfil = document.getElementById("btn-confirmar-perfil");
         if(btnPerfil){
+          // O botão "Confirmar perfil" só faz sentido quando o serviço principal é de seguidores
+          // (ou seja, não exige publicação). Se o serviço principal exige publicação, esse botão some
+          // e o fluxo de seleção de posts assume o lugar dele.
           btnPerfil.style.display = isPublicacao ? "none" : "block";
         }
 
@@ -647,9 +680,14 @@
         if(isPublicacao){
           document.getElementById("msg-instagram").textContent = "✅ Perfil encontrado. Buscando publicações...";
           carregarPostsInstagram(d.username);
+        } else if(bumpAtivo){
+          // Serviço principal não exige publicação, mas o order bump de curtidas exige.
+          // Mostra o seletor de posts também, sem esconder o botão "Confirmar perfil".
+          document.getElementById("msg-instagram").textContent = "✅ Perfil encontrado. Selecione abaixo a publicação para o bump de curtidas.";
+          carregarPostsInstagram(d.username);
         }
 
-        document.getElementById("msg-instagram").textContent = "";
+        document.getElementById("msg-instagram").textContent = isPublicacao ? "" : document.getElementById("msg-instagram").textContent;
       } catch(e){
         document.getElementById("msg-instagram").textContent = "Não foi possível verificar. Confira o @ ou use o link manualmente.";
         document.getElementById("msg-instagram").className = "field-msg show err";
@@ -860,6 +898,8 @@
       var ig = document.getElementById("link_final_instagram").value || igDigitado;
       if(!servico || !plano){ alert("Volte e selecione serviço e plano."); return; }
 
+      var bumpPublicacao = null;
+
       if(servico === "curtidas-brasileiras" || servico === "visualizacoes" || servico === "comentarios"){
         if(!linksSelecionados.length){
           alert("Selecione pelo menos uma publicação.");
@@ -869,6 +909,16 @@
       } else {
         if(!ig.includes("instagram.com")){
           ig = "https://instagram.com/" + limparUsuarioInstagram(ig);
+        }
+        // Serviço principal não exige publicação, mas o order bump de curtidas exige uma.
+        if(bumpAtivo){
+          if(!linksSelecionados.length){
+            alert("Selecione a publicação que vai receber as 100 curtidas do bump antes de pagar.");
+            var areaPosts = document.getElementById("posts-instagram");
+            if(areaPosts) areaPosts.scrollIntoView({behavior:"smooth", block:"center"});
+            return;
+          }
+          bumpPublicacao = linksSelecionados[0];
         }
       }
 
@@ -882,7 +932,7 @@
         var r = await fetch(BACKEND + "/criar-pedido", {
           method:"POST",
           headers:{"Content-Type":"application/json"},
-          body:JSON.stringify({nome,telefone,instagram:ig,servico,plano,pagamento:"pix",valor:total,bump:bumpAtivo})
+          body:JSON.stringify({nome,telefone,instagram:ig,servico,plano,pagamento:"pix",valor:total,bump:bumpAtivo,bump_publicacao:bumpPublicacao})
         });
         var d = await r.json();
         if(!r.ok || !d.success) throw new Error(d.error || "Erro ao gerar pagamento");
