@@ -94,6 +94,14 @@ const PRECOS = {
 'visualizacoes__10000': 10000,
 'visualizacoes__25000': 25000,
 };
+
+// Configuração do order bump: 500 curtidas brasileiras, divididas em até 2 publicações (250 cada)
+const BUMP_SERVICO = 'curtidas-brasileiras';
+const BUMP_PLANO = '500';
+const BUMP_SMM_ID = SERVICO_MAP[`${BUMP_SERVICO}__${BUMP_PLANO}`];
+const BUMP_VALOR_CENTAVOS = PRECOS[`${BUMP_SERVICO}__${BUMP_PLANO}`]; // 800 centavos = R$ 8,00 (preço de custo de referência)
+const BUMP_MAX_PUBLICACOES = 2;
+
 const pedidos = {};
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -283,6 +291,13 @@ function montarDashboard(eventos) {
   };
 }
 
+/**
+ * Envia um pedido para a API SMM.
+ * Aceita pedido.instagram como string única ou JSON com array de links.
+ * Divide pedido.plano (quantidade) igualmente entre os links informados.
+ * pedido.smmId define qual serviço da API SMM é usado (permite reaproveitar
+ * essa função tanto para o pedido principal quanto para o order bump).
+ */
 async function enviarPedidoSMM(pedido) {
   let links = [];
 
@@ -333,6 +348,39 @@ async function enviarPedidoSMM(pedido) {
     order: resultados.map(r => r.order).filter(Boolean).join(', ')
   };
 }
+
+/**
+ * Envia o pedido do order bump (curtidas extras) separadamente do pedido principal.
+ * pedido.bump_publicacao pode ser:
+ *  - uma string única (1 link de publicação)
+ *  - uma string JSON com até BUMP_MAX_PUBLICACOES links (ex: '["url1","url2"]')
+ * A quantidade total do bump (BUMP_PLANO = 500) é dividida igualmente entre
+ * os links informados pela própria lógica de enviarPedidoSMM (250 cada, se forem 2 links).
+ */
+async function enviarBumpSMM(pedido) {
+  if (!pedido.bump || !pedido.bump_publicacao) return null;
+
+  // Garante que não ultrapasse o máximo de publicações permitido para o bump
+  let links;
+  try {
+    links = JSON.parse(pedido.bump_publicacao);
+    if (!Array.isArray(links)) links = [pedido.bump_publicacao];
+  } catch (e) {
+    links = [pedido.bump_publicacao];
+  }
+  links = links.filter(l => l && String(l).trim()).slice(0, BUMP_MAX_PUBLICACOES);
+
+  if (!links.length) return null;
+
+  const bumpData = await enviarPedidoSMM({
+    instagram: JSON.stringify(links),
+    plano: BUMP_PLANO,
+    smmId: pedido.bumpSmmId || BUMP_SMM_ID
+  });
+
+  return bumpData;
+}
+
 async function enviarPurchaseMeta(pedido) {
   try {
     if (!process.env.META_PIXEL_ID || !process.env.META_ACCESS_TOKEN) {
@@ -884,22 +932,40 @@ app.get('/proxy-img', async (req, res) => {
 
 app.post('/criar-pedido', async (req, res) => {
   try {
-    const { nome, telefone, instagram, servico, plano, pagamento } = req.body;
+    const {
+      nome,
+      telefone,
+      instagram,
+      servico,
+      plano,
+      pagamento,
+      bump,
+      bump_publicacao
+    } = req.body;
 
     if (!nome || !telefone || !instagram || !servico || !plano) {
       return res.status(400).json({ error: 'Dados incompletos' });
     }
 
     const chave = `${servico}__${plano}`;
-    const valorCentavos = PRECOS[chave];
+    const valorBaseCentavos = PRECOS[chave];
     const smmId = SERVICO_MAP[chave];
 
-    if (!valorCentavos || !smmId) {
+    if (!valorBaseCentavos || !smmId) {
       return res.status(400).json({ error: 'Servico ou plano invalido' });
     }
 
+    // Se o order bump (500 curtidas) estiver ativo, soma o valor dele ao total cobrado.
+    // O valor do bump cobrado ao cliente é o que o checkout calculou (R$ 4,90 promocional);
+    // aqui usamos o valor informado pelo front (req.body.valor) como fonte de verdade do total,
+    // caindo de volta no cálculo manual se não vier.
+    const bumpAtivo = bump === true;
+    const valorTotalCentavos = req.body.valor
+      ? Math.round(Number(req.body.valor) * 100)
+      : valorBaseCentavos + (bumpAtivo ? BUMP_VALOR_CENTAVOS : 0);
+
     const pedidoId = uuidv4();
-    const valorReais = Number((valorCentavos / 100).toFixed(2));
+    const valorReais = Number((valorTotalCentavos / 100).toFixed(2));
 
     let gateway = 'pushinpay';
     let payment = null;
@@ -909,7 +975,7 @@ app.post('/criar-pedido', async (req, res) => {
       const pushResp = await axios.post(
         'https://api.pushinpay.com.br/api/pix/cashIn',
         {
-          value: valorCentavos,
+          value: valorTotalCentavos,
           webhook_url: 'https://midianetdigital.onrender.com/webhook-pushinpay'
         },
         {
@@ -973,8 +1039,12 @@ console.log(JSON.stringify(payment, null, 2));
       servico,
       plano,
       pagamento: 'pix',
-      valor: valorCentavos,
+      valor: valorTotalCentavos,
       smmId,
+      // ── Order bump (500 curtidas brasileiras, divididas em até 2 publicações) ──
+      bump: bumpAtivo,
+      bump_publicacao: bump_publicacao || null,
+      bumpSmmId: BUMP_SMM_ID,
       status: 'aguardando_pagamento',
       gateway,
       paymentId: payment.id,
@@ -985,7 +1055,7 @@ console.log(JSON.stringify(payment, null, 2));
 
     await registrarEvento(
       'pix',
-      `${nome} | ${telefone} | ${instagram} | ${servico} ${plano}`,
+      `${nome} | ${telefone} | ${instagram} | ${servico} ${plano}${bumpAtivo ? ' + bump 500 curtidas' : ''}`,
       valorReais
     );
 
@@ -1044,21 +1114,35 @@ console.log(`[SMM] Enviando pedido PushinPay para plataforma SMM: ${pedido.insta
 
 const smmData = await enviarPedidoSMM(pedido);
 
+    // ── Order bump: se o cliente comprou as 500 curtidas extras, envia um segundo
+    // pedido SMM para a(s) publicação(ões) selecionada(s) no bump, separado do pedido principal.
+    let bumpData = null;
+    try {
+      bumpData = await enviarBumpSMM(pedido);
+      if (bumpData) {
+        console.log(`[SMM BUMP] 500 curtidas enviadas para a publicação do bump. Order: ${bumpData.order}`);
+      }
+    } catch (bumpErr) {
+      console.error('[ERRO SMM BUMP - PushinPay]', bumpErr.response?.data || bumpErr.message);
+      // Não derruba o pedido principal por causa de falha no bump; loga e segue.
+    }
+
     pedido.status = 'concluido';
     pedido.smmOrderId = smmData.order;
+    pedido.bumpSmmOrderId = bumpData ? bumpData.order : null;
     pedido.concluidoEm = new Date().toISOString();
 
     await registrarEvento(
       'venda',
-      `${pedido.nome} | ${pedido.telefone} | ${pedido.instagram} | ${pedido.servico} ${pedido.plano}`,
+      `${pedido.nome} | ${pedido.telefone} | ${pedido.instagram} | ${pedido.servico} ${pedido.plano}${pedido.bump ? ' + bump 500 curtidas' : ''}`,
       Number((pedido.valor / 100).toFixed(2))
     );
 
     await enviarPurchaseMeta(pedido);
 
-    console.log(`[SUCESSO PUSHINPAY] Pedido ${pedido.id} concluido. SMM: ${smmData.order}`);
+    console.log(`[SUCESSO PUSHINPAY] Pedido ${pedido.id} concluido. SMM: ${smmData.order}${bumpData ? ' | Bump SMM: ' + bumpData.order : ''}`);
 
-    return res.status(200).json({ received: true, smmOrder: smmData.order });
+    return res.status(200).json({ received: true, smmOrder: smmData.order, bumpOrder: bumpData ? bumpData.order : null });
 
   } catch (err) {
     console.error('[ERRO webhook PushinPay]', err.response?.data || err.message);
@@ -1114,21 +1198,33 @@ console.log(`[SMM] Enviando pedido para plataforma SMM: ${pedido.instagram}`);
 
 const smmData = await enviarPedidoSMM(pedido);
 
+    // ── Order bump: mesmo tratamento aplicado no webhook do PushinPay ──
+    let bumpData = null;
+    try {
+      bumpData = await enviarBumpSMM(pedido);
+      if (bumpData) {
+        console.log(`[SMM BUMP] 500 curtidas enviadas para a publicação do bump. Order: ${bumpData.order}`);
+      }
+    } catch (bumpErr) {
+      console.error('[ERRO SMM BUMP - Mercado Pago]', bumpErr.response?.data || bumpErr.message);
+    }
+
     pedidos[pedidoId].status = 'concluido';
     pedidos[pedidoId].smmOrderId = smmData.order;
+    pedidos[pedidoId].bumpSmmOrderId = bumpData ? bumpData.order : null;
     pedidos[pedidoId].concluidoEm = new Date().toISOString();
 
     await registrarEvento(
       'venda',
-      `${pedido.servico} ${pedido.plano}`,
+      `${pedido.servico} ${pedido.plano}${pedido.bump ? ' + bump 500 curtidas' : ''}`,
       Number((pedido.valor / 100).toFixed(2))
     );
 
     await enviarPurchaseMeta(pedidos[pedidoId]);
 
-    console.log(`[SUCESSO] Pedido ${pedidoId} concluido. SMM: ${smmData.order}`);
+    console.log(`[SUCESSO] Pedido ${pedidoId} concluido. SMM: ${smmData.order}${bumpData ? ' | Bump SMM: ' + bumpData.order : ''}`);
 
-    return res.status(200).json({ received: true, smmOrder: smmData.order });
+    return res.status(200).json({ received: true, smmOrder: smmData.order, bumpOrder: bumpData ? bumpData.order : null });
 
   } catch (err) {
     console.error('[ERRO webhook MP]', err.response?.data || err.message);
@@ -1150,6 +1246,8 @@ app.get('/status/:pedidoId', (req, res) => {
     plano: pedido.plano,
     instagram: pedido.instagram,
     smmOrderId: pedido.smmOrderId || null,
+    bump: pedido.bump || false,
+    bumpSmmOrderId: pedido.bumpSmmOrderId || null,
   });
 });
 
