@@ -1054,10 +1054,10 @@ console.log(JSON.stringify(payment, null, 2));
     };
 
     await registrarEvento(
-      'pix',
-      `${nome} | ${telefone} | ${instagram} | ${servico} ${plano}${bumpAtivo ? ' + bump 500 curtidas' : ''}`,
-      valorReais
-    );
+  'pix',
+  `${nome} | ${telefone} | Perfil: ${instagram} | ${servico} ${plano}${bump ? ' + bump 500 curtidas | Publicação bump: ' + bump_publicacao : ''}`,
+  valorReais
+);
 
 console.log("BASE64:", pixData?.qr_code_base64?.substring(0,50));
 
@@ -1132,12 +1132,11 @@ const smmData = await enviarPedidoSMM(pedido);
     pedido.bumpSmmOrderId = bumpData ? bumpData.order : null;
     pedido.concluidoEm = new Date().toISOString();
 
-    await registrarEvento(
-      'venda',
-      `${pedido.nome} | ${pedido.telefone} | ${pedido.instagram} | ${pedido.servico} ${pedido.plano}${pedido.bump ? ' + bump 500 curtidas' : ''}`,
-      Number((pedido.valor / 100).toFixed(2))
-    );
-
+   await registrarEvento(
+  'venda',
+  `${pedido.nome} | ${pedido.telefone} | Perfil: ${pedido.instagram} | ${pedido.servico} ${pedido.plano}${pedido.bump ? ' + bump 500 curtidas | Publicação bump: ' + pedido.bump_publicacao : ''}`,
+  Number((pedido.valor / 100).toFixed(2))
+);
     await enviarPurchaseMeta(pedido);
 
     console.log(`[SUCESSO PUSHINPAY] Pedido ${pedido.id} concluido. SMM: ${smmData.order}${bumpData ? ' | Bump SMM: ' + bumpData.order : ''}`);
