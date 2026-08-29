@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Forma de Pagamento - MidiaNetDigital</title>
+  <style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap');
+
+:root {
+  --bg: #0a0a0f; --surface: #13131c; --surface2: #1c1c2b;
+  --accent: #e8ff47; --accent2: #7c5cfc;
+  --text: #f0f0f8; --muted: #8888aa;
+  --border: rgba(255,255,255,0.07); --radius: 20px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;line-height:1.6;overflow-x:hidden;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:0.4}
+.blob{position:fixed;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:0}
+.blob-1{width:500px;height:500px;background:var(--accent2);top:-150px;right:-100px;opacity:0.15}
+.blob-2{width:400px;height:400px;background:var(--accent);bottom:-150px;left:-100px;opacity:0.07}
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1.2rem 6%;background:rgba(10,10,15,0.85);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.2rem;letter-spacing:-0.03em;color:var(--text);text-decoration:none}
+.logo span{color:var(--accent)}
+.nav-back{display:inline-flex;align-items:center;gap:0.4rem;color:var(--muted);font-size:0.9rem;font-weight:500;text-decoration:none;padding:0.5rem 1rem;border:1px solid var(--border);border-radius:100px;transition:color .2s,border-color .2s}
+.nav-back:hover{color:var(--text);border-color:rgba(255,255,255,0.18)}
+.page{position:relative;z-index:1;min-height:100vh;padding:8rem 6% 5rem;display:flex;flex-direction:column;align-items:center}
+.progress-bar{display:flex;align-items:center;margin-bottom:3.5rem}
+.step{display:flex;align-items:center;gap:0.5rem;font-size:0.8rem;font-weight:600;color:var(--muted)}
+.step.active{color:var(--accent)}
+.step.done{color:rgba(232,255,71,0.5)}
+.step-dot{width:28px;height:28px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700}
+.step.active .step-dot{background:var(--accent);color:#0a0a0f;border-color:var(--accent)}
+.step.done .step-dot{background:rgba(232,255,71,0.15);border-color:rgba(232,255,71,0.3);color:var(--accent)}
+.step-line{width:40px;height:1px;background:var(--border);margin:0 0.25rem}
+.step-line.done{background:rgba(232,255,71,0.3)}
+.page-header{text-align:center;max-width:600px;margin-bottom:3rem}
+.page-header h1{font-family:'Syne',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;letter-spacing:-0.02em;line-height:1.1;margin-bottom:0.75rem}
+.page-header p{color:var(--muted);font-size:1rem}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.25rem;width:100%;max-width:1100px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:2rem 1.75rem;text-decoration:none;color:var(--text);transition:transform .25s,border-color .25s,box-shadow .25s;position:relative;overflow:hidden;cursor:pointer;display:block}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent2),var(--accent));opacity:0;transition:opacity .25s}
+.card:hover{transform:translateY(-5px);border-color:rgba(255,255,255,0.14);box-shadow:0 20px 40px rgba(0,0,0,.35)}
+.card:hover::before{opacity:1}
+.card.featured{border-color:rgba(232,255,71,0.3);background:linear-gradient(135deg,rgba(232,255,71,0.04),var(--surface))}
+.card.featured::before{opacity:1}
+.card-badge{position:absolute;top:1rem;right:1rem;background:var(--accent);color:#0a0a0f;font-size:0.7rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;padding:0.25rem 0.6rem;border-radius:100px}
+.card-icon{font-size:2.2rem;margin-bottom:1rem;display:block}
+.card h3{font-family:'Syne',sans-serif;font-size:1.15rem;font-weight:700;margin-bottom:0.4rem}
+.card p,.card span{color:var(--muted);font-size:0.875rem}
+.card-price{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--accent);margin:0.75rem 0 0.25rem;line-height:1}
+.card-price-sub{color:var(--muted);font-size:0.8rem}
+.card-features{list-style:none;margin-top:1rem;display:flex;flex-direction:column;gap:0.4rem}
+.card-features li{font-size:0.85rem;color:var(--muted);display:flex;align-items:center;gap:0.4rem}
+.card-features li::before{content:'✓';color:var(--accent);font-weight:700}
+.checkout-box{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:2.5rem;width:100%;max-width:560px}
+.checkout-box h2{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;margin-bottom:0.4rem}
+.checkout-box .sub{color:var(--muted);font-size:0.9rem;margin-bottom:2rem}
+.form-group{display:flex;flex-direction:column;gap:0.4rem;margin-bottom:1.1rem}
+.form-group label{font-size:0.82rem;font-weight:600;color:var(--muted);letter-spacing:0.03em;text-transform:uppercase}
+.form-group input{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:0.85rem 1rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.95rem;outline:none;transition:border-color .2s;width:100%}
+.form-group input:focus{border-color:rgba(232,255,71,0.4)}
+.form-group input::placeholder{color:var(--muted)}
+.btn-submit{width:100%;padding:1rem;border:none;border-radius:100px;background:var(--accent);color:#0a0a0f;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;margin-top:0.5rem;transition:opacity .2s,transform .2s,box-shadow .2s;box-shadow:0 0 30px rgba(232,255,71,0.2)}
+.btn-submit:hover{opacity:0.9;transform:translateY(-2px);box-shadow:0 0 45px rgba(232,255,71,0.35)}
+.secure-note{display:flex;align-items:center;justify-content:center;gap:0.4rem;margin-top:1rem;font-size:0.8rem;color:var(--muted)}
+.page-footer{margin-top:4rem;padding-top:2rem;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.8rem;width:100%;max-width:1100px}
+.pay-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.25rem;width:100%;max-width:600px}
+.pay-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:2.25rem 1.5rem;text-align:center;text-decoration:none;color:var(--text);transition:transform .25s,border-color .25s,box-shadow .25s;position:relative;overflow:hidden}
+.pay-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent2),var(--accent));opacity:0;transition:opacity .25s}
+.pay-card:hover{transform:translateY(-5px);border-color:rgba(255,255,255,0.14);box-shadow:0 20px 40px rgba(0,0,0,.3)}
+.pay-card:hover::before{opacity:1}
+.pay-card.featured{border-color:rgba(232,255,71,0.3)}
+.pay-card.featured::before{opacity:1}
+.pay-icon{font-size:2.5rem;margin-bottom:1rem;display:block}
+.pay-card h3{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:700;margin-bottom:0.4rem}
+.pay-card p{color:var(--muted);font-size:0.875rem}
+.pay-tag{display:inline-block;margin-top:0.75rem;background:rgba(232,255,71,0.1);border:1px solid rgba(232,255,71,0.25);color:var(--accent);font-size:0.72rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;padding:0.2rem 0.6rem;border-radius:100px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.animate{animation:fadeUp .6s ease both}
+.delay-1{animation-delay:.1s}
+.delay-2{animation-delay:.2s}
+.delay-3{animation-delay:.3s}
+@media(max-width:600px){.page{padding:7rem 5% 4rem}.nav{padding:1rem 5%}.cards-grid{grid-template-columns:1fr}.step-line{width:20px}.checkout-box{padding:1.75rem 1.25rem}}
+
+  </style>
+</head>
+<body>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <nav class="nav">
+    <a href="index.html" class="logo">MidiaNet<span>Digital</span></a>
+    <a href="planos.html" class="nav-back">← Voltar</a>
+  </nav>
+
+  <section class="page">
+    <div class="progress-bar animate">
+      <div class="step done"><div class="step-dot">✓</div>Servico</div>
+      <div class="step-line done"></div>
+      <div class="step done"><div class="step-dot">✓</div>Plano</div>
+      <div class="step-line done"></div>
+      <div class="step active"><div class="step-dot">3</div>Pagamento</div>
+      <div class="step-line"></div>
+      <div class="step"><div class="step-dot">4</div>Finalizar</div>
+    </div>
+
+    <div class="page-header animate delay-1">
+      <h1>Como voce quer pagar?</h1>
+      <p>Escolha sua forma de pagamento. Aprovacao rapida e 100% segura.</p>
+    </div>
+
+    <div class="pay-grid animate delay-2">
+      <a href="#" class="pay-card featured" onclick="escolher('pix'); return false;">
+        <span class="pay-icon">&#9889;</span>
+        <h3>Pix</h3>
+        <p>Aprovacao instantanea, 24h por dia</p>
+        <span class="pay-tag">Mais rapido</span>
+      </a>
+      <a href="#" class="pay-card" onclick="escolher('cartao'); return false;">
+        <span class="pay-icon">&#128179;</span>
+        <h3>Cartao</h3>
+        <p>Credito ou debito com seguranca</p>
+      </a>
+    </div>
+
+    <footer class="page-footer animate delay-3">2025 MidiaNetDigital - Todos os direitos reservados</footer>
+  </section>
+
+  <script>
+    // Preserva plano e servico vindos das etapas anteriores
+    var params  = new URLSearchParams(location.search);
+    var plano   = params.get('plano')   || sessionStorage.getItem('plano')   || '';
+    var servico = params.get('servico') || sessionStorage.getItem('servico') || '';
+    if (plano)   sessionStorage.setItem('plano',   plano);
+    if (servico) sessionStorage.setItem('servico', servico);
+
+    function escolher(pagamento) {
+      sessionStorage.setItem('pagamento', pagamento);
+      window.location.href = 'checkout.html?pagamento=' + pagamento;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Escolha o Serviço - MidiaNetDigital</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+
+  <!-- Meta Pixel -->
+  <script>
+    !function(f,b,e,v,n,t,s){
+      if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)
+    }(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
+
+    fbq('init', '855639116397202');
+    setTimeout(function(){
+      fbq('track', 'PageView');
+    }, 1000);
+  </script>
+
+  <style>
+    :root{--bg:#080810;--s1:#111120;--s2:#181828;--ac:#e8ff47;--ac2:#7c5cfc;--text:#f0f0f8;--muted:#8888aa;--border:rgba(255,255,255,0.07)}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;font-family:"Poppins",sans-serif}
+    body{background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100vh}
+    body::before{content:"";position:fixed;inset:0;opacity:.03;pointer-events:none;z-index:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+    .blob{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(110px)}
+    .b1{width:500px;height:500px;background:var(--ac2);top:-150px;right:-100px;opacity:.13}
+    .b2{width:400px;height:400px;background:var(--ac);bottom:-150px;left:-100px;opacity:.06}
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1.1rem 6%;background:rgba(8,8,16,.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+    .logo{font-weight:800;font-size:1.2rem;letter-spacing:-.03em;color:var(--text);text-decoration:none}
+    .logo em{color:var(--ac);font-style:normal}
+    .nav-back{display:inline-flex;align-items:center;gap:.4rem;color:var(--muted);font-size:.875rem;font-weight:600;text-decoration:none;padding:.5rem 1rem;border:1px solid var(--border);border-radius:100px;transition:color .2s,border-color .2s}
+    .nav-back:hover{color:var(--text);border-color:rgba(255,255,255,.18)}
+    .page{position:relative;z-index:1;min-height:100vh;padding:7rem 6% 5rem;display:flex;flex-direction:column;align-items:center}
+    .prog{display:flex;align-items:center;margin-bottom:3rem}
+    .st{display:flex;align-items:center;gap:.45rem;font-size:.78rem;font-weight:700;color:var(--muted)}
+    .st.on{color:var(--ac)}
+    .st.dn{color:rgba(232,255,71,.5)}
+    .sd{width:26px;height:26px;border-radius:50%;background:var(--s2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:800}
+    .st.on .sd{background:var(--ac);color:#080810;border-color:var(--ac)}
+    .st.dn .sd{background:rgba(232,255,71,.12);border-color:rgba(232,255,71,.3);color:var(--ac)}
+    .sl{width:36px;height:1px;background:var(--border);margin:0 .2rem}
+    .sl.dn{background:rgba(232,255,71,.3)}
+    .ph{text-align:center;max-width:680px;margin-bottom:3rem}
+    .ph h1{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;letter-spacing:-.04em;line-height:1.1;margin-bottom:.7rem}
+    .ph p{color:var(--muted);font-size:1rem;line-height:1.6}
+    .trust-line{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center;margin-top:1.2rem}
+    .trust-pill{font-size:.78rem;font-weight:600;color:var(--text);background:rgba(255,255,255,.035);border:1px solid var(--border);border-radius:100px;padding:.45rem .8rem}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.2rem;width:100%;max-width:1100px}
+    .card{background:var(--s1);border:1px solid var(--border);border-radius:20px;padding:1.75rem;text-decoration:none;color:var(--text);transition:transform .25s,border-color .25s,box-shadow .25s;position:relative;overflow:hidden;display:block;cursor:pointer}
+    .card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--ac2),var(--ac));opacity:0;transition:opacity .25s}
+    .card:hover{transform:translateY(-5px);border-color:rgba(255,255,255,.14);box-shadow:0 20px 40px rgba(0,0,0,.4)}
+    .card:hover::before{opacity:1}
+    .card.hot{border-color:rgba(232,255,71,.28);background:linear-gradient(135deg,rgba(232,255,71,.04),var(--s1))}
+    .card.hot::before{opacity:1}
+    .cbadge{position:absolute;top:1rem;right:1rem;background:var(--ac);color:#080810;font-size:.67rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:.22rem .6rem;border-radius:100px}
+    .cico{font-size:2.2rem;margin-bottom:1rem;display:block}
+    .card h3{font-size:1.1rem;font-weight:800;margin-bottom:.4rem}
+    .card p{color:var(--muted);font-size:.875rem;margin-bottom:.9rem;line-height:1.6}
+    .clist{list-style:none;display:flex;flex-direction:column;gap:.3rem}
+    .clist li{font-size:.8rem;color:var(--muted);display:flex;align-items:center;gap:.35rem}
+    .clist li::before{content:"✓";color:var(--ac);font-weight:800;flex-shrink:0}
+    .cprice{margin-top:.9rem;font-size:1rem;font-weight:800;color:var(--ac)}
+    footer{position:relative;z-index:1;margin-top:4rem;padding-top:2rem;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:.78rem;width:100%;max-width:1100px}
+    @keyframes up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    .a1{animation:up .6s ease both}
+    .a2{animation:up .6s .1s ease both}
+    .a3{animation:up .6s .2s ease both}
+    @media(max-width:600px){.page{padding:6.5rem 5% 4rem}nav{padding:1rem 5%}.grid{grid-template-columns:1fr}.sl{width:18px}}
+  </style>
+</head>
+
+<body>
+  <nav><a href="index.html" class="logo">MidiaNet<em>Digital</em></a><a href="index.html" class="nav-back">← Voltar</a></nav>
+  <section class="page">
+    <div class="prog"><div class="st dn"><div class="sd">✓</div>Serviço</div><div class="sl dn"></div><div class="st on"><div class="sd">2</div>Tipo</div><div class="sl"></div><div class="st"><div class="sd">3</div>Pacote</div><div class="sl"></div><div class="st"><div class="sd">4</div>Finalizar</div></div>
+    <div class="ph"><h1>🚀 Escolha seu tipo de engajamento</h1><p>Selecione a composição de seguidores que combina com seu objetivo.</p></div>
+    <div class="grid">
+      <a class="card featured" href="planos.html?servico=engajamento-30-70" data-service="Engajamento 30% BR + 70% Mundial"><span class="cico">🌎</span><h3>30% BR + 70% Mundiais</h3><p>Opção econômica para ampliar o perfil com um combo completo.</p><ul class="clist"><li>Seguidores + bônus de engajamento</li><li>A partir de R$ 5,00</li></ul><div class="cprice">VER PACOTES →</div></a>
+      <a class="card" href="planos.html?servico=engajamento-60-40" data-service="Engajamento 60% BR + 40% Mundial"><span class="cico">🌎🇧🇷</span><h3>60% BR + 40% Mundiais</h3><p>Mais presença brasileira mantendo alcance internacional.</p><ul class="clist"><li>Seguidores + bônus de engajamento</li><li>A partir de R$ 8,99</li></ul><div class="cprice">VER PACOTES →</div></a>
+      <a class="card" href="planos.html?servico=engajamento-br" data-service="Engajamento 100% Brasileiros"><span class="cico">🇧🇷</span><h3>100% Brasileiros</h3><p>Combo voltado para um público totalmente brasileiro.</p><ul class="clist"><li>Seguidores + curtidas + views</li><li>A partir de R$ 15,00</li></ul><div class="cprice">VER PACOTES →</div></a>
+      <a class="card" href="planos.html?servico=engajamento-premium" data-service="Engajamento BR Premium Ativos"><span class="cico">🎖️</span><h3>BR Premium Ativos</h3><p>Perfis mais ativos para quem busca uma opção premium.</p><ul class="clist"><li>90% orgânicos conforme o serviço</li><li>A partir de R$ 80,00</li></ul><div class="cprice">VER PACOTES →</div></a>
+    </div>
+    <footer>© 2025 MidiaNetDigital — Todos os direitos reservados</footer>
+  </section>
+  <script>
+    document.querySelectorAll('.card').forEach(function(card){card.addEventListener('click',function(){var nome=this.dataset.service||'';sessionStorage.setItem('servico',this.getAttribute('href').split('servico=')[1]);fetch('https://midianetdigital.onrender.com/evento',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tipo:'servico',servico:nome})}).catch(function(){});if(typeof fbq==='function')fbq('track','ViewContent',{content_name:nome,content_category:'Servico'});});});
+  </script>
+</body>
+</html>

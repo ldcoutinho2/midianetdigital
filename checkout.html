@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Finalizar Pedido - MidiaNetDigital</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+
+  <script>
+    !function(f,b,e,v,n,t,s){
+      if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)
+    }(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init','855639116397202');
+    setTimeout(function(){
+      fbq('track','PageView');
+      fbq('track','InitiateCheckout');
+    },1500);
+  </script>
+
+  <style>
+    :root{
+      --bg:#080810;--s1:#111120;--s2:#181828;
+      --ac:#e8ff47;--ac2:#7c5cfc;
+      --text:#f0f0f8;--muted:#8888aa;
+      --border:rgba(255,255,255,0.07);
+      --danger:#ff5555;--success:#34d399;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;font-family:"Poppins",sans-serif}
+    body{background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100vh}
+    body::before{content:"";position:fixed;inset:0;opacity:.03;pointer-events:none;z-index:0;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+    .blob{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(110px)}
+    .b1{width:500px;height:500px;background:var(--ac2);top:-150px;right:-100px;opacity:.13}
+    .b2{width:400px;height:400px;background:var(--ac);bottom:-150px;left:-100px;opacity:.06}
+
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1rem 6%;background:rgba(8,8,16,.9);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+    .logo{font-weight:800;font-size:1.2rem;letter-spacing:-.03em;color:var(--text);text-decoration:none}
+    .logo em{color:var(--ac);font-style:normal}
+    .nav-back{display:inline-flex;align-items:center;gap:.4rem;color:var(--muted);font-size:.875rem;font-weight:500;text-decoration:none;padding:.5rem 1rem;border:1px solid var(--border);border-radius:100px;transition:color .2s,border-color .2s;cursor:pointer}
+    .nav-back:hover{color:var(--text);border-color:rgba(255,255,255,.18)}
+
+    .page{position:relative;z-index:1;min-height:100vh;padding:7rem 6% 5rem;display:flex;flex-direction:column;align-items:center}
+
+    .prog{display:flex;align-items:center;margin-bottom:2.5rem}
+    .st{display:flex;align-items:center;gap:.4rem;font-size:.75rem;font-weight:600;color:var(--muted)}
+    .st.on{color:var(--ac)}
+    .st.dn{color:rgba(232,255,71,.5)}
+    .sd{width:24px;height:24px;border-radius:50%;background:var(--s2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700}
+    .st.on .sd{background:var(--ac);color:#080810;border-color:var(--ac)}
+    .st.dn .sd{background:rgba(232,255,71,.12);border-color:rgba(232,255,71,.3);color:var(--ac)}
+    .sl{width:32px;height:1px;background:var(--border);margin:0 .15rem}
+    .sl.dn{background:rgba(232,255,71,.3)}
+
+    .box{background:var(--s1);border:1px solid var(--border);border-radius:24px;padding:2.25rem;width:100%;max-width:520px;box-shadow:0 24px 80px rgba(0,0,0,.3);animation:up .6s ease both}
+    .box h2{font-size:1.5rem;font-weight:800;margin-bottom:.25rem;letter-spacing:-.03em}
+    .sub{color:var(--muted);font-size:.875rem;margin-bottom:1.5rem;line-height:1.55}
+
+    .resumo{background:rgba(232,255,71,.04);border:1px solid rgba(232,255,71,.18);border-radius:14px;padding:1rem 1.2rem;margin-bottom:1.5rem}
+    .resumo-title{font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ac);margin-bottom:.6rem}
+    .resumo-row{display:flex;justify-content:space-between;align-items:center;font-size:.85rem;padding:.2rem 0}
+    .resumo-row span:first-child{color:var(--muted)}
+    .resumo-row span:last-child{font-weight:600}
+    .resumo-total{border-top:1px solid var(--border);margin-top:.5rem;padding-top:.5rem}
+    .resumo-total span:last-child{color:var(--ac);font-size:1.1rem;font-weight:800}
+    .combo-note{margin:-.45rem 0 1rem;padding:.8rem .9rem;border-radius:14px;background:rgba(124,92,252,.08);border:1px solid rgba(124,92,252,.25);font-size:.78rem;line-height:1.5;color:var(--text)}
+    .dist-box{margin-top:1rem;background:rgba(255,255,255,.025);border:1px solid var(--border);border-radius:16px;padding:1rem}
+    .dist-title{font-weight:800;font-size:.85rem;margin-bottom:.35rem}
+    .dist-help{font-size:.72rem;color:var(--muted);margin-bottom:.8rem;line-height:1.5}
+    .post-row{display:grid;grid-template-columns:58px 1fr;gap:.7rem;align-items:center;padding:.65rem 0;border-bottom:1px solid var(--border)}
+    .post-row:last-child{border-bottom:0}
+    .post-thumb{width:58px;height:58px;border-radius:10px;object-fit:cover}
+    .post-meta{font-size:.74rem;font-weight:700;margin-bottom:.45rem}
+    .dist-inputs{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+    .dist-inputs label{font-size:.64rem;color:var(--muted);display:block}
+    .dist-inputs input{margin-top:.2rem;width:100%;padding:.55rem .6rem;border-radius:9px;background:var(--s2);border:1px solid var(--border);color:var(--text);outline:none}
+    .dist-total{margin-top:.8rem;padding:.65rem .75rem;border-radius:10px;background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.2);font-size:.74rem;font-weight:800}
+    .btn-manual{width:100%;margin-top:.7rem;border:1px dashed rgba(232,255,71,.35);background:rgba(232,255,71,.04);color:var(--ac);border-radius:10px;padding:.65rem;font-weight:800;cursor:pointer}
+    .combo-summary{margin-bottom:1rem}
+    .combo-summary .resumo-row span:last-child{max-width:65%;text-align:right}
+    @media(max-width:600px){.post-row{grid-template-columns:52px 1fr}.post-thumb{width:52px;height:52px}.dist-inputs{grid-template-columns:1fr 1fr}.combo-summary .resumo-row{align-items:flex-start}}
+    .resumo-icon{margin-right:.4rem}
+
+    .fg{display:flex;flex-direction:column;gap:.35rem;margin-bottom:.85rem}
+    .fg label{font-size:.73rem;font-weight:600;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;display:flex;align-items:center;gap:.4rem}
+    .fg input{background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:.8rem 1rem;color:var(--text);font-size:.95rem;outline:none;transition:border-color .2s,box-shadow .2s;width:100%}
+    .fg input:focus{border-color:rgba(232,255,71,.4);box-shadow:0 0 0 3px rgba(232,255,71,.06)}
+    .fg input.valid{border-color:rgba(52,211,153,.4)}
+    .fg input.invalid{border-color:rgba(255,85,85,.4)}
+    .fg input::placeholder{color:rgba(136,136,170,.5)}
+    .field-msg{font-size:.72rem;margin-top:.2rem;display:none}
+    .field-msg.show{display:block}
+    .field-msg.err{color:var(--danger)}
+    .field-msg.ok{color:var(--success)}
+
+    .pay-label{font-size:.73rem;font-weight:600;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;margin-bottom:.6rem}
+    .pay-tabs{display:grid;grid-template-columns:1fr;gap:.75rem;margin-bottom:1.25rem}
+    .pay-tab{background:var(--s2);border:2px solid var(--ac);border-radius:12px;padding:.85rem 1rem;display:flex;align-items:center;gap:.75rem;cursor:pointer}
+    .pay-tab-icon{font-size:1.3rem}
+    .pay-tab-name{font-weight:700;font-size:.9rem}
+    .pay-tab-sub{font-size:.73rem;color:var(--muted)}
+
+    .urgency-box{background:linear-gradient(135deg,rgba(232,255,71,.1),rgba(124,92,252,.06));border:1px solid rgba(232,255,71,.25);border-radius:14px;padding:.85rem 1rem;text-align:center;margin-bottom:1rem}
+    .urgency-top{font-size:.85rem;font-weight:700;color:var(--ac);display:flex;align-items:center;justify-content:center;gap:.5rem;margin-bottom:.2rem}
+    .urgency-sub{font-size:.72rem;color:var(--muted)}
+
+    .btn-pay{width:100%;padding:1rem;border:none;border-radius:100px;background:var(--ac);color:#080810;font-size:1rem;font-weight:800;cursor:pointer;transition:opacity .2s,transform .2s,box-shadow .2s;box-shadow:0 0 32px rgba(232,255,71,.2);display:flex;align-items:center;justify-content:center;gap:.5rem}
+    .btn-pay:hover{opacity:.9;transform:translateY(-2px);box-shadow:0 0 50px rgba(232,255,71,.35)}
+    .btn-pay:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+    .secure{display:flex;align-items:center;justify-content:center;gap:.4rem;margin-top:.75rem;font-size:.75rem;color:var(--muted)}
+
+    .trust-badges{margin-top:1rem;display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+    .trust-badge{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;padding:.6rem .75rem;display:flex;align-items:center;gap:.5rem;font-size:.75rem;color:var(--text)}
+    .trust-badge span{font-size:1rem}
+
+    .receiver-note{margin-top:.85rem;color:var(--muted);font-size:.7rem;line-height:1.5;text-align:center}
+
+    .bump-box{background:var(--s2);border:1.5px dashed rgba(232,255,71,.35);border-radius:14px;padding:1rem 1.1rem;margin-bottom:1.25rem;cursor:pointer;transition:border-color .2s,background .2s}
+    .bump-box.active{border-style:solid;border-color:var(--ac);background:rgba(232,255,71,.05)}
+    .bump-row{display:flex;align-items:flex-start;gap:.75rem}
+    .bump-check{width:22px;height:22px;border-radius:6px;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:.1rem;transition:.2s}
+    .bump-box.active .bump-check{background:var(--ac);border-color:var(--ac);color:#080810;font-weight:900}
+    .bump-text{flex:1}
+    .bump-title{font-size:.85rem;font-weight:700;display:flex;align-items:center;gap:.4rem;flex-wrap:wrap}
+    .bump-tag{background:rgba(232,255,71,.15);color:var(--ac);font-size:.65rem;font-weight:800;padding:.1rem .5rem;border-radius:100px;text-transform:uppercase}
+    .bump-desc{font-size:.76rem;color:var(--muted);margin-top:.2rem}
+    .bump-price{font-size:.8rem;margin-top:.35rem}
+    .bump-price .old{color:var(--muted);text-decoration:line-through;margin-right:.4rem}
+    .bump-price .new{color:var(--ac);font-weight:800}
+
+    #tela-pix{display:none;text-align:center}
+    #tela-pix h3{font-size:1.3rem;font-weight:800;margin-bottom:.4rem}
+    #tela-pix .sub-pix{color:var(--muted);font-size:.875rem;margin-bottom:1.1rem;line-height:1.5}
+    .pix-valor{font-size:2rem;font-weight:800;color:var(--ac);margin-bottom:1rem}
+    .pix-desconto-tag{display:inline-flex;align-items:center;gap:.35rem;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3);color:var(--success);font-size:.72rem;font-weight:700;padding:.3rem .7rem;border-radius:100px;margin-bottom:1.1rem}
+
+    .pix-steps{display:flex;flex-direction:column;gap:.5rem;margin-bottom:1.1rem;text-align:left}
+    .pix-step{display:flex;align-items:center;gap:.75rem;font-size:.82rem;color:var(--muted)}
+    .pix-step-num{width:24px;height:24px;border-radius:50%;background:rgba(232,255,71,.1);border:1px solid rgba(232,255,71,.25);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;color:var(--ac);flex-shrink:0}
+    .pix-qr{background:white;border-radius:16px;padding:1rem;display:inline-block;margin-bottom:1.1rem}
+    .pix-qr img{width:190px;height:190px;display:block}
+    .pix-copy-box{background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:.8rem 1rem;display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-bottom:.85rem;word-break:break-all}
+    .pix-code{font-size:.72rem;color:var(--muted);text-align:left;flex:1;line-height:1.5}
+    .btn-copy{background:var(--ac);color:#080810;font-weight:700;font-size:.8rem;padding:.5rem 1rem;border:none;border-radius:100px;cursor:pointer;white-space:nowrap;transition:opacity .2s,transform .1s}
+    .btn-copy:hover{opacity:.85}
+    .btn-copy:active{transform:scale(.97)}
+
+    .btn-wa-pix{width:100%;display:flex;align-items:center;justify-content:center;gap:.5rem;background:#25d366;color:#fff;font-weight:700;font-size:.88rem;padding:.8rem 1rem;border-radius:100px;text-decoration:none;margin-bottom:.85rem;transition:opacity .2s,transform .2s}
+    .btn-wa-pix:hover{opacity:.9;transform:translateY(-1px)}
+
+    .pix-timer{font-size:.82rem;color:var(--muted);margin-bottom:1rem}
+    .pix-timer span{color:var(--ac);font-weight:700}
+    .pix-timer.urgent span{color:var(--danger);animation:blink .8s infinite}
+
+    .status-box{background:rgba(232,255,71,.04);border:1px solid rgba(232,255,71,.15);border-radius:12px;padding:.85rem 1.1rem;margin-bottom:1rem;display:flex;align-items:center;gap:.75rem;font-size:.85rem;text-align:left}
+    .status-dot{width:9px;height:9px;border-radius:50%;background:var(--ac);flex-shrink:0;animation:blink 1.5s infinite}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+
+    .pix-social{background:rgba(124,92,252,.06);border:1px solid rgba(124,92,252,.2);border-radius:12px;padding:.7rem .9rem;margin-bottom:1rem;font-size:.78rem;color:var(--text);text-align:left;display:flex;align-items:center;gap:.6rem}
+
+    .btn-verificar{width:100%;padding:.85rem;border:1px solid rgba(232,255,71,.3);border-radius:100px;background:transparent;color:var(--ac);font-size:.9rem;font-weight:700;cursor:pointer;transition:background .2s;margin-top:.5rem}
+    .btn-verificar:hover{background:rgba(232,255,71,.06)}
+
+    #tela-sucesso{display:none;text-align:center}
+    .success-anim{font-size:4rem;margin-bottom:1rem;animation:bounce .6s ease}
+    @keyframes bounce{0%{transform:scale(.5)}70%{transform:scale(1.1)}100%{transform:scale(1)}}
+    #tela-sucesso h3{font-size:1.5rem;font-weight:800;margin-bottom:.5rem}
+    #tela-sucesso p{color:var(--muted);font-size:.875rem;line-height:1.65;margin-bottom:1.5rem}
+    .success-actions{display:flex;flex-direction:column;gap:.75rem}
+    .btn-wa{display:flex;align-items:center;justify-content:center;gap:.5rem;background:#25d366;color:#fff;font-weight:700;font-size:.9rem;padding:.85rem 1.5rem;border-radius:100px;text-decoration:none;transition:opacity .2s}
+    .btn-wa:hover{opacity:.9}
+    .btn-home{display:flex;align-items:center;justify-content:center;background:var(--s2);border:1px solid var(--border);color:var(--text);font-weight:600;font-size:.875rem;padding:.75rem 1.5rem;border-radius:100px;text-decoration:none;transition:background .2s}
+    .btn-home:hover{background:rgba(255,255,255,.06)}
+
+    .social-proof{position:fixed;left:18px;bottom:18px;z-index:200;max-width:300px;background:rgba(17,17,32,.96);border:1px solid rgba(232,255,71,.2);box-shadow:0 8px 32px rgba(0,0,0,.4);border-radius:14px;padding:.8rem 1rem;font-size:.8rem;color:var(--text);opacity:0;transform:translateY(12px);transition:.35s ease;pointer-events:none}
+    .social-proof.show{opacity:1;transform:translateY(0)}
+
+    footer{position:relative;z-index:1;margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:.75rem;width:100%;max-width:520px}
+
+    @keyframes up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    @media(max-width:600px){
+      .page{padding:6.5rem 5% 4rem}
+      nav{padding:1rem 5%}
+      .box{padding:1.5rem 1.1rem}
+      .sl{width:20px}
+      .trust-badges{grid-template-columns:1fr}
+      .social-proof{left:10px;right:10px;bottom:10px;max-width:none}
+    }
+  </style>
+</head>
+<body>
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+
+  <nav>
+    <a href="index.html" class="logo">MidiaNet<em>Digital</em></a>
+    <a href="#" onclick="history.back();return false;" class="nav-back">← Voltar</a>
+  </nav>
+
+  <section class="page">
+    <div class="prog">
+      <div class="st dn"><div class="sd">✓</div>Serviço</div><div class="sl dn"></div>
+      <div class="st dn"><div class="sd">✓</div>Plano</div><div class="sl dn"></div>
+      <div class="st dn"><div class="sd">✓</div>Pagamento</div><div class="sl dn"></div>
+      <div class="st on"><div class="sd">4</div>Finalizar</div>
+    </div>
+
+    <div class="box">
+
+      <div id="tela-form">
+        <h2>Quase lá! 🚀</h2>
+        <p class="sub">Preencha seus dados abaixo. O pedido é enviado automaticamente após o pagamento.</p>
+
+        <div class="resumo">
+          <div class="resumo-title">Resumo do pedido</div>
+          <div class="resumo-row"><span>Serviço</span><span><span class="resumo-icon" id="r-icon"></span><span id="r-servico">-</span></span></div>
+          <div class="resumo-row"><span>Quantidade</span><span id="r-plano">-</span></div>
+          <div class="resumo-row" id="bump-resumo-row" style="display:none"><span>+ Order bump</span><span id="r-bump-valor">-</span></div>
+          <div class="resumo-row" id="r-beneficios-row" style="display:none"><span>Benefícios</span><span id="r-beneficios">-</span></div>
+          <div class="resumo-row resumo-total"><span>Total</span><span id="r-valor">-</span></div>
+        </div>
+        <div class="combo-note" id="combo-note" style="display:none"></div>
+
+        <div class="fg">
+          <label for="nome">👤 Seu nome</label>
+          <input type="text" id="nome" placeholder="Ex: João Silva" autocomplete="name"/>
+          <div class="field-msg" id="msg-nome"></div>
+        </div>
+
+        <div class="fg">
+          <label for="telefone">📱 WhatsApp</label>
+          <input type="tel" id="telefone" placeholder="(21) 99999-9999" maxlength="15" autocomplete="tel"/>
+          <div class="field-msg" id="msg-telefone"></div>
+          <div class="field-msg show" style="color:var(--muted);font-size:.7rem">Usamos seu WhatsApp só para te enviar o código Pix e avisar quando o pedido for entregue.</div>
+        </div>
+
+        <div class="fg">
+          <label for="instagram" id="label-instagram">📸 @ ou link do Instagram</label>
+
+          <div style="display:flex;gap:.6rem;">
+            <input
+              type="text"
+              id="instagram"
+              placeholder="@seuusuario"
+              style="flex:1;"
+            />
+
+            <button
+              type="button"
+              onclick="verificarInstagram()"
+              style="border:none;border-radius:12px;background:var(--ac);color:#080810;font-weight:800;padding:0 .9rem;cursor:pointer;"
+            >
+              Verificar
+            </button>
+          </div>
+
+          <div class="field-msg" id="msg-instagram"></div>
+        </div>
+
+        <input type="hidden" id="link_final_instagram"/>
+
+        <div id="perfil-verificado" style="display:none;margin-top:.9rem;background:rgba(232,255,71,.06);border:1px solid rgba(232,255,71,.22);border-radius:14px;padding:1rem;">
+          <div style="display:flex;align-items:center;gap:.8rem;">
+            <img id="perfil-foto" src="" style="width:54px;height:54px;border-radius:50%;object-fit:cover;border:2px solid var(--ac);">
+            <div>
+              <div id="perfil-nome" style="font-weight:800;color:var(--text);">Perfil encontrado</div>
+              <div id="perfil-user" style="font-size:.85rem;color:var(--muted);">@usuario</div>
+              <div id="perfil-stats" style="font-size:.78rem;color:var(--muted);margin-top:.25rem;"></div>
+
+              <a id="perfil-link" href="#" target="_blank" style="display:inline-block;margin-top:.35rem;color:var(--ac);font-size:.8rem;font-weight:700;text-decoration:none;">
+                Ver perfil ↗
+              </a>
+              <button
+                type="button"
+                id="btn-confirmar-perfil"
+                onclick="confirmarPerfilInstagram()"
+                style="margin-top:.9rem;width:100%;border:none;border-radius:999px;background:var(--ac);color:#080810;font-weight:800;padding:.75rem;cursor:pointer;"
+              >
+                Confirmar perfil
+              </button>
+            </div>
+          </div>
+
+          <div id="posts-instagram" style="display:none;margin-top:1rem;">
+            <div style="font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:.7rem;">
+              Escolha a publicação
+            </div>
+
+            <div id="info-publicacoes" style="margin-bottom:.7rem;font-size:.78rem;color:var(--ac);font-weight:700;line-height:1.5;"></div>
+
+            <div id="posts-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;"></div>
+            <div id="manual-post" style="margin-top:.8rem;">
+              <div style="font-size:.78rem;color:var(--muted);margin-bottom:.4rem;">
+                Não encontrou a publicação? Cole o link abaixo.
+              </div>
+
+              <div style="display:flex;gap:.5rem;">
+                <input
+                  type="text"
+                  id="link-manual-instagram"
+                  placeholder="https://www.instagram.com/p/..."
+                  style="flex:1;background:var(--s2);border:1px solid var(--border);border-radius:10px;color:var(--text);padding:.75rem;"
+                >
+
+                <button
+                  type="button"
+                  onclick="adicionarLinkManual()"
+                  style="background:var(--ac);border:none;border-radius:10px;color:#080810;font-weight:800;padding:0 .9rem;cursor:pointer;"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="bump-box" id="bumpBox" onclick="toggleBump()">
+          <div class="bump-row">
+            <div class="bump-check" id="bumpCheck"></div>
+            <div class="bump-text">
+              <div class="bump-title">Adicionar 500 curtidas brasileiras <span class="bump-tag">Oferta única</span></div>
+              <div class="bump-desc">Aproveite e turbine o engajamento de até 2 publicações suas (250 curtidas em cada).</div>
+              <div class="bump-price"><span class="old">R$ 9,90</span><span class="new" id="bumpPriceText">+ R$ 4,90</span></div>
+            </div>
+          </div>
+        </div>
+        <div id="bumpPublicacaoAviso" style="display:none;margin-top:-1rem;margin-bottom:1.1rem;font-size:.72rem;color:var(--ac);text-align:center;">
+          👇 Selecione abaixo em qual publicação aplicar as 500 curtidas do bump (após confirmar o perfil)
+        </div>
+
+        <div style="margin-bottom:1.1rem">
+          <div class="pay-label">Forma de pagamento</div>
+          <div class="pay-tabs">
+            <div class="pay-tab">
+              <div class="pay-tab-icon">⚡</div>
+              <div class="pay-tab-info">
+                <div class="pay-tab-name">Pix</div>
+                <div class="pay-tab-sub">Aprovação imediata · 100% seguro</div>
+              </div>
+              <div style="margin-left:auto;color:var(--ac);font-weight:800;font-size:.8rem">✓ Selecionado</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="urgency-box">
+          <div class="urgency-top">🔥 Preço promocional reservado: <strong id="urgencyTimer">14:59</strong></div>
+          <div class="urgency-sub">Após o tempo expirar, o valor pode ser reajustado</div>
+        </div>
+
+        <button class="btn-pay" id="btn-pagar" onclick="criarPedido()">
+          <span id="btn-text">Gerar Pix e continuar</span>
+        </button>
+
+        <div class="secure">🔒 Pagamento seguro via Mercado Pago</div>
+
+        <div class="trust-badges">
+          <div class="trust-badge"><span>✅</span> Entrega automática</div>
+          <div class="trust-badge"><span>🔒</span> Sem pedir senha</div>
+          <div class="trust-badge"><span>💬</span> Suporte WhatsApp</div>
+          <div class="trust-badge"><span>⭐</span> +10.000 pedidos</div>
+        </div>
+
+        <div class="receiver-note">
+          O recebedor do Pix pode aparecer como titular da conta Mercado Pago. O pedido é processado pela MidiaNetDigital.
+        </div>
+      </div>
+
+      <div id="tela-pix">
+        <h3>⚡ Falta só o pagamento!</h3>
+        <p class="sub-pix">Escaneie o QR Code ou copie o código. A entrega começa automaticamente após a confirmação.</p>
+
+        <div class="pix-valor" id="pix-valor">R$ 0,00</div>
+        <div class="pix-desconto-tag">🔒 Valor promocional garantido</div>
+
+        <a href="#" id="btnWaPix" target="_blank" class="btn-wa-pix">
+          💬 Enviar este Pix para o meu WhatsApp
+        </a>
+
+        <div class="pix-steps">
+          <div class="pix-step"><div class="pix-step-num">1</div>Abra o app do seu banco</div>
+          <div class="pix-step"><div class="pix-step-num">2</div>Escaneie o QR Code ou copie o código Pix</div>
+          <div class="pix-step"><div class="pix-step-num">3</div>Confirme o pagamento e aguarde</div>
+        </div>
+
+        <div class="pix-qr">
+          <img id="pix-qr-img" src="" alt="QR Code Pix"/>
+        </div>
+
+        <div class="pix-copy-box">
+          <div class="pix-code" id="pix-code">Gerando código...</div>
+          <button class="btn-copy" onclick="copiarPix()">Copiar</button>
+        </div>
+
+        <div class="pix-timer" id="pixTimerWrap">⏱ Expira em: <span id="timer">30:00</span></div>
+
+        <div class="pix-social" id="pixSocialMsg">
+          🔥 <span id="pixSocialText">3 pessoas pagaram o Pix nos últimos 10 minutos</span>
+        </div>
+
+        <div class="status-box">
+          <div class="status-dot" id="status-dot"></div>
+          <span id="status-text">Aguardando confirmação do pagamento...</span>
+        </div>
+
+        <button class="btn-verificar" onclick="verificarManual()">
+          ✅ Já paguei — verificar agora
+        </button>
+      </div>
+
+      <div id="tela-sucesso">
+        <div class="success-anim">🎉</div>
+        <h3>Pedido confirmado!</h3>
+        <p>Pagamento recebido com sucesso! Seu pedido já foi enviado automaticamente para o Instagram <strong id="suc-ig"></strong>.<br><br>A entrega começa em breve. Fique de olho no seu perfil!</p>
+        <div class="success-actions">
+          <a href="#" id="btnWaSucesso" target="_blank" class="btn-wa">💬 Acompanhar pedido pelo WhatsApp</a>
+          <a href="index.html" class="btn-home">← Voltar ao início</a>
+        </div>
+      </div>
+
+    </div>
+
+    <footer>© 2025 MidiaNetDigital — Todos os direitos reservados</footer>
+  </section>
+
+  <div class="social-proof" id="socialProof"></div>
+
+  <script>
+    var BACKEND = "https://midianetdigital.onrender.com";
+    var WHATSAPP_NUMERO = "5521991689838";
+
+    var PRECOS = {
+      "seguidores-mundiais__500":5.00,"seguidores-mundiais__1000":10.00,
+      "seguidores-mundiais__2000":20.00,"seguidores-mundiais__3000":30.00,
+      "seguidores-mundiais__4000":40.00,"seguidores-mundiais__5000":50.00,
+      "seguidores-mundiais__10000":100.00,
+      "seguidores-brasileiros__250":15.00,"seguidores-brasileiros__500":25.00,
+      "seguidores-brasileiros__1000":45.00,"seguidores-brasileiros__2000":65.00,
+      "seguidores-brasileiros__3000":85.00,"seguidores-brasileiros__4000":110.00,
+      "seguidores-brasileiros__5000":125.00,"seguidores-brasileiros__10000":235.00,
+      "seguidores-organicos__250":24.90,"seguidores-organicos__500":44.90,
+      "seguidores-organicos__1000":79.90,"seguidores-organicos__2000":139.90,
+      "curtidas-brasileiras__500":8.00,"curtidas-brasileiras__1000":15.00,
+      "curtidas-brasileiras__2500":30.00,"curtidas-brasileiras__5000":55.00,
+      "curtidas-brasileiras__10000":100.00,"curtidas-brasileiras__20000":200.00,
+      "visualizacoes__500":8.00,"visualizacoes__1000":15.00,
+      "visualizacoes__2500":30.00,"visualizacoes__5000":55.00,
+      "visualizacoes__10000":100.00,"visualizacoes__25000":250.00
+    };
+
+    var COMBO_INFO = {
+      "engajamento-30-70": {
+        "500": {seguidores:500, likes:0, views:0},
+        "1000": {seguidores:1000, likes:500, views:0},
+        "1500": {seguidores:1500, likes:700, views:700},
+        "2000": {seguidores:2000, likes:1000, views:1000},
+        "3000": {seguidores:3000, likes:2000, views:2000},
+        "4000": {seguidores:4000, likes:3000, views:3000},
+        "5000": {seguidores:5000, likes:4000, views:4000}
+      },
+      "engajamento-60-40": {
+        "500": {seguidores:500, likes:0, views:0},
+        "1000": {seguidores:1000, likes:500, views:0},
+        "2000": {seguidores:2000, likes:1000, views:1000},
+        "3000": {seguidores:3000, likes:2000, views:2000},
+        "4000": {seguidores:4000, likes:3000, views:3000},
+        "5000": {seguidores:5000, likes:4000, views:4000}
+      },
+      "engajamento-br": {
+        "250": {seguidores:250, likes:0, views:0},
+        "500": {seguidores:500, likes:500, views:500},
+        "1000": {seguidores:1000, likes:1000, views:1000},
+        "2000": {seguidores:2000, likes:2000, views:2000},
+        "3000": {seguidores:3000, likes:3000, views:3000},
+        "4000": {seguidores:4000, likes:4000, views:4000},
+        "5000": {seguidores:5000, likes:5000, views:5000}
+      },
+      "engajamento-premium": {
+        "500": {seguidores:500, likes:200, views:200},
+        "1000": {seguidores:1000, likes:500, views:500},
+        "2000": {seguidores:2000, likes:1000, views:1000},
+        "3000": {seguidores:3000, likes:2000, views:2000},
+        "4000": {seguidores:4000, likes:3000, views:3000},
+        "5000": {seguidores:5000, likes:4000, views:4000}
+      }
+    };
+    var isCombo = !!COMBO_INFO[servico];
+    var comboInfo = isCombo ? (COMBO_INFO[servico][plano] || null) : null;
+
+    Object.keys(COMBO_INFO).forEach(function(svc){ Object.keys(COMBO_INFO[svc]).forEach(function(q){ PRECOS[svc+"__"+q] = {"engajamento-30-70": {500:5,1000:13.99,1500:20.99,2000:27.99,3000:41.99,4000:55.99,5000:69.99},"engajamento-60-40": {500:8.99,1000:17.99,2000:35.98,3000:53.97,4000:71.96,5000:89.95},"engajamento-br": {250:15,500:25,1000:45,2000:65,3000:85,4000:110,5000:125},"engajamento-premium": {500:80,1000:160,2000:320,3000:497,4000:657,5000:847}}[svc][q]; }); });
+
+    var SL = {
+      "seguidores-brasileiros":"Seguidores Brasileiros","seguidores-mundiais":"Seguidores Mundiais",
+      "seguidores-organicos":"Seguidores Orgânicos","curtidas-brasileiras":"Curtidas Brasileiras",
+      "visualizacoes":"Visualizações de Reels","comentarios":"Comentários",
+      "salvamentos":"Salvamentos","compartilhamentos":"Compartilhamentos"
+    };
+    var ICONS = {
+      "seguidores-brasileiros":"🇧🇷","seguidores-mundiais":"🌐","seguidores-organicos":"🌱",
+      "curtidas-brasileiras":"❤️","visualizacoes":"▶️","comentarios":"💬",
+      "salvamentos":"🔖","compartilhamentos":"📤"
+    };
+    var PL = {
+      "50":"50 un","100":"100 un","250":"250 un","500":"500 un","1000":"1.000 un",
+      "2000":"2.000 un","5000":"5.000 un","2500":"2.500 un","10000":"10.000 un",
+      "25000":"25.000 un","10":"10 un","25":"25 un"
+    };
+
+    var pedidoId = null, pollInt = null, cdInt = null;
+    var bumpAtivo = false;
+    var BUMP_VALOR = 4.90;
+
+    var p = new URLSearchParams(location.search);
+    var servico = p.get("servico") || sessionStorage.getItem("servico") || "";
+    var plano = p.get("plano") || sessionStorage.getItem("plano") || "";
+    var chave = servico + "__" + plano;
+    var valorBase = PRECOS[chave] || 0;
+
+    function valorTotal(){ return valorBase + (bumpAtivo ? BUMP_VALOR : 0); }
+
+    function atualizarResumo(){
+      var total = valorTotal();
+      document.getElementById("r-icon").textContent = ICONS[servico] || "";
+      document.getElementById("r-servico").textContent = SL[servico] || servico || "-";
+      document.getElementById("r-plano").textContent = PL[plano] || plano || "-";
+      document.getElementById("r-valor").textContent = "R$ " + total.toFixed(2).replace(".",",");
+      document.getElementById("pix-valor").textContent = "R$ " + total.toFixed(2).replace(".",",");
+      var bumpRow = document.getElementById("bump-resumo-row");
+      if(bumpAtivo){
+        bumpRow.style.display = "flex";
+        document.getElementById("r-bump-valor").textContent = "R$ " + BUMP_VALOR.toFixed(2).replace(".",",");
+      } else {
+        bumpRow.style.display = "none";
+      }
+    }
+
+    function atualizarResumoCombo(){
+      if(!isCombo || !comboInfo) return;
+      document.getElementById("r-icon").textContent = servico === "engajamento-br" ? "🇧🇷" : (servico === "engajamento-premium" ? "🎖️" : "🌎");
+      document.getElementById("r-servico").textContent = servico === "engajamento-30-70" ? "30% BR + 70% Mundiais" : servico === "engajamento-60-40" ? "60% BR + 40% Mundiais" : servico === "engajamento-br" ? "100% Brasileiros" : "BR Premium Ativos";
+      document.getElementById("r-plano").textContent = Number(plano).toLocaleString("pt-BR") + " seguidores";
+      var b=[]; if(comboInfo.likes) b.push("❤️ "+comboInfo.likes.toLocaleString("pt-BR")+" curtidas"); if(comboInfo.views) b.push("👁️ "+comboInfo.views.toLocaleString("pt-BR")+" visualizações");
+      var row=document.getElementById("r-beneficios-row"); if(b.length){row.style.display="flex";document.getElementById("r-beneficios").textContent=b.join(" + ");}
+      var note=document.getElementById("combo-note");
+      if(comboInfo.likes || comboInfo.views){
+        note.style.display="block";
+        note.innerHTML="<strong>📲 Personalize seu engajamento</strong><br>Depois de verificar seu perfil, escolha as publicações e distribua suas curtidas e visualizações entre elas. O total não pode ultrapassar o que seu pacote inclui.";
+      }
+    }
+
+    function toggleBump(){
+      bumpAtivo = !bumpAtivo;
+      var box = document.getElementById("bumpBox");
+      var check = document.getElementById("bumpCheck");
+      if(bumpAtivo){
+        box.classList.add("active");
+        check.textContent = "✓";
+      } else {
+        box.classList.remove("active");
+        check.textContent = "";
+      }
+      atualizarResumo();
+    atualizarResumoCombo();
+      atualizarExigenciaPublicacao();
+    }
+
+    atualizarResumo();
+
+    var isPublicacao = ["curtidas-brasileiras","visualizacoes","comentarios","salvamentos","compartilhamentos"].includes(servico);
+    var exigeDistribuicaoCombo = isCombo && comboInfo && (comboInfo.likes > 0 || comboInfo.views > 0);
+    if(isCombo){ document.getElementById("bumpBox").style.display = "none"; document.getElementById("bumpPublicacaoAviso").style.display = "none"; }
+    if (isPublicacao) {
+      document.getElementById("label-instagram").textContent = "🔗 Link da publicação ou Reels";
+      document.getElementById("instagram").placeholder = "https://www.instagram.com/p/...";
+      if(servico === "curtidas-brasileiras"){
+        document.getElementById("bumpBox").style.display = "none";
+      }
+    }
+
+    // Precisa de publicação selecionada quando: o serviço principal exige (curtidas/views/comentários)
+    // OU quando o order bump de curtidas está ativo (mesmo que o serviço principal seja seguidores)
+    function precisaDePublicacao(){
+      return isPublicacao || bumpAtivo;
+    }
+
+    // Quando o bump muda de estado, atualiza o aviso e (se o perfil já foi confirmado) mostra/oculta o seletor de posts
+    function atualizarExigenciaPublicacao(){
+      var perfilVisivel = document.getElementById("perfil-verificado").style.display === "block";
+      var bumpAviso = document.getElementById("bumpPublicacaoAviso");
+
+      if(bumpAtivo && !isPublicacao){
+        // Serviço principal não exige publicação, então quem define o limite é o bump (até 2 publicações de 250 cada)
+        maxPublicacoes = 2;
+        if(bumpAviso) bumpAviso.style.display = "block";
+        // Se o perfil já foi confirmado antes de ativar o bump, força a aparição do seletor de posts agora
+        if(perfilVisivel){
+          var username = (document.getElementById("perfil-user").textContent || "").replace("@","").trim();
+          if(username) carregarPostsInstagram(username, true);
+        }
+      } else {
+        if(bumpAviso) bumpAviso.style.display = "none";
+        // Se desativou o bump e o serviço principal não exige publicação, esconde o seletor de posts
+        if(!isPublicacao){
+          document.getElementById("posts-instagram").style.display = "none";
+          linksBump = [];
+        }
+      }
+    }
+
+    document.getElementById("telefone").addEventListener("input", function(){
+      var v = this.value.replace(/\D/g,"");
+      if(v.length<=10) v = v.replace(/(\d{2})(\d{4})(\d{0,4})/,"($1) $2-$3");
+      else v = v.replace(/(\d{2})(\d{5})(\d{0,4})/,"($1) $2-$3");
+      this.value = v.trim().replace(/-$/,"");
+    });
+
+    function validateField(id, msgId, fn) {
+      var el = document.getElementById(id);
+      var msg = document.getElementById(msgId);
+      el.addEventListener("blur", function(){
+        var result = fn(el.value.trim());
+        if(result === true) {
+          el.classList.remove("invalid"); el.classList.add("valid");
+        } else {
+          el.classList.remove("valid"); el.classList.add("invalid");
+          msg.textContent = result; msg.className="field-msg show err";
+        }
+      });
+      el.addEventListener("focus", function(){
+        el.classList.remove("invalid","valid");
+      });
+    }
+
+    validateField("nome","msg-nome", function(v){
+      if(!v) return "Informe seu nome.";
+      if(v.length < 3) return "Nome muito curto.";
+      return true;
+    });
+    validateField("telefone","msg-telefone", function(v){
+      var nums = v.replace(/\D/g,"");
+      if(!nums) return "Informe seu WhatsApp.";
+      if(nums.length < 10) return "Número incompleto.";
+      return true;
+    });
+    validateField("instagram","msg-instagram", function(v){
+      if(!v) return "Informe o " + (isPublicacao ? "link da publicação." : "@ do perfil.");
+      return true;
+    });
+
+    function validate() {
+      var nome = document.getElementById("nome").value.trim();
+      var tel = document.getElementById("telefone").value.replace(/\D/g,"");
+      var igDigitado = document.getElementById("instagram").value.trim();
+      var ig = document.getElementById("link_final_instagram").value || igDigitado;
+      if(!nome || nome.length < 3){ showErr("nome","msg-nome","Informe seu nome."); return false; }
+      if(tel.length < 10){ showErr("telefone","msg-telefone","WhatsApp inválido."); return false; }
+      if(!ig){ showErr("instagram","msg-instagram","Campo obrigatório."); return false; }
+      if(!isPublicacao && !isCombo && !instagramConfirmado){ alert("Verifique e confirme seu perfil do Instagram antes de continuar."); return false; }
+      if(isCombo && exigeDistribuicaoCombo && !instagramConfirmado){ alert("Verifique seu perfil antes de continuar."); return false; }
+      return true;
+    }
+
+    function showErr(id, msgId, txt) {
+      var el = document.getElementById(id);
+      var msg = document.getElementById(msgId);
+      el.classList.add("invalid");
+      msg.textContent = txt;
+      msg.className = "field-msg show err";
+      el.focus();
+    }
+
+    var instagramConfirmado = false;
+    var linksSelecionados = []; // publicações do SERVIÇO PRINCIPAL (curtidas/views/comentários)
+    var linksBump = [];         // publicações do ORDER BUMP (500 curtidas extras) — nunca se mistura com linksSelecionados
+    var maxPublicacoes = 1;
+
+    if(isCombo && comboInfo && (comboInfo.likes || comboInfo.views)){
+      var maiorBonus = Math.max(comboInfo.likes || 0, comboInfo.views || 0);
+      maxPublicacoes = maiorBonus <= 500 ? 2 : (maiorBonus <= 700 ? 3 : 5);
+    } else if(servico === "visualizacoes" || servico === "curtidas-brasileiras"){
+      if(plano === "500") maxPublicacoes = 2;
+      else maxPublicacoes = 5;
+    } else if(bumpAtivo){
+      // O serviço principal não exige publicação (ex: seguidores), mas o order bump
+      // de 500 curtidas exige até 2 publicações (250 curtidas em cada).
+      maxPublicacoes = 2;
+    }
+
+    (function(){
+      var info = document.getElementById("info-publicacoes");
+      if(!info) return;
+      if(isCombo && comboInfo && (comboInfo.likes || comboInfo.views)){
+        var parts=[]; if(comboInfo.likes) parts.push(comboInfo.likes.toLocaleString("pt-BR")+" curtidas"); if(comboInfo.views) parts.push(comboInfo.views.toLocaleString("pt-BR")+" visualizações");
+        info.innerHTML = parts.join(" + ") + " → distribua em até " + maxPublicacoes + " publicações";
+      } else if(plano === "500") info.innerHTML = "500 visualizações/curtidas → até 2 publicações (250 em cada)";
+      else if(plano === "1000") info.innerHTML = "1.000 visualizações/curtidas → até 5 publicações (200 em cada)";
+      else if(plano === "2500") info.innerHTML = "2.500 visualizações/curtidas → até 5 publicações (500 em cada)";
+      else if(plano === "5000") info.innerHTML = "5.000 visualizações/curtidas → até 5 publicações (1.000 em cada)";
+      else if(plano === "10000") info.innerHTML = "10.000 visualizações/curtidas → até 5 publicações (2.000 em cada)";
+      else if(plano === "20000") info.innerHTML = "20.000 visualizações/curtidas → até 5 publicações (4.000 em cada)";
+    })();
+
+    function limparUsuarioInstagram(valor){
+      return valor
+        .trim()
+        .replace("https://www.instagram.com/", "")
+        .replace("https://instagram.com/", "")
+        .replace("@", "")
+        .split("/")[0]
+        .split("?")[0];
+    }
+
+    async function verificarInstagram(){
+      var campo = document.getElementById("instagram");
+      var user = limparUsuarioInstagram(campo.value);
+
+      if(!user){
+        document.getElementById("msg-instagram").textContent = "Digite o @ do Instagram primeiro.";
+        document.getElementById("msg-instagram").className = "field-msg show err";
+        return;
+      }
+
+      document.getElementById("msg-instagram").textContent = "🔎 Buscando perfil...";
+      document.getElementById("msg-instagram").className = "field-msg show ok";
+
+      try{
+        var r = await fetch(BACKEND + "/instagram/perfil?user=" + encodeURIComponent(user));
+        var d = await r.json();
+
+        if(!r.ok || !d.success){
+          throw new Error(d.error || "Perfil não encontrado.");
+        }
+
+        var imgPerfil = document.getElementById("perfil-foto");
+        imgPerfil.src = d.foto ? BACKEND + "/proxy-img?url=" + encodeURIComponent(d.foto) : "https://ui-avatars.com/api/?name=" + encodeURIComponent(d.username) + "&background=e8ff47&color=080810";
+        imgPerfil.onerror = function(){
+          this.src = "https://ui-avatars.com/api/?name=" + encodeURIComponent(d.username) + "&background=e8ff47&color=080810";
+        };
+
+        document.getElementById("perfil-nome").textContent = d.nome || "Perfil encontrado";
+        document.getElementById("perfil-user").textContent = "@" + d.username;
+        document.getElementById("perfil-stats").textContent =
+          (d.posts || 0).toLocaleString("pt-BR") + " posts • " +
+          (d.seguidores || 0).toLocaleString("pt-BR") + " seguidores • " +
+          (d.seguindo || 0).toLocaleString("pt-BR") + " seguindo";
+
+        document.getElementById("perfil-link").href = d.link;
+        document.getElementById("perfil-link").textContent = "Ver perfil ↗";
+        document.getElementById("perfil-verificado").style.display = "block";
+
+        var btnPerfil = document.getElementById("btn-confirmar-perfil");
+        if(btnPerfil){
+          btnPerfil.style.display = (isPublicacao || isCombo) ? "none" : "block";
+        }
+        if(isCombo){
+          instagramConfirmado = true;
+          campo.readOnly = true;
+          campo.style.opacity = "0.75";
+        }
+
+        document.getElementById("link_final_instagram").value = d.link;
+
+        if(isPublicacao || isCombo){
+          document.getElementById("msg-instagram").textContent = "✅ Perfil encontrado. Buscando publicações...";
+          carregarPostsInstagram(d.username, false);
+        } else if(bumpAtivo){
+          // Serviço principal não exige publicação, mas o order bump de curtidas exige.
+          // Mostra o seletor de posts também, sem esconder o botão "Confirmar perfil"
+          // e SEM tocar no link_final_instagram (que continua sendo o perfil principal).
+          document.getElementById("msg-instagram").textContent = "✅ Perfil encontrado. Selecione abaixo a publicação para o bump de curtidas.";
+          carregarPostsInstagram(d.username, true);
+        }
+
+        document.getElementById("msg-instagram").textContent = isPublicacao ? "" : document.getElementById("msg-instagram").textContent;
+      } catch(e){
+        document.getElementById("msg-instagram").textContent = "Não foi possível verificar. Confira o @ ou use o link manualmente.";
+        document.getElementById("msg-instagram").className = "field-msg show err";
+      }
+    }
+
+    function confirmarPerfilInstagram(){
+      instagramConfirmado = true;
+
+      var campo = document.getElementById("instagram");
+      campo.readOnly = true;
+      campo.style.opacity = "0.75";
+
+      document.getElementById("msg-instagram").textContent = "Perfil confirmado ✅";
+      document.getElementById("msg-instagram").className = "field-msg show ok";
+
+      var btn = document.querySelector("#perfil-verificado button");
+      if(btn){
+        btn.textContent = "✅ Perfil confirmado";
+        btn.style.background = "#34d399";
+      }
+    }
+
+    var distribuicaoCombo = [];
+    function renderDistribuicaoCombo(){
+      if(!isCombo || !comboInfo) return;
+      var old=document.getElementById("combo-distribuicao"); if(old) old.remove();
+      if(!(comboInfo.likes || comboInfo.views) || !linksSelecionados.length) return;
+      var area=document.getElementById("posts-grid");
+      var box=document.createElement("div"); box.id="combo-distribuicao"; box.className="dist-box";
+      box.innerHTML='<div class="dist-title">📊 Distribua seu engajamento</div><div class="dist-help">Defina quanto cada publicação recebe. O total precisa bater exatamente com o pacote.</div>';
+      linksSelecionados.forEach(function(link,i){
+        var src=''; var thumb='';
+        var el=[].slice.call(document.querySelectorAll('#posts-grid > div')).find(function(x){ return x.getAttribute('data-url')===link; });
+        if(el){ var im=el.querySelector('img'); if(im) thumb=im.src; }
+        var item=distribuicaoCombo.find(function(x){return x.link===link;}) || {link:link,curtidas:0,visualizacoes:0};
+        distribuicaoCombo=distribuicaoCombo.filter(function(x){return x.link!==link;}); distribuicaoCombo.push(item);
+        var row=document.createElement('div'); row.className='post-row'; row.innerHTML='<img class="post-thumb" src="'+(thumb||'')+'"><div><div class="post-meta">Publicação '+(i+1)+'</div><div class="dist-inputs">'+(comboInfo.likes?'<label>❤️ Curtidas<input type="number" min="0" max="'+comboInfo.likes+'" value="'+item.curtidas+'" data-type="curtidas" data-link="'+encodeURIComponent(link)+'"></label>':'<div></div>')+(comboInfo.views?'<label>👁️ Visualizações<input type="number" min="0" max="'+comboInfo.views+'" value="'+item.visualizacoes+'" data-type="visualizacoes" data-link="'+encodeURIComponent(link)+'"></label>':'')+'</div></div>';
+        box.appendChild(row);
+      });
+      var total=document.createElement('div'); total.className='dist-total'; total.id='dist-total'; box.appendChild(total);
+      area.insertAdjacentElement('afterend',box);
+      // Preenche automaticamente uma divisão equilibrada; o cliente pode ajustar depois.
+      var n=linksSelecionados.length;
+      if(n>0){
+        var ql=Math.floor(Number(comboInfo.likes||0)/n), rl=Number(comboInfo.likes||0)-ql*n;
+        var qv=Math.floor(Number(comboInfo.views||0)/n), rv=Number(comboInfo.views||0)-qv*n;
+        distribuicaoCombo.forEach(function(x,i){ x.curtidas=ql+(i<rl?1:0); x.visualizacoes=qv+(i<rv?1:0); });
+        box.querySelectorAll('input').forEach(function(inp){ var link=decodeURIComponent(inp.dataset.link); var item=distribuicaoCombo.find(function(x){return x.link===link;}); if(item) inp.value=Number(item[inp.dataset.type]||0); });
+      }
+      box.querySelectorAll('input').forEach(function(inp){inp.addEventListener('input',function(){var link=decodeURIComponent(this.dataset.link);var item=distribuicaoCombo.find(function(x){return x.link===link;});if(item)item[this.dataset.type]=Math.max(0,Number(this.value||0));atualizarDistribuicaoTotal();});});
+      atualizarDistribuicaoTotal();
+    }
+    function atualizarDistribuicaoTotal(){
+      var el=document.getElementById('dist-total'); if(!el) return;
+      var tl=distribuicaoCombo.reduce(function(a,x){return a+Number(x.curtidas||0)},0), tv=distribuicaoCombo.reduce(function(a,x){return a+Number(x.visualizacoes||0)},0);
+      var ok=tl===(comboInfo?.likes||0) && tv===(comboInfo?.views||0);
+      el.innerHTML='❤️ '+tl.toLocaleString('pt-BR')+' / '+(comboInfo?.likes||0).toLocaleString('pt-BR')+' &nbsp; · &nbsp; 👁️ '+tv.toLocaleString('pt-BR')+' / '+(comboInfo?.views||0).toLocaleString('pt-BR')+' '+(ok?'✅':'⚠️');
+      el.style.borderColor=ok?'rgba(52,211,153,.35)':'rgba(245,158,11,.25)';
+    }
+    function distribuicaoValida(){
+      if(!isCombo || !comboInfo || !(comboInfo.likes || comboInfo.views)) return true;
+      var tl=distribuicaoCombo.reduce(function(a,x){return a+Number(x.curtidas||0)},0), tv=distribuicaoCombo.reduce(function(a,x){return a+Number(x.visualizacoes||0)},0);
+      return tl===Number(comboInfo.likes||0) && tv===Number(comboInfo.views||0) && linksSelecionados.length>0;
+    }
+
+    async function carregarPostsInstagram(user, paraBump){
+      const area = document.getElementById("posts-instagram");
+      const grid = document.getElementById("posts-grid");
+
+      area.style.display = "block";
+      grid.innerHTML = "<div style='color:var(--ac);font-size:.85rem;font-weight:700;'>⏳ Buscando publicações...</div>";
+
+      try{
+        var r = await fetch(BACKEND + "/instagram/posts?user=" + encodeURIComponent(user));
+        var d = await r.json();
+
+        // O filtro de vídeo só se aplica ao fluxo do serviço principal de visualizações.
+        // O bump é sempre de curtidas, então aceita foto ou vídeo normalmente.
+        if(!paraBump && servico === "visualizacoes"){
+          d.posts = d.posts.filter(function(post){
+            return String(post.tipo || "").toLowerCase().includes("video");
+          });
+        }
+
+        if(!r.ok || !d.success || !d.posts.length){
+          throw new Error("Sem publicações.");
+        }
+
+        grid.style.display = "flex";
+        grid.style.overflowX = "auto";
+        grid.style.gap = ".75rem";
+        grid.style.scrollSnapType = "x mandatory";
+        grid.style.paddingBottom = ".5rem";
+
+        grid.innerHTML = d.posts.map(function(post, i){
+          return `
+            <div
+              onclick="selecionarPostInstagram('${post.url}', this, ${paraBump ? "true" : "false"})"
+              data-url="${post.url}"
+              style="
+                min-width:120px;
+                max-width:120px;
+                cursor:pointer;
+                border:2px solid transparent;
+                border-radius:14px;
+                overflow:hidden;
+                background:#181828;
+                scroll-snap-align:start;
+                position:relative;
+              "
+            >
+              <img
+                src="${BACKEND}/proxy-img?url=${encodeURIComponent(post.thumb)}"
+                style="
+                  width:100%;
+                  aspect-ratio:1/1;
+                  object-fit:cover;
+                  display:block;
+                "
+              >
+              <div style="
+                padding:.45rem;
+                font-size:.65rem;
+                text-align:center;
+                color:var(--muted);
+                font-weight:700;
+              ">
+                Publicação ${i + 1}
+              </div>
+            </div>
+          `;
+        }).join("");
+
+        grid.insertAdjacentHTML("afterend", `
+          <button
+            id="btn-confirmar-publicacao"
+            type="button"
+            onclick="confirmarPublicacaoInstagram(${paraBump ? "true" : "false"})"
+            style="
+              display:none;
+              margin-top:.9rem;
+              width:100%;
+              border:none;
+              border-radius:999px;
+              background:var(--ac);
+              color:#080810;
+              font-weight:800;
+              padding:.75rem;
+              cursor:pointer;
+            "
+          >
+            ${paraBump ? "Confirmar publicações do bump" : "Confirmar publicações"}
+          </button>
+        `);
+
+        document.getElementById("msg-instagram").textContent = paraBump
+          ? "👇 Selecione a publicação para receber as curtidas do bump"
+          : "👇 Selecione a publicação desejada";
+        document.getElementById("msg-instagram").className = "field-msg show ok";
+
+      } catch(e){
+        grid.innerHTML = "<div style='color:var(--muted);font-size:.85rem;'>Não foi possível carregar publicações. Tente outro perfil.</div>";
+      }
+    }
+
+    function adicionarLinkManual(){
+      var campo = document.getElementById("link-manual-instagram");
+      var url = campo.value.trim();
+
+      if(!url.includes("instagram.com/")){
+        alert("Cole um link válido do Instagram.");
+        return;
+      }
+
+      // Decide se esse link manual é para o serviço principal ou para o bump,
+      // baseado em qual fluxo está ativo no momento (mesma regra usada no grid de posts).
+      var ehParaBump = bumpAtivo && !isPublicacao;
+      var lista = ehParaBump ? linksBump : linksSelecionados;
+
+      if(lista.length >= maxPublicacoes){
+        alert("Você já selecionou o máximo de publicações deste plano.");
+        return;
+      }
+
+      if(lista.includes(url)){
+        alert("Esse link já foi adicionado.");
+        return;
+      }
+
+      lista.push(url);
+
+      // Só atualiza o link_final_instagram (perfil/publicação do PEDIDO PRINCIPAL)
+      // quando a seleção é para o serviço principal. O bump nunca toca nesse campo.
+      if(!ehParaBump){
+        document.getElementById("link_final_instagram").value = JSON.stringify(linksSelecionados);
+      }
+
+      campo.value = "";
+
+      if(!ehParaBump && isCombo) renderDistribuicaoCombo();
+      var btnPub = document.getElementById("btn-confirmar-publicacao");
+      if(btnPub){
+        btnPub.style.display = "block";
+      }
+
+      document.getElementById("msg-instagram").textContent =
+        "Selecionadas: " + lista.length + "/" + maxPublicacoes + " publicações" + (ehParaBump ? " (bump)" : "");
+      document.getElementById("msg-instagram").className = "field-msg show ok";
+    }
+
+    function selecionarPostInstagram(url, el, paraBump){
+      var lista = paraBump ? linksBump : linksSelecionados;
+      var index = lista.indexOf(url);
+
+      if(index >= 0){
+        lista.splice(index, 1);
+        el.style.borderColor = "transparent";
+      } else {
+        if(lista.length >= maxPublicacoes){
+          alert(
+            "Limite atingido.\n\n" +
+            (paraBump
+              ? "O bump de 500 curtidas permite até " + maxPublicacoes + " publicações."
+              : "Plano de " + plano + " permite até " + maxPublicacoes + " publicações.") +
+            "\n\nDesmarque uma publicação para selecionar outra."
+          );
+          return;
+        }
+
+        lista.push(url);
+        el.style.borderColor = "#e8ff47";
+      }
+
+      // Só atualiza o link_final_instagram (perfil/publicação do PEDIDO PRINCIPAL)
+      // quando a seleção é para o serviço principal. O bump nunca toca nesse campo —
+      // isso evita que o link do perfil de "seguidores" seja sobrescrito pelos posts do bump.
+      if(!paraBump){
+        document.getElementById("link_final_instagram").value = JSON.stringify(linksSelecionados);
+      }
+
+      var btnPub = document.getElementById("btn-confirmar-publicacao");
+      if(btnPub){
+        btnPub.style.display = lista.length > 0 ? "block" : "none";
+      }
+
+      if(!paraBump && isCombo) renderDistribuicaoCombo();
+      document.getElementById("msg-instagram").textContent =
+        "Selecionadas: " + lista.length + "/" + maxPublicacoes + " publicações" + (paraBump ? " (bump)" : "");
+      document.getElementById("msg-instagram").className = "field-msg show ok";
+    }
+
+    function confirmarPublicacaoInstagram(paraBump){
+      var lista = paraBump ? linksBump : linksSelecionados;
+
+      if(!lista.length){
+        alert("Selecione pelo menos uma publicação.");
+        return;
+      }
+
+      instagramConfirmado = true;
+
+      var btn = document.getElementById("btn-confirmar-publicacao");
+      btn.textContent = paraBump ? "✅ Publicações do bump confirmadas" : "✅ Publicações confirmadas";
+      btn.style.background = "#34d399";
+
+      document.getElementById("msg-instagram").textContent = paraBump
+        ? "Publicações do bump confirmadas ✅ Agora é só gerar o Pix."
+        : "Publicações confirmadas ✅ Agora é só gerar o Pix.";
+      document.getElementById("msg-instagram").className = "field-msg show ok";
+    }
+
+    async function criarPedido() {
+      if(!validate()) return;
+      var nome = document.getElementById("nome").value.trim();
+      var telefone = document.getElementById("telefone").value.trim();
+      var igDigitado = document.getElementById("instagram").value.trim();
+      var ig = document.getElementById("link_final_instagram").value || igDigitado;
+      if(!servico || !plano){ alert("Volte e selecione serviço e plano."); return; }
+
+      var bumpPublicacao = null;
+      var distribuicao = null;
+
+      if(isCombo){
+        if(exigeDistribuicaoCombo){
+          if(!distribuicaoValida()){ alert("Distribua exatamente todas as curtidas e visualizações do seu pacote antes de gerar o Pix."); return; }
+          distribuicao = { publicacoes: distribuicaoCombo.map(function(x){return {link:x.link,curtidas:Number(x.curtidas||0),visualizacoes:Number(x.visualizacoes||0)};}), totalCurtidas:Number(comboInfo.likes||0), totalVisualizacoes:Number(comboInfo.views||0) };
+        } else { distribuicao = {publicacoes:[],totalCurtidas:0,totalVisualizacoes:0}; }
+      } else if(servico === "curtidas-brasileiras" || servico === "visualizacoes" || servico === "comentarios"){
+        if(!linksSelecionados.length){
+          alert("Selecione pelo menos uma publicação.");
+          return;
+        }
+        ig = JSON.stringify(linksSelecionados);
+      } else {
+        if(!ig.includes("instagram.com")){
+          ig = "https://instagram.com/" + limparUsuarioInstagram(ig);
+        }
+        // Serviço principal não exige publicação, mas o order bump de curtidas exige.
+        // IMPORTANTE: usa linksBump (lista isolada), nunca linksSelecionados — essa
+        // separação evita que o link do perfil principal seja sobrescrito pelos posts do bump.
+        if(bumpAtivo){
+          if(!linksBump.length){
+            alert("Selecione a publicação que vai receber as 500 curtidas do bump antes de pagar.");
+            var areaPosts = document.getElementById("posts-instagram");
+            if(areaPosts) areaPosts.scrollIntoView({behavior:"smooth", block:"center"});
+            return;
+          }
+          // Envia todas as publicações selecionadas para o bump (até 2) —
+          // o backend divide as 500 curtidas igualmente entre elas (250 cada se forem 2).
+          bumpPublicacao = JSON.stringify(linksBump);
+        }
+      }
+
+      var btn = document.getElementById("btn-pagar");
+      btn.disabled = true;
+      document.getElementById("btn-text").textContent = "Gerando pagamento...";
+
+      var total = valorTotal();
+
+      try {
+        var r = await fetch(BACKEND + "/criar-pedido", {
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({nome,telefone,instagram:ig,servico,plano,pagamento:"pix",valor:total,bump:isCombo?false:bumpAtivo,bump_publicacao:isCombo?null:bumpPublicacao,distribuicao:distribuicao})
+        });
+        var d = await r.json();
+        if(!r.ok || !d.success) throw new Error(d.error || "Erro ao gerar pagamento");
+
+        pedidoId = d.pedidoId;
+        sessionStorage.setItem("pedidoId", pedidoId);
+        sessionStorage.setItem("instagram", ig);
+
+        if(typeof fbq === "function"){
+          fbq("track","AddPaymentInfo",{value:total,currency:"BRL",content_name:servico+" "+plano,payment_method:"pix"});
+        }
+
+        document.getElementById("tela-form").style.display = "none";
+        document.getElementById("tela-pix").style.display = "block";
+
+        var pixCodigo = "";
+        if(d.pix && d.pix.copia_e_cola){
+          pixCodigo = d.pix.copia_e_cola;
+          document.getElementById("pix-code").textContent = pixCodigo;
+          var img = document.getElementById("pix-qr-img");
+          img.src = "https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=" + encodeURIComponent(pixCodigo);
+          img.style.display = "block";
+        }
+
+        var msgWa = "Ola! Meu pedido foi gerado e estou realizando o pagamento pelo Pix.\n\nPedido: " + pedidoId + "\nNome: " + nome + "\nWhatsApp: " + telefone + "\nInstagram: " + ig + "\nPacote: " + servico + " " + plano + "\nValor: R$ " + total.toFixed(2).replace(".",",") + "\n\nPix: " + pixCodigo;
+        document.getElementById("btnWaPix").href = "https://wa.me/" + WHATSAPP_NUMERO + "?text=" + encodeURIComponent(msgWa);
+
+        iniciarTimer(1800);
+        pollInt = setInterval(checarStatus, 5000);
+        iniciarProvaSocialPix();
+
+      } catch(e) {
+        alert("Erro: " + e.message);
+        btn.disabled = false;
+        document.getElementById("btn-text").textContent = "Pagar agora com Pix";
+      }
+    }
+
+    function copiarPix() {
+      var c = document.getElementById("pix-code").textContent;
+      navigator.clipboard.writeText(c).then(function(){
+        var b = document.querySelector(".btn-copy");
+        b.textContent = "Copiado! ✓";
+        b.style.background = "#34d399";
+        setTimeout(function(){ b.textContent = "Copiar"; b.style.background = ""; }, 2500);
+      });
+    }
+
+    function iniciarTimer(s) {
+      clearInterval(cdInt);
+      var wrap = document.getElementById("pixTimerWrap");
+      cdInt = setInterval(function(){
+        s--;
+        var m = Math.floor(s/60), ss = s%60;
+        document.getElementById("timer").textContent = (m<10?"0":"")+m+":"+(ss<10?"0":"")+ss;
+        if(s <= 300) wrap.classList.add("urgent");
+        if(s<=0){ clearInterval(cdInt); clearInterval(pollInt); }
+      }, 1000);
+    }
+
+    async function checarStatus() {
+      if(!pedidoId) return;
+      try {
+        var r = await fetch(BACKEND + "/status/" + pedidoId);
+        var d = await r.json();
+        if(d.status === "concluido"){
+          clearInterval(pollInt); clearInterval(cdInt);
+          document.getElementById("tela-pix").style.display = "none";
+          document.getElementById("tela-sucesso").style.display = "block";
+          document.getElementById("suc-ig").textContent = sessionStorage.getItem("instagram") || "";
+          var dadosPedido=d||{};
+          var msgSucesso="Ola! Quero acompanhar meu pedido.\n\nPedido: "+(dadosPedido.pedidoId||pedidoId)+"\nNome: "+(dadosPedido.nome||"")+"\nWhatsApp: "+(dadosPedido.telefone||"")+"\nInstagram: "+(dadosPedido.instagram||sessionStorage.getItem("instagram")||"")+"\nPacote: "+(dadosPedido.servico||servico)+" "+(dadosPedido.plano||plano)+"\nValor pago: R$ "+Number((dadosPedido.valor||valorTotal())/100).toFixed(2).replace(".",",")+"\nStatus: Pagamento confirmado\n\nQuero acompanhar o andamento do meu pedido.";
+          document.getElementById("btnWaSucesso").href="https://wa.me/"+WHATSAPP_NUMERO+"?text="+encodeURIComponent(msgSucesso);
+          if(typeof fbq === "function"){
+            fbq("track","Purchase",{value:valorTotal(),currency:"BRL"});
+          }
+        }
+      } catch(e){}
+    }
+
+    async function verificarManual() {
+      document.getElementById("status-text").textContent = "Verificando...";
+      await checarStatus();
+      if(pedidoId && document.getElementById("tela-pix").style.display !== "none"){
+        document.getElementById("status-text").textContent = "Pagamento ainda não identificado. Tente novamente em instantes.";
+        setTimeout(function(){ document.getElementById("status-text").textContent = "Aguardando confirmação do pagamento..."; }, 3000);
+      }
+    }
+
+    (function(){
+      var t = 15*60, el = document.getElementById("urgencyTimer");
+      if(!el) return;
+      setInterval(function(){
+        t = Math.max(0, t-1);
+        var m = Math.floor(t/60), s = t%60;
+        el.textContent = (m<10?"0":"")+m+":"+(s<10?"0":"")+s;
+      }, 1000);
+    })();
+
+    function iniciarProvaSocialPix(){
+      var msgs = [
+        "3 pessoas pagaram o Pix nos últimos 10 minutos",
+        "5 pedidos confirmados na última hora",
+        "Pagamento processado em menos de 2 minutos em média",
+        "+10.000 pedidos entregues com sucesso"
+      ];
+      var i = 0;
+      document.getElementById("pixSocialText").textContent = msgs[0];
+      setInterval(function(){
+        i = (i+1) % msgs.length;
+        document.getElementById("pixSocialText").textContent = msgs[i];
+      }, 6000);
+    }
+
+    (function(){
+      var msgs = [
+        "✅ Ana acabou de comprar 500 seguidores",
+        "✅ Carlos comprou 1.000 seguidores agora",
+        "✅ Mariana acabou de comprar curtidas",
+        "✅ João garantiu um pacote de visualizações",
+        "✅ Amanda acabou de finalizar um pedido",
+        "✅ Lucas comprou seguidores brasileiros"
+      ];
+      var el = document.getElementById("socialProof"), i = 0;
+      if(!el) return;
+      setInterval(function(){
+        el.textContent = msgs[i % msgs.length];
+        el.classList.add("show");
+        setTimeout(function(){ el.classList.remove("show"); }, 4500);
+        i++;
+      }, 8000);
+    })();
+
+    if(!sessionStorage.getItem("checkout_enviado")){
+      fetch(BACKEND + "/evento",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({tipo:"checkout"})}).catch(()=>{});
+      sessionStorage.setItem("checkout_enviado","1");
+    }
+  </script>
+</body>
+</html>
