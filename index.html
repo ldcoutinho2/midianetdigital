@@ -188,7 +188,42 @@
     .home-service-card .srv-body{width:100%}
     .home-service-btn{margin-top:1rem;width:100%;text-align:center;padding:.78rem .7rem;border-radius:12px;font-size:.76rem;font-weight:800;color:#080810}
     .btn-eng{background:#8b5cf6}.btn-like{background:#ec4899}.btn-view{background:#22c55e}
-    @media(max-width:800px){.home-service-grid{grid-template-columns:1fr}.home-service-card{min-height:0}}
+    @media(max-width:800px){
+      /* Primeira tela mobile: serviço primeiro, sem enrolação. */
+      nav{height:54px;padding:.65rem 4%;}
+      .logo{font-size:1.02rem}
+      .nav-links{gap:.35rem}
+      .nav-links a{display:none!important}
+      .nav-links .nav-cta{display:inline-flex!important;font-size:.68rem;padding:.42rem .75rem}
+      .hero{padding:4.35rem 4% .85rem;max-width:620px}
+      .hero-glow{width:300px;height:300px;top:-120px}
+      .hero-badge{font-size:.62rem;padding:.28rem .7rem;margin-bottom:.55rem}
+      .hero h1{font-size:clamp(1.55rem,7.2vw,2.15rem);line-height:1.08;margin-bottom:.38rem}
+      .hero-sub{font-size:.74rem;line-height:1.4;max-width:330px;margin:0 auto}
+      .services-section{padding:1rem 4% 1.35rem;background:var(--s1)}
+      .sec-header{margin-bottom:.75rem}
+      .sec-tag{font-size:.58rem;margin-bottom:.25rem}
+      .sec-h{font-size:1.18rem;line-height:1.15}
+      .sec-p{font-size:.68rem;margin-top:.25rem}
+      .home-service-grid{grid-template-columns:1fr;gap:.55rem}
+      .home-service-card{display:grid;grid-template-columns:42px 1fr;gap:.65rem;padding:.7rem .75rem;border-radius:12px;min-height:0;align-items:center}
+      .home-service-card .srv-icon-wrap{width:42px;height:42px;border-radius:11px;font-size:1.3rem}
+      .home-service-card .srv-body{min-width:0}
+      .home-service-card .srv-body h3{font-size:.78rem;margin-bottom:.08rem}
+      .home-service-card .srv-desc{font-size:.61rem;line-height:1.25;margin-bottom:.2rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      .home-service-card .srv-list{display:flex;flex-direction:row;gap:.45rem;flex-wrap:wrap}
+      .home-service-card .srv-list li{font-size:.58rem;gap:.2rem}
+      .home-service-card .srv-list li:nth-child(2){display:none}
+      .home-service-card .srv-list li strong{font-size:.61rem}
+      .home-service-btn{grid-column:2;margin-top:.28rem;padding:.52rem .55rem;border-radius:8px;font-size:.61rem;line-height:1.1}
+      .stories-section{padding:1.8rem 4% 2rem}
+      .activity-bar,.metrics-bar,.trust-section{margin-top:0}
+    }
+
+    @media(min-width:801px){
+      .hero{padding-bottom:1.2rem}
+      .services-section{padding-top:1.8rem}
+    }
   </style>
 </head>
 <body>
@@ -206,11 +241,11 @@
     <div class="hero">
       <div class="hero-glow"></div>
       <div class="hero-content">
-        <div class="hero-badge">⚡ +10.000 perfis já cresceram com a gente</div>
+        <div class="hero-badge">⚡ +10.000 clientes já compraram</div>
 
-        <h1>Faça seu Instagram<br><span class="hl">crescer de verdade</span></h1>
+        <h1>O que você quer <span class="hl">melhorar?</span></h1>
 
-        <p class="hero-sub">Escolha seu serviço, selecione o pacote e finalize em poucos passos. Pagamento via Pix e processamento automático.</p>
+        <p class="hero-sub">Escolha seu serviço e vá direto para os pacotes.</p>
 
         <div class="hero-cta-row">
           <a href="#servicos" class="btn-p">Ver Serviços ↓</a>
