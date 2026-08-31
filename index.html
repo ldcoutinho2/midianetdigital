@@ -224,6 +224,84 @@
       .hero{padding-bottom:1.2rem}
       .services-section{padding-top:1.8rem}
     }
+
+    /* ===== HOMEPAGE V6 — referência mobile aprovada ===== */
+    nav{padding:.8rem 4%;min-height:64px}
+    .logo{font-size:1.25rem}
+    .mobile-menu{display:none;background:none;border:0;color:#fff;font-size:2rem;line-height:1;cursor:pointer}
+    .online-pill{display:inline-flex;align-items:center;gap:.45rem;border:1px solid rgba(255,255,255,.18);background:rgba(8,8,15,.55);border-radius:999px;padding:.42rem .85rem;margin-bottom:1rem;box-shadow:0 0 24px rgba(124,92,252,.08)}
+    .online-dot{width:8px;height:8px;background:#22c55e;border-radius:50%;box-shadow:0 0 10px rgba(34,197,94,.8);flex:none}
+    .online-avatars{display:flex;align-items:center;margin-left:.15rem}
+    .online-avatars img{width:34px;height:34px;object-fit:cover;border-radius:50%;border:2px solid var(--bg);margin-left:-7px}
+    .online-avatars img:first-child{margin-left:0}
+    .online-pill strong{color:var(--ac);font-size:.95rem}
+    .online-pill>span:last-child{font-size:.85rem;color:#fff}
+    .hero{padding:6.1rem 4% 1.7rem;max-width:1100px}
+    .hero h1{font-size:clamp(2.2rem,5.8vw,4.1rem);line-height:1.04;margin-bottom:.8rem}
+    .hero-sub{font-size:1.05rem;line-height:1.55;color:#d5d3df}
+    .services-section{padding:1.8rem 4% 2rem;background:var(--bg)}
+    .section-inner{max-width:1100px}
+    .home-service-grid{display:grid;grid-template-columns:1fr;gap:1rem}
+    .home-service-card{display:block;padding:1.25rem 1.25rem .95rem;border-radius:20px;text-decoration:none;color:#fff;background:linear-gradient(135deg,rgba(18,14,31,.98),rgba(8,8,15,.98));border:1px solid rgba(124,92,252,.9);overflow:hidden;position:relative;transition:transform .2s,box-shadow .2s}
+    .home-service-card:hover{transform:translateY(-2px)}
+    .service-main{display:grid;grid-template-columns:78px 1fr 210px;align-items:center;gap:1.1rem;min-height:150px}
+    .service-icon{width:78px;height:78px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:2.45rem;background:rgba(124,92,252,.22);border:1px solid rgba(124,92,252,.85);box-shadow:0 0 28px rgba(124,92,252,.14)}
+    .service-copy h3{font-size:1.8rem;line-height:1;margin-bottom:.65rem;font-weight:900;letter-spacing:-.03em;color:#a16bff}
+    .service-copy p{font-size:1.05rem;line-height:1.35;color:#fff;margin-bottom:.7rem}
+    .from{font-size:.88rem;color:#b5b2c1}
+    .price{font-size:1.05rem;font-weight:800;color:#fff}
+    .price b{font-size:1.65rem;color:#a16bff}
+    .service-art{font-size:5rem;line-height:1;position:relative;text-align:center;filter:drop-shadow(0 10px 18px rgba(124,92,252,.22))}
+    .service-art span{font-size:2.4rem;position:absolute;left:34%;bottom:2%;transform:rotate(-8deg)}
+    .service-art i{font-size:2.6rem;position:absolute;right:0;top:18%;font-style:normal}
+    .heart-art{font-size:5.5rem;color:#f43f7f}
+    .heart-art span{font-size:2.4rem;left:39%;bottom:7%}
+    .video-art{font-size:4.8rem;color:#22c55e}
+    .video-art span{font-size:2.4rem;left:57%;bottom:4%}
+    .home-service-btn{width:100%;margin-top:.55rem;text-align:center;padding:.85rem 1rem;border-radius:13px;font-size:1rem;font-weight:900;color:#fff}
+    .home-service-btn b{font-size:1.35rem;margin-left:.35rem}
+    .btn-eng{background:linear-gradient(90deg,#6d28d9,#7c3aed);box-shadow:0 8px 28px rgba(124,58,237,.24)}
+    .btn-like{background:linear-gradient(90deg,#ec1972,#f03c91);box-shadow:0 8px 28px rgba(236,25,114,.2)}
+    .btn-view{background:linear-gradient(90deg,#16b84e,#22c55e);box-shadow:0 8px 28px rgba(34,197,94,.2)}
+    .service-like{border-color:rgba(236,72,153,.9)}
+    .service-like .service-icon{background:rgba(236,72,153,.2);border-color:rgba(236,72,153,.9)}
+    .service-like .service-copy h3,.service-like .price b{color:#f22986}
+    .service-view{border-color:rgba(34,197,94,.9)}
+    .service-view .service-icon{background:rgba(34,197,94,.18);border-color:rgba(34,197,94,.9)}
+    .service-view .service-copy h3,.service-view .price b{color:#18c75a}
+    @media(max-width:800px){
+      nav{height:68px;padding:.7rem 5%;background:rgba(5,5,12,.96)}
+      .logo{font-size:1.35rem}
+      .nav-links{display:none}
+      .mobile-menu{display:block}
+      .hero{padding:5.6rem 4.5% 1.15rem}
+      .online-pill{padding:.36rem .68rem;margin-bottom:.85rem}
+      .online-avatars img{width:30px;height:30px}
+      .online-pill strong{font-size:.82rem}
+      .online-pill>span:last-child{font-size:.72rem}
+      .hero h1{font-size:clamp(2rem,8.6vw,2.75rem);line-height:1.06}
+      .hero-sub{font-size:.92rem;line-height:1.5}
+      .services-section{padding:1.05rem 4.5% 1.4rem}
+      .home-service-grid{gap:.9rem}
+      .home-service-card{padding:.9rem .85rem .8rem;border-radius:18px}
+      .service-main{grid-template-columns:58px 1fr 92px;gap:.7rem;min-height:126px}
+      .service-icon{width:58px;height:58px;border-radius:15px;font-size:1.9rem}
+      .service-copy h3{font-size:1.2rem;margin-bottom:.42rem}
+      .service-copy p{font-size:.82rem;margin-bottom:.48rem}
+      .from{font-size:.68rem}
+      .price{font-size:.78rem}
+      .price b{font-size:1.3rem}
+      .service-art{font-size:3rem}
+      .service-art span{font-size:1.45rem;left:25%;bottom:0}
+      .service-art i{font-size:1.55rem;right:-4px;top:12%}
+      .heart-art{font-size:3.35rem}
+      .heart-art span{font-size:1.45rem;left:30%;bottom:3%}
+      .video-art{font-size:3rem}
+      .video-art span{font-size:1.4rem;left:53%;bottom:0}
+      .home-service-btn{padding:.72rem .7rem;border-radius:11px;font-size:.82rem;margin-top:.4rem}
+      .home-service-btn b{font-size:1.1rem}
+    }
+
   </style>
 </head>
 <body>
@@ -235,82 +313,74 @@
       <a href="#faq">FAQ</a>
       <a href="#servicos" class="nav-cta">Ver Serviços</a>
     </div>
+    <button class="mobile-menu" type="button" aria-label="Menu">☰</button>
   </nav>
 
   <div style="background:var(--bg)">
     <div class="hero">
       <div class="hero-glow"></div>
       <div class="hero-content">
-        <div class="hero-badge">⚡ +10.000 clientes já compraram</div>
-
-        <h1>O que você quer <span class="hl">melhorar?</span></h1>
-
-        <p class="hero-sub">Escolha seu serviço e vá direto para os pacotes.</p>
-
-        <div class="hero-cta-row">
-          <a href="#servicos" class="btn-p">Ver Serviços ↓</a>
-          <a href="#depoimentos" class="btn-ghost">▶ Ver depoimentos em vídeo</a>
-        </div>
-
-        <div class="social-proof">
-          <div class="avatars">
-           <img class="av" src="foto1.jpg" alt="Cliente 1" style="margin-left:0">
-           <img class="av" src="foto2.jpg" alt="Cliente 2">
-           <img class="av" src="foto3.jpg" alt="Cliente 3">
-           <img class="av" src="foto4.jpg" alt="Cliente 4">
+        <div class="online-pill">
+          <span class="online-dot"></span>
+          <div class="online-avatars">
+            <img src="foto1.jpg" alt="">
+            <img src="foto2.jpg" alt="">
+            <img src="foto3.jpg" alt="">
+            <img src="foto4.jpg" alt="">
           </div>
-          <div class="proof-text">
-            <div class="stars-row">★★★★★ <span style="font-size:.75rem;font-weight:700;color:var(--text)">4,9 de 5</span></div>
-            <small>+10.000 clientes satisfeitos</small>
-          </div>
+          <strong id="online-count">428</strong>
+          <span>clientes online agora</span>
         </div>
 
-        <div class="pills-row" style="margin-top:1.75rem">
-          <div class="pill"><span class="dot-live"></span> <span id="online-count">428</span> clientes online agora</div>
-          <div class="pill">🛒 <span id="vendidos-count">149</span> pacotes vendidos</div>
-          <div class="pill ac">⚡ Entrega automática</div>
-          <div class="pill">🔒 Sem pedir senha</div>
-        </div>
+        <h1>Escolha o que você quer<br>melhorar no seu <span class="hl">Instagram</span></h1>
+        <p class="hero-sub">Pacotes de engajamento, curtidas e visualizações.<br>Escolha seu serviço e comece agora.</p>
       </div>
     </div>
   </div>
 
   <section class="services-section" id="servicos">
     <div class="section-inner">
-      <div class="sec-header">
-        <div class="sec-tag">Escolha seu serviço</div>
-        <h2 class="sec-h">O que você quer impulsionar hoje?</h2>
-        <p class="sec-p">Escolha uma opção e vá direto para os pacotes.</p>
-      </div>
       <div class="srv-grid home-service-grid">
-        <a href="servicos.html?servico=engajamento" class="srv-card home-service-card service-track" data-service="Pacotes de Engajamento" data-slug="engajamento">
-          <div class="srv-icon-wrap" style="background:rgba(124,92,252,.18)">🚀</div>
-          <div class="srv-body">
-            <h3>Engajamento</h3>
-            <p class="srv-desc">Combos completos de seguidores, curtidas e visualizações.</p>
-            <ul class="srv-list"><li>30/70, 60/40, BR e Premium</li><li>Pacotes com bônus</li><li><strong>A partir de R$ 5,00</strong></li></ul>
-            <div class="home-service-btn btn-eng">VER PACOTES DE ENGAJAMENTO →</div>
+        <a href="servicos.html?servico=engajamento" class="home-service-card service-track service-eng" data-service="Pacotes de Engajamento" data-slug="engajamento">
+          <div class="service-main">
+            <div class="service-icon">🚀</div>
+            <div class="service-copy">
+              <h3>ENGAJAMENTO</h3>
+              <p>Seguidores + Curtidas<br>+ Visualizações</p>
+              <div class="from">A partir de</div>
+              <div class="price">R$ <b>5,00</b></div>
+            </div>
+            <div class="service-art">👥<span>❤️</span><i>👁️</i></div>
           </div>
+          <div class="home-service-btn btn-eng">VER PACOTES <b>→</b></div>
         </a>
 
-        <a href="planos.html?servico=curtidas-brasileiras" class="srv-card home-service-card service-track" data-service="Curtidas Brasileiras" data-slug="curtidas-brasileiras">
-          <div class="srv-icon-wrap" style="background:rgba(236,72,153,.18)">❤️</div>
-          <div class="srv-body">
-            <h3>Curtidas</h3>
-            <p class="srv-desc">Pacotes de curtidas para distribuir entre suas publicações.</p>
-            <ul class="srv-list"><li>Escolha as publicações</li><li>Distribuição personalizada</li><li><strong>A partir de R$ 8,00</strong></li></ul>
-            <div class="home-service-btn btn-like">VER PACOTES DE CURTIDAS →</div>
+        <a href="planos.html?servico=curtidas-brasileiras" class="home-service-card service-track service-like" data-service="Curtidas Brasileiras" data-slug="curtidas-brasileiras">
+          <div class="service-main">
+            <div class="service-icon">❤️</div>
+            <div class="service-copy">
+              <h3>CURTIDAS</h3>
+              <p>Curtidas para<br>suas publicações</p>
+              <div class="from">A partir de</div>
+              <div class="price">R$ <b>8,00</b></div>
+            </div>
+            <div class="service-art heart-art">💬<span>🤍</span></div>
           </div>
+          <div class="home-service-btn btn-like">VER PACOTES <b>→</b></div>
         </a>
 
-        <a href="planos.html?servico=visualizacoes" class="srv-card home-service-card service-track" data-service="Visualizações" data-slug="visualizacoes">
-          <div class="srv-icon-wrap" style="background:rgba(16,185,129,.18)">👁️</div>
-          <div class="srv-body">
-            <h3>Visualizações</h3>
-            <p class="srv-desc">Pacotes de visualizações para seus Reels e vídeos.</p>
-            <ul class="srv-list"><li>Escolha os conteúdos</li><li>Distribuição personalizada</li><li><strong>A partir de R$ 8,00</strong></li></ul>
-            <div class="home-service-btn btn-view">VER PACOTES DE VISUALIZAÇÕES →</div>
+        <a href="planos.html?servico=visualizacoes" class="home-service-card service-track service-view" data-service="Visualizações" data-slug="visualizacoes">
+          <div class="service-main">
+            <div class="service-icon">👁️</div>
+            <div class="service-copy">
+              <h3>VISUALIZAÇÕES</h3>
+              <p>Visualizações para<br>seus vídeos</p>
+              <div class="from">A partir de</div>
+              <div class="price">R$ <b>8,00</b></div>
+            </div>
+            <div class="service-art video-art">▶️<span>👁️</span></div>
           </div>
+          <div class="home-service-btn btn-view">VER PACOTES <b>→</b></div>
         </a>
       </div>
     </div>
