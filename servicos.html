@@ -4,6 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Escolha o Serviço - MidiaNetDigital</title>
+  <meta name="description" content="Escolha o tipo de engajamento para o seu Instagram: seguidores brasileiros, mundiais ou premium. Pagamento via Pix, sem pedir senha."/>
 
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
@@ -68,6 +69,7 @@
     .clist li{font-size:.8rem;color:var(--muted);display:flex;align-items:center;gap:.35rem}
     .clist li::before{content:"✓";color:var(--ac);font-weight:800;flex-shrink:0}
     .cprice{margin-top:.9rem;font-size:1rem;font-weight:800;color:var(--ac)}
+    .cprice small{display:block;color:var(--muted);font-size:.7rem;font-weight:600;margin-top:.15rem}
     footer{position:relative;z-index:1;margin-top:4rem;padding-top:2rem;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:.78rem;width:100%;max-width:1100px}
     @keyframes up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
     .a1{animation:up .6s ease both}
@@ -80,13 +82,46 @@
 <body>
   <nav><a href="index.html" class="logo">MidiaNet<em>Digital</em></a><a href="index.html" class="nav-back">← Voltar</a></nav>
   <section class="page">
-    <div class="prog"><div class="st dn"><div class="sd">✓</div>Serviço</div><div class="sl dn"></div><div class="st on"><div class="sd">2</div>Tipo</div><div class="sl"></div><div class="st"><div class="sd">3</div>Pacote</div><div class="sl"></div><div class="st"><div class="sd">4</div>Finalizar</div></div>
-    <div class="ph"><h1>🚀 Escolha seu tipo de engajamento</h1><p>Selecione a composição de seguidores que combina com seu objetivo.</p></div>
+    <div class="prog"><div class="st dn"><div class="sd">✓</div>Engajamento</div><div class="sl dn"></div><div class="st on"><div class="sd">2</div>Tipo</div><div class="sl"></div><div class="st"><div class="sd">3</div>Pacote</div><div class="sl"></div><div class="st"><div class="sd">4</div>Finalizar</div></div>
+    <div class="ph">
+      <h1>🚀 Escolha seu tipo de engajamento</h1>
+      <p>Selecione a composição de seguidores que combina com seu objetivo.</p>
+      <div class="trust-line">
+        <span class="trust-pill">🔒 Sem pedir senha</span>
+        <span class="trust-pill">💳 Pagamento via Pix</span>
+        <span class="trust-pill">⚡ Entrega após confirmação</span>
+      </div>
+    </div>
     <div class="grid">
-      <a class="card featured" href="planos.html?servico=engajamento-30-70" data-service="Engajamento 30% BR + 70% Mundial"><span class="cico">🌎</span><h3>30% BR + 70% Mundiais</h3><p>Opção econômica para ampliar o perfil com um combo completo.</p><ul class="clist"><li>Seguidores + bônus de engajamento</li><li>A partir de R$ 5,00</li></ul><div class="cprice">VER PACOTES →</div></a>
-      <a class="card" href="planos.html?servico=engajamento-60-40" data-service="Engajamento 60% BR + 40% Mundial"><span class="cico">🌎🇧🇷</span><h3>60% BR + 40% Mundiais</h3><p>Mais presença brasileira mantendo alcance internacional.</p><ul class="clist"><li>Seguidores + bônus de engajamento</li><li>A partir de R$ 8,99</li></ul><div class="cprice">VER PACOTES →</div></a>
-      <a class="card" href="planos.html?servico=engajamento-br" data-service="Engajamento 100% Brasileiros"><span class="cico">🇧🇷</span><h3>100% Brasileiros</h3><p>Combo voltado para um público totalmente brasileiro.</p><ul class="clist"><li>Seguidores + curtidas + views</li><li>A partir de R$ 15,00</li></ul><div class="cprice">VER PACOTES →</div></a>
-      <a class="card" href="planos.html?servico=engajamento-premium" data-service="Engajamento BR Premium Ativos"><span class="cico">🎖️</span><h3>BR Premium Ativos</h3><p>Perfis mais ativos para quem busca uma opção premium.</p><ul class="clist"><li>90% orgânicos conforme o serviço</li><li>A partir de R$ 80,00</li></ul><div class="cprice">VER PACOTES →</div></a>
+      <a class="card hot" href="planos.html?servico=engajamento-30-70" data-service="Engajamento 30% BR + 70% Mundial">
+        <span class="cbadge">Mais escolhido</span>
+        <span class="cico">🌎🇧🇷</span>
+        <h3>30% BR + 70% Mundiais</h3>
+        <p>Opção econômica para ampliar o perfil com um combo completo.</p>
+        <ul class="clist"><li>Seguidores + bônus de engajamento</li></ul>
+        <div class="cprice">A partir de R$ 5,00<small>por 500 seguidores</small></div>
+      </a>
+      <a class="card" href="planos.html?servico=engajamento-60-40" data-service="Engajamento 60% BR + 40% Mundial">
+        <span class="cico">🌎🇧🇷</span>
+        <h3>60% BR + 40% Mundiais</h3>
+        <p>Mais presença brasileira mantendo alcance internacional.</p>
+        <ul class="clist"><li>Seguidores + bônus de engajamento</li></ul>
+        <div class="cprice">A partir de R$ 8,99<small>por 500 seguidores</small></div>
+      </a>
+      <a class="card" href="planos.html?servico=engajamento-br" data-service="Engajamento 100% Brasileiros">
+        <span class="cico">🇧🇷</span>
+        <h3>100% Brasileiros</h3>
+        <p>Combo voltado para um público totalmente brasileiro.</p>
+        <ul class="clist"><li>Seguidores + curtidas + views</li></ul>
+        <div class="cprice">A partir de R$ 15,00<small>por 250 seguidores</small></div>
+      </a>
+      <a class="card" href="planos.html?servico=engajamento-premium" data-service="Engajamento BR Premium Ativos">
+        <span class="cico">🎖️</span>
+        <h3>BR Premium Ativos</h3>
+        <p>Perfis com atividade recente nos últimos 30 dias, para quem quer engajamento mais próximo do orgânico.</p>
+        <ul class="clist"><li>Contas ativas verificadas periodicamente</li></ul>
+        <div class="cprice">A partir de R$ 80,00<small>por 500 seguidores</small></div>
+      </a>
     </div>
     <footer>© 2025 MidiaNetDigital — Todos os direitos reservados</footer>
   </section>
