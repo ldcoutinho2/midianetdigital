@@ -569,14 +569,20 @@
       var btnPerfilInicial = document.getElementById("btn-confirmar-perfil");
       if (btnPerfilInicial) btnPerfilInicial.style.display = "none";
     }
-    if(isCombo){ document.getElementById("bumpBox").style.display = "none"; document.getElementById("bumpPublicacaoAviso").style.display = "none"; }
+    if(isCombo){
+      var bumpBoxInicial = document.getElementById("bumpBox");
+      var bumpAvisoInicial = document.getElementById("bumpPublicacaoAviso");
+      if(bumpBoxInicial) bumpBoxInicial.style.display = "none";
+      if(bumpAvisoInicial) bumpAvisoInicial.style.display = "none";
+    }
     if (isPublicacao) {
       var flowNote = document.getElementById("profile-flow-note");
       if(flowNote) flowNote.style.display = "block";
       document.getElementById("label-instagram").textContent = "📸 @ ou link do Instagram";
       document.getElementById("instagram").placeholder = "@seuusuario ou https://www.instagram.com/seuusuario";
       if(servico === "curtidas-brasileiras"){
-        document.getElementById("bumpBox").style.display = "none";
+        var bumpBoxPublicacao = document.getElementById("bumpBox");
+        if(bumpBoxPublicacao) bumpBoxPublicacao.style.display = "none";
       }
     }
 
