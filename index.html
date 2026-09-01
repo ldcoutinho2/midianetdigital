@@ -635,21 +635,39 @@
       },5000);
     })();
 
+    const TRACK_BACKEND = 'https://midianetdigital.onrender.com';
+    async function registrarRastreamento(tipo, dados, chave) {
+      const storageKey = 'mn24_track_v2_' + chave;
+      if (sessionStorage.getItem(storageKey) === '1') return true;
+      try {
+        const r = await fetch(TRACK_BACKEND + '/evento', {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body:JSON.stringify(Object.assign({tipo:tipo}, dados || {})), keepalive:true
+        });
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        const j = await r.json().catch(()=>({ok:false}));
+        if (j && j.ok) { sessionStorage.setItem(storageKey,'1'); return true; }
+      } catch(e) { console.warn('[Rastreamento]', tipo, e); }
+      return false;
+    }
+
     document.querySelectorAll('.service-track').forEach(function(c){
-      c.addEventListener('click',function(){
+      c.addEventListener('click', async function(e){
+        e.preventDefault();
         var nome=this.dataset.service,slug=this.dataset.slug;
         sessionStorage.setItem('servico',slug);
-        var lockKey='evento_servico_lock_'+slug;
+        var lockKey='evento_servico_lock_v2_'+slug;
         var now=Date.now(), last=Number(sessionStorage.getItem(lockKey)||0);
         if(now-last<1500) return;
         sessionStorage.setItem(lockKey,String(now));
-        fetch('https://midianetdigital.onrender.com/evento',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tipo:'servico',servico:nome})}).catch(()=>{});
-        if(typeof fbq==='function')fbq('track','ViewContent',{content_name:nome,content_category:'Servico'});
+        if(typeof fbq==='function') fbq('track','ViewContent',{content_name:nome,content_category:'Servico'});
+        await registrarRastreamento('servico',{servico:nome},'servico_'+slug);
+        window.location.href=this.href;
       });
     });
-    if(!sessionStorage.getItem('visitante_enviado')){
-      fetch('https://midianetdigital.onrender.com/evento',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tipo:'visitante'})}).catch(()=>{});
-      sessionStorage.setItem('visitante_enviado','1');
+
+    if(!sessionStorage.getItem('mn24_track_v2_visitante')){
+      registrarRastreamento('visitante',{},'visitante');
     }
 
     document.querySelectorAll('a[href^="#"]').forEach(function(a){
