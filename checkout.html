@@ -819,122 +819,194 @@ function limparUsuarioInstagram(valor){
 
     var distribuicaoCombo = [];
 
+    // Distribuição do combo: sempre automática, recalculada a cada seleção.
+    // Regra: todas as curtidas/visualizações do pacote são usadas e cada publicação
+    // recebe no mínimo 150 quando o componente correspondente existe.
     function totalDist(tipo){
-      return distribuicaoCombo.reduce(function(a,x){ return a + Number(x[tipo]||0); }, 0);
+      return distribuicaoCombo.reduce(function(total, item){
+        return total + Number(item[tipo] || 0);
+      }, 0);
     }
 
-    function distribuirAutomaticamente(tipo){
-      if(!comboInfo || !distribuicaoCombo.length) return;
-      var total=Number(comboInfo[tipo]||0);
-      if(!total) return;
-      var n=distribuicaoCombo.length;
-      if(total < n*150) return;
-      var base=Math.floor(total/n);
-      var resto=total-base*n;
-      distribuicaoCombo.forEach(function(x,i){ x[tipo]=base+(i<resto?1:0); });
+    function calcularDistribuicao(total, quantidadePublicacoes){
+      total = Number(total || 0);
+      quantidadePublicacoes = Number(quantidadePublicacoes || 0);
+      if(!total || !quantidadePublicacoes) return [];
+      if(total < quantidadePublicacoes * 150) return null;
+
+      var base = Math.floor(total / quantidadePublicacoes);
+      var resto = total % quantidadePublicacoes;
+      var valores = [];
+      for(var i=0;i<quantidadePublicacoes;i++){
+        valores.push(base + (i < resto ? 1 : 0));
+      }
+      return valores;
     }
 
-    function redistribuirAposEdicao(tipo, link, valor){
-      if(!comboInfo) return;
-      var total=Number(comboInfo[tipo]||0);
-      if(!total) return;
-      var item=distribuicaoCombo.find(function(x){return x.link===link;});
-      if(!item) return;
-      var n=distribuicaoCombo.length;
-      if(total < n*150) return;
+    function atualizarInfoPublicacoes(){
+      var info=document.getElementById("info-publicacoes");
+      if(!info) return;
+      if(isCombo && comboInfo && (comboInfo.likes || comboInfo.views)){
+        var partes=[];
+        if(comboInfo.likes) partes.push("❤️ " + Number(comboInfo.likes).toLocaleString("pt-BR") + " curtidas");
+        if(comboInfo.views) partes.push("👁️ " + Number(comboInfo.views).toLocaleString("pt-BR") + " visualizações");
+        info.innerHTML="📸 Escolha quantas publicações quiser. O sistema divide automaticamente " + partes.join(" + ") + ". Mínimo de <strong>150</strong> por publicação em cada serviço contratado.";
+      }
+    }
+    atualizarInfoPublicacoes();
 
-      var novo=Math.max(150, Math.min(total - 150*(n-1), Number(valor||0)));
-      item[tipo]=novo;
-
-      var restantes=total-novo;
-      var outros=distribuicaoCombo.filter(function(x){return x!==item;});
-      if(!outros.length) return;
-      var base=Math.floor(restantes/outros.length), resto=restantes-base*outros.length;
-      outros.forEach(function(x,i){x[tipo]=base+(i<resto?1:0);});
+    function limparUsuarioInstagram(valor){
+      return valor.trim()
+        .replace(/^https?:\/\/(www\.)?instagram\.com\//i, "")
+        .replace(/^@/, "")
+        .split("/")[0]
+        .split("?")[0]
+        .trim();
     }
 
     function renderDistribuicaoCombo(){
       if(!isCombo || !comboInfo) return;
-      var old=document.getElementById("combo-distribuicao"); if(old) old.remove();
+
+      var old=document.getElementById("combo-distribuicao");
+      if(old) old.remove();
+
       if(!(comboInfo.likes || comboInfo.views) || !linksSelecionados.length) return;
 
-      // Sincroniza a lista de itens primeiro.
+      // Mantém somente as publicações atualmente selecionadas.
+      var anteriores = {};
+      distribuicaoCombo.forEach(function(item){ anteriores[item.link] = item; });
       distribuicaoCombo = linksSelecionados.map(function(link){
-        var antigo = distribuicaoCombo.find(function(x){ return x.link === link; });
-        return antigo || {link:link, curtidas:0, visualizacoes:0};
+        return anteriores[link] || {link:link, curtidas:0, visualizacoes:0};
       });
 
-      // Sempre que a quantidade de publicações muda, redistribui automaticamente
-      // o pacote inteiro. Se o número escolhido for matematicamente impossível,
-      // mantemos os valores em zero e mostramos o aviso para o cliente remover
-      // uma publicação ou escolher um pacote maior.
-      var impossivel = false;
-      ['curtidas','visualizacoes'].forEach(function(tipo){
-        var total = Number(comboInfo[tipo] || 0);
-        if(total > 0 && total < distribuicaoCombo.length * 150){
-          impossivel = true;
-          distribuicaoCombo.forEach(function(x){ x[tipo] = 0; });
-        } else if(total > 0){
-          var n = distribuicaoCombo.length;
-          var base = Math.floor(total / n);
-          var resto = total - base*n;
-          distribuicaoCombo.forEach(function(x,i){ x[tipo] = base + (i < resto ? 1 : 0); });
-        }
+      var distLikes = calcularDistribuicao(comboInfo.likes, distribuicaoCombo.length);
+      var distViews = calcularDistribuicao(comboInfo.views, distribuicaoCombo.length);
+      var impossivelLikes = comboInfo.likes > 0 && !distLikes;
+      var impossivelViews = comboInfo.views > 0 && !distViews;
+
+      // Ao adicionar/remover publicação, a regra é sempre recalcular do zero.
+      // Isso elimina o estado antigo que estava deixando os campos em 0.
+      distribuicaoCombo.forEach(function(item,i){
+        item.curtidas = distLikes ? distLikes[i] : 0;
+        item.visualizacoes = distViews ? distViews[i] : 0;
       });
 
       var area=document.getElementById("posts-grid");
-      var box=document.createElement("div"); box.id="combo-distribuicao"; box.className="dist-box";
-      box.innerHTML='<div class="dist-title">📊 Distribuição automática</div><div class="dist-help">Ao adicionar ou remover uma publicação, o sistema recalcula automaticamente. Cada publicação recebe no mínimo 150. Você também pode ajustar uma quantidade e o restante será redistribuído.</div>';
+      if(!area) return;
 
-      if(impossivel){
-        var aviso=document.createElement('div');
-        aviso.style.cssText='margin-bottom:.7rem;padding:.65rem;border:1px solid rgba(245,158,11,.35);border-radius:10px;color:#fbbf24;font-size:.76rem;font-weight:700;line-height:1.4;';
-        aviso.textContent='⚠️ Muitas publicações para este pacote. Reduza a quantidade de publicações para que cada uma possa receber pelo menos 150.';
-        box.appendChild(aviso);
+      var box=document.createElement("div");
+      box.id="combo-distribuicao";
+      box.className="dist-box";
+      box.innerHTML='<div class="dist-title">📊 Distribuição automática</div>'+
+        '<div class="dist-help">O sistema divide automaticamente o pacote entre as publicações escolhidas. Você pode alterar uma quantidade; o restante será redistribuído. Cada publicação deve receber no mínimo 150.</div>';
+
+      if(impossivelLikes || impossivelViews){
+        var avis=document.createElement("div");
+        avis.style.cssText='margin-bottom:.7rem;padding:.7rem;border:1px solid rgba(245,158,11,.35);border-radius:10px;color:#fbbf24;font-size:.76rem;font-weight:700;line-height:1.45;';
+        var problemas=[];
+        if(impossivelLikes) problemas.push("curtidas");
+        if(impossivelViews) problemas.push("visualizações");
+        avis.textContent="⚠️ Muitas publicações para o pacote de " + problemas.join(" e ") + ". Reduza a quantidade de publicações para que cada uma receba pelo menos 150.";
+        box.appendChild(avis);
       }
 
       linksSelecionados.forEach(function(link,i){
-        var thumb='';
-        var el=[].slice.call(document.querySelectorAll('#posts-grid > div')).find(function(x){ return x.getAttribute('data-url')===link; });
-        if(el){ var im=el.querySelector('img'); if(im) thumb=im.src; }
-        var item=distribuicaoCombo.find(function(x){return x.link===link;});
-        var row=document.createElement('div'); row.className='post-row';
-        row.innerHTML='<img class="post-thumb" src="'+(thumb||'')+'"><div><div class="post-meta">Publicação '+(i+1)+'</div><div class="dist-inputs">'+(comboInfo.likes?'<label>❤️ Curtidas<input type="number" min="150" max="'+comboInfo.likes+'" value="'+(item.curtidas||0)+'" data-type="curtidas" data-link="'+encodeURIComponent(link)+'"></label>':'<div></div>')+(comboInfo.views?'<label>👁️ Visualizações<input type="number" min="150" max="'+comboInfo.views+'" value="'+(item.visualizacoes||0)+'" data-type="visualizacoes" data-link="'+encodeURIComponent(link)+'"></label>':'')+'</div></div>';
+        var thumb="";
+        var cards=[].slice.call(document.querySelectorAll('#posts-grid > div'));
+        var card=cards.find(function(x){ return x.getAttribute('data-url')===link; });
+        if(card){ var img=card.querySelector('img'); if(img) thumb=img.src; }
+        var item=distribuicaoCombo[i];
+        var row=document.createElement("div");
+        row.className="post-row";
+        row.innerHTML='<img class="post-thumb" src="'+(thumb||'')+'" alt="">'+
+          '<div><div class="post-meta">Publicação '+(i+1)+'</div><div class="dist-inputs">'+
+          (comboInfo.likes ? '<label>❤️ Curtidas<input type="number" min="150" max="'+comboInfo.likes+'" value="'+item.curtidas+'" data-type="curtidas" data-index="'+i+'"></label>' : '<div></div>')+
+          (comboInfo.views ? '<label>👁️ Visualizações<input type="number" min="150" max="'+comboInfo.views+'" value="'+item.visualizacoes+'" data-type="visualizacoes" data-index="'+i+'"></label>' : '')+
+          '</div></div>';
         box.appendChild(row);
       });
 
-      var total=document.createElement('div'); total.className='dist-total'; total.id='dist-total'; box.appendChild(total);
-      area.insertAdjacentElement('afterend',box);
+      var total=document.createElement("div");
+      total.className="dist-total";
+      total.id="dist-total";
+      box.appendChild(total);
+      area.insertAdjacentElement("afterend",box);
 
-      box.querySelectorAll('input').forEach(function(inp){
-        inp.addEventListener('input',function(){
-          var link=decodeURIComponent(this.dataset.link), tipo=this.dataset.type;
-          redistribuirAposEdicao(tipo,link,Number(this.value||0));
-          box.querySelectorAll('input').forEach(function(other){
-            var olink=decodeURIComponent(other.dataset.link), oitem=distribuicaoCombo.find(function(x){return x.link===olink;});
-            if(oitem) other.value=Number(oitem[other.dataset.type]||0);
-          });
-          atualizarDistribuicaoTotal();
+      box.querySelectorAll("input[data-type]").forEach(function(input){
+        input.addEventListener("change", function(){
+          ajustarDistribuicaoManual(this.dataset.type, Number(this.dataset.index), Number(this.value || 0));
+        });
+        input.addEventListener("blur", function(){
+          ajustarDistribuicaoManual(this.dataset.type, Number(this.dataset.index), Number(this.value || 0));
         });
       });
+
+      atualizarDistribuicaoTotal();
+    }
+
+    function ajustarDistribuicaoManual(tipo, indice, valor){
+      if(!comboInfo || !distribuicaoCombo[indice]) return;
+      var total=Number(comboInfo[tipo] || 0);
+      var n=distribuicaoCombo.length;
+      if(!total || !n) return;
+
+      if(total < n * 150){
+        renderDistribuicaoCombo();
+        return;
+      }
+
+      var maxPermitido=total - 150*(n-1);
+      var novo=Math.max(150, Math.min(maxPermitido, Math.round(Number(valor || 0))));
+      distribuicaoCombo[indice][tipo]=novo;
+
+      var restante=total-novo;
+      var outros=[];
+      for(var i=0;i<n;i++) if(i!==indice) outros.push(i);
+      var base=Math.floor(restante/outros.length);
+      var resto=restante%outros.length;
+      outros.forEach(function(idx,j){
+        distribuicaoCombo[idx][tipo]=base+(j<resto?1:0);
+      });
+
+      var box=document.getElementById("combo-distribuicao");
+      if(box){
+        box.querySelectorAll('input[data-type]').forEach(function(inp){
+          var idx=Number(inp.dataset.index);
+          var t=inp.dataset.type;
+          inp.value=Number(distribuicaoCombo[idx]?.[t] || 0);
+        });
+      }
       atualizarDistribuicaoTotal();
     }
 
     function atualizarDistribuicaoTotal(){
-      var el=document.getElementById('dist-total'); if(!el) return;
-      var tl=totalDist('curtidas'), tv=totalDist('visualizacoes');
-      var likesOk=tl===Number(comboInfo?.likes||0), viewsOk=tv===Number(comboInfo?.views||0);
-      var minOk=distribuicaoCombo.every(function(x){return (!comboInfo?.likes || Number(x.curtidas||0)>=150) && (!comboInfo?.views || Number(x.visualizacoes||0)>=150);});
+      var el=document.getElementById("dist-total");
+      if(!el || !comboInfo) return;
+      var tl=totalDist("curtidas");
+      var tv=totalDist("visualizacoes");
+      var likesOk=tl===Number(comboInfo.likes||0);
+      var viewsOk=tv===Number(comboInfo.views||0);
+      var minOk=distribuicaoCombo.length>0 && distribuicaoCombo.every(function(x){
+        return (!comboInfo.likes || Number(x.curtidas||0)>=150) &&
+               (!comboInfo.views || Number(x.visualizacoes||0)>=150);
+      });
       var ok=likesOk && viewsOk && minOk;
-      el.innerHTML='❤️ '+tl.toLocaleString('pt-BR')+' / '+(comboInfo?.likes||0).toLocaleString('pt-BR')+' &nbsp; · &nbsp; 👁️ '+tv.toLocaleString('pt-BR')+' / '+(comboInfo?.views||0).toLocaleString('pt-BR')+' '+(ok?'✅':'⚠️');
+      el.innerHTML='❤️ '+tl.toLocaleString('pt-BR')+' / '+Number(comboInfo.likes||0).toLocaleString('pt-BR')+
+        ' &nbsp; · &nbsp; 👁️ '+tv.toLocaleString('pt-BR')+' / '+Number(comboInfo.views||0).toLocaleString('pt-BR')+
+        ' '+(ok?'✅':'⚠️');
       el.style.borderColor=ok?'rgba(52,211,153,.35)':'rgba(245,158,11,.25)';
     }
 
     function distribuicaoValida(){
       if(!isCombo || !comboInfo || !(comboInfo.likes || comboInfo.views)) return true;
-      var tl=totalDist('curtidas'), tv=totalDist('visualizacoes');
-      var minOk=distribuicaoCombo.every(function(x){return (!comboInfo.likes || Number(x.curtidas||0)>=150) && (!comboInfo.views || Number(x.visualizacoes||0)>=150);});
-      return tl===Number(comboInfo.likes||0) && tv===Number(comboInfo.views||0) && minOk && linksSelecionados.length>0;
+      if(!linksSelecionados.length || distribuicaoCombo.length!==linksSelecionados.length) return false;
+      var tl=totalDist("curtidas");
+      var tv=totalDist("visualizacoes");
+      var minOk=distribuicaoCombo.every(function(x){
+        return (!comboInfo.likes || Number(x.curtidas||0)>=150) &&
+               (!comboInfo.views || Number(x.visualizacoes||0)>=150);
+      });
+      return tl===Number(comboInfo.likes||0) && tv===Number(comboInfo.views||0) && minOk;
     }
 
     async function carregarPostsInstagram(user, paraBump){
