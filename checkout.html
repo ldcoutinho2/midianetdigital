@@ -1448,9 +1448,21 @@ function limparUsuarioInstagram(valor){
 
     // Registra o checkout uma vez por combinação serviço/plano nesta sessão.
     // Atualizações da mesma página não duplicam; ao escolher outro plano, registra novamente.
-    var checkoutKey = 'checkout_enviado_' + String(servico || 'sem-servico') + '_' + String(plano || 'sem-plano');
+    var checkoutKey = 'checkout_enviado_v11_' + String(servico || 'sem-servico') + '_' + String(plano || 'sem-plano');
     if(!sessionStorage.getItem(checkoutKey)){
-      fetch(BACKEND + "/evento",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({tipo:"checkout",servico:servico,plano:plano})}).catch(()=>{});
+      var checkoutPayload=JSON.stringify({tipo:"checkout",servico:servico,plano:plano});
+      try{
+        if(navigator.sendBeacon){
+          var checkoutBlob=new Blob([checkoutPayload],{type:"application/json"});
+          if(!navigator.sendBeacon(BACKEND + "/evento", checkoutBlob)){
+            fetch(BACKEND + "/evento",{method:"POST",headers:{"Content-Type":"application/json"},body:checkoutPayload,keepalive:true}).catch(()=>{});
+          }
+        }else{
+          fetch(BACKEND + "/evento",{method:"POST",headers:{"Content-Type":"application/json"},body:checkoutPayload,keepalive:true}).catch(()=>{});
+        }
+      }catch(e){
+        fetch(BACKEND + "/evento",{method:"POST",headers:{"Content-Type":"application/json"},body:checkoutPayload,keepalive:true}).catch(()=>{});
+      }
       sessionStorage.setItem(checkoutKey,"1");
     }
   </script>
