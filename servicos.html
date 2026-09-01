@@ -126,7 +126,29 @@
     <footer>© 2025 MidiaNetDigital — Todos os direitos reservados</footer>
   </section>
   <script>
-    document.querySelectorAll('.card').forEach(function(card){card.addEventListener('click',function(){var nome=this.dataset.service||'';var slug=(this.getAttribute('href')||'').split('servico=')[1]||'';sessionStorage.setItem('servico',slug);var lockKey='evento_servico_lock_'+slug;var now=Date.now(),last=Number(sessionStorage.getItem(lockKey)||0);if(now-last<1500)return;sessionStorage.setItem(lockKey,String(now));fetch('https://midianetdigital.onrender.com/evento',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tipo:'servico',servico:nome})}).catch(function(){});if(typeof fbq==='function')fbq('track','ViewContent',{content_name:nome,content_category:'Servico'});});});
+    document.querySelectorAll('.card').forEach(function(card){
+      card.addEventListener('click', async function(e){
+        e.preventDefault();
+        var nome=this.dataset.service||'';
+        var href=this.getAttribute('href')||'';
+        var slug=href.split('servico=')[1]||'';
+        sessionStorage.setItem('servico',slug);
+        var lockKey='evento_servico_lock_v2_'+slug;
+        var now=Date.now(),last=Number(sessionStorage.getItem(lockKey)||0);
+        if(now-last<1500)return;
+        sessionStorage.setItem(lockKey,String(now));
+        if(typeof fbq==='function')fbq('track','ViewContent',{content_name:nome,content_category:'Servico'});
+        var key='mn24_track_v2_servico_'+slug;
+        if(!sessionStorage.getItem(key)){
+          try{
+            var r=await fetch('https://midianetdigital.onrender.com/evento',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tipo:'servico',servico:nome}),keepalive:true});
+            var j=await r.json().catch(function(){return {ok:false};});
+            if(r.ok&&j.ok)sessionStorage.setItem(key,'1');
+          }catch(err){console.warn('[Rastreamento]',err);}
+        }
+        window.location.href=href;
+      });
+    });
   </script>
 </body>
 </html>
