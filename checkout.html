@@ -676,22 +676,18 @@
     var instagramConfirmado = false;
 
     var linksSelecionados = [];
-    var maxPublicacoes = 1;
+    // Para serviços principais e combos, não existe limite artificial de quantidade de publicações.
+    // A limitação prática é a regra mínima de 150 por publicação.
+    var maxPublicacoes = Infinity;
 
-    // Limite máximo de publicações por pacote:
-    // até 500 interações = 2; até 1.000 = 3; até 2.000 = 4; acima = 5.
     function calcularMaxPublicacoes(qtd){
-      qtd = Number(qtd || 0);
-      if(qtd <= 500) return 2;
-      if(qtd <= 1000) return 3;
-      if(qtd <= 2000) return 4;
-      return 5;
+      return Infinity;
     }
 
     if(isCombo && comboInfo && (comboInfo.likes || comboInfo.views)){
-      maxPublicacoes = calcularMaxPublicacoes(Math.max(comboInfo.likes || 0, comboInfo.views || 0));
+      maxPublicacoes = Infinity;
     } else if(isPublicacao){
-      maxPublicacoes = calcularMaxPublicacoes(plano);
+      maxPublicacoes = Infinity;
     }
 
     (function(){
@@ -699,9 +695,10 @@
       if(!info) return;
       var qtd=isCombo && comboInfo ? Math.max(comboInfo.likes||0, comboInfo.views||0) : Number(plano||0);
       if(qtd>0){
-        info.innerHTML="📸 Você pode escolher até <strong>"+maxPublicacoes+" publicações</strong> • distribua as "+qtd.toLocaleString("pt-BR")+" interações como preferir.";
+        info.innerHTML="📸 Escolha quantas publicações quiser. Cada publicação deve receber no mínimo <strong>150</strong> curtidas/visualizações.";
       }
     })();
+
 
 function limparUsuarioInstagram(valor){
       return valor
@@ -867,7 +864,12 @@ function limparUsuarioInstagram(valor){
     function distribuicaoValida(){
       if(!isCombo || !comboInfo || !(comboInfo.likes || comboInfo.views)) return true;
       var tl=distribuicaoCombo.reduce(function(a,x){return a+Number(x.curtidas||0)},0), tv=distribuicaoCombo.reduce(function(a,x){return a+Number(x.visualizacoes||0)},0);
-      return tl===Number(comboInfo.likes||0) && tv===Number(comboInfo.views||0) && linksSelecionados.length>0;
+      var minOk = distribuicaoCombo.every(function(x){
+        var likesOk = !comboInfo.likes || Number(x.curtidas||0) >= 150;
+        var viewsOk = !comboInfo.views || Number(x.visualizacoes||0) >= 150;
+        return likesOk && viewsOk;
+      });
+      return tl===Number(comboInfo.likes||0) && tv===Number(comboInfo.views||0) && linksSelecionados.length>0 && minOk;
     }
 
     async function carregarPostsInstagram(user, paraBump){
@@ -1004,8 +1006,8 @@ function limparUsuarioInstagram(valor){
       var ehParaBump = bumpAtivo && !isPublicacao;
       var lista = ehParaBump ? linksBump : linksSelecionados;
 
-      if(lista.length >= maxPublicacoes){
-        alert("Você já selecionou o máximo de publicações deste pacote.");
+      if(ehParaBump && lista.length >= maxPublicacoes){
+        alert("Você já selecionou o máximo de publicações deste bump.");
         return;
       }
 
@@ -1031,7 +1033,7 @@ function limparUsuarioInstagram(valor){
       }
 
       document.getElementById("msg-instagram").textContent =
-        "Selecionadas: " + lista.length + "/" + maxPublicacoes + " publicações" + (ehParaBump ? " (bump)" : "");
+        "Selecionadas: " + lista.length + " publicações" + (ehParaBump ? " (bump)" : "");
       document.getElementById("msg-instagram").className = "field-msg show ok";
     }
 
@@ -1043,14 +1045,8 @@ function limparUsuarioInstagram(valor){
         lista.splice(index, 1);
         el.style.borderColor = "transparent";
       } else {
-        if(lista.length >= maxPublicacoes){
-          alert(
-            "Limite atingido.\n\n" +
-            (paraBump
-              ? "O bump de 500 curtidas permite até " + maxPublicacoes + " publicações."
-              : "Este pacote permite até " + maxPublicacoes + " publicações.") +
-            "\n\nDesmarque uma publicação para selecionar outra."
-          );
+        if(paraBump && lista.length >= maxPublicacoes){
+          alert("O bump permite até " + maxPublicacoes + " publicações.\n\nDesmarque uma publicação para selecionar outra.");
           return;
         }
 
@@ -1072,7 +1068,7 @@ function limparUsuarioInstagram(valor){
 
       if(!paraBump && isCombo) renderDistribuicaoCombo();
       document.getElementById("msg-instagram").textContent =
-        "Selecionadas: " + lista.length + "/" + maxPublicacoes + " publicações" + (paraBump ? " (bump)" : "");
+        "Selecionadas: " + lista.length + " publicações" + (paraBump ? " (bump)" : "");
       document.getElementById("msg-instagram").className = "field-msg show ok";
     }
 
@@ -1112,7 +1108,7 @@ function limparUsuarioInstagram(valor){
 
       if(isCombo){
         if(exigeDistribuicaoCombo){
-          if(!distribuicaoValida()){ alert("Distribua exatamente todas as curtidas e visualizações do seu pacote antes de gerar o Pix."); return; }
+          if(!distribuicaoValida()){ alert("Distribua exatamente todas as curtidas e visualizações do seu pacote. Cada publicação deve receber no mínimo 150."); return; }
           distribuicao = { publicacoes: distribuicaoCombo.map(function(x){return {link:x.link,curtidas:Number(x.curtidas||0),visualizacoes:Number(x.visualizacoes||0)};}), totalCurtidas:Number(comboInfo.likes||0), totalVisualizacoes:Number(comboInfo.views||0) };
         } else { distribuicao = {publicacoes:[],totalCurtidas:0,totalVisualizacoes:0}; }
       } else if(servico === "curtidas-brasileiras" || servico === "visualizacoes" || servico === "comentarios"){
