@@ -1447,11 +1447,15 @@ function limparUsuarioInstagram(valor){
     })();
 
     // Registra o checkout uma vez por combinação serviço/plano nesta sessão.
-    // Atualizações da mesma página não duplicam; ao escolher outro plano, registra novamente.
-    var checkoutKey = 'checkout_enviado_' + String(servico || 'sem-servico') + '_' + String(plano || 'sem-plano');
+    // Só grava a marca local depois que o Render confirmar o recebimento.
+    var checkoutKey = 'mn24_track_v2_checkout_' + String(servico || 'sem-servico') + '_' + String(plano || 'sem-plano');
     if(!sessionStorage.getItem(checkoutKey)){
-      fetch(BACKEND + "/evento",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({tipo:"checkout",servico:servico,plano:plano})}).catch(()=>{});
-      sessionStorage.setItem(checkoutKey,"1");
+      fetch(BACKEND + "/evento",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({tipo:"checkout",servico:servico,plano:plano}),keepalive:true})
+        .then(async function(r){
+          var j=await r.json().catch(function(){return {ok:false};});
+          if(r.ok&&j.ok)sessionStorage.setItem(checkoutKey,"1");
+        })
+        .catch(function(err){ console.warn('[Rastreamento checkout]',err); });
     }
   </script>
 </body>
