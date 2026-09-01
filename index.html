@@ -605,13 +605,15 @@
     (function(){
       function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
       var on=rnd(300,500),vd=rnd(100,200);
-      document.getElementById("online-count").textContent=on;
-      document.getElementById("vendidos-count").textContent=vd;
+      var onlineEl=document.getElementById("online-count");
+      var vendidosEl=document.getElementById("vendidos-count");
+      if(onlineEl) onlineEl.textContent=on;
+      if(vendidosEl) vendidosEl.textContent=vd;
       setInterval(function(){
         on+=rnd(-3,6);on=Math.max(200,Math.min(600,on));
         vd+=rnd(0,2);
-        document.getElementById("online-count").textContent=on;
-        document.getElementById("vendidos-count").textContent=vd;
+        if(onlineEl) onlineEl.textContent=on;
+        if(vendidosEl) vendidosEl.textContent=vd;
       },4000);
     })();
 
