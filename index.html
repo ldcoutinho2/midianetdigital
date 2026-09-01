@@ -643,13 +643,34 @@
         var now=Date.now(), last=Number(sessionStorage.getItem(lockKey)||0);
         if(now-last<1500) return;
         sessionStorage.setItem(lockKey,String(now));
-        fetch('https://midianetdigital.onrender.com/evento',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tipo:'servico',servico:nome})}).catch(()=>{});
+        enviarEventoFunil('servico',{servico:nome});
         if(typeof fbq==='function')fbq('track','ViewContent',{content_name:nome,content_category:'Servico'});
       });
     });
-    if(!sessionStorage.getItem('visitante_enviado')){
-      fetch('https://midianetdigital.onrender.com/evento',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tipo:'visitante'})}).catch(()=>{});
-      sessionStorage.setItem('visitante_enviado','1');
+    // Rastreamento V11: chave versionada para não ficar bloqueado por testes antigos.
+    // sendBeacon/keepalive evita perder o evento quando o usuário navega imediatamente.
+    function enviarEventoFunil(tipo, dados){
+      var payload = Object.assign({tipo:tipo}, dados || {});
+      var body = JSON.stringify(payload);
+      try{
+        if(navigator.sendBeacon){
+          var blob = new Blob([body], {type:'application/json'});
+          if(navigator.sendBeacon('https://midianetdigital.onrender.com/evento', blob)) return true;
+        }
+      }catch(e){}
+      fetch('https://midianetdigital.onrender.com/evento',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:body,
+        keepalive:true
+      }).catch(()=>{});
+      return true;
+    }
+
+    var visitanteKey='visitante_enviado_v11';
+    if(!sessionStorage.getItem(visitanteKey)){
+      enviarEventoFunil('visitante');
+      sessionStorage.setItem(visitanteKey,'1');
     }
 
     document.querySelectorAll('a[href^="#"]').forEach(function(a){
