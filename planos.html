@@ -324,7 +324,7 @@
         "<ul class=\"clist\">"+feats+"</ul>"+
         "<div class=\"cbtn\">Selecionar plano</div>";
 
-      card.addEventListener("click", function(e){
+      card.addEventListener("click", async function(e){
         e.preventDefault();
 
         var valor = precoParaNumero(p.preco);
@@ -335,17 +335,25 @@
         sessionStorage.setItem("plano_nome_pixel", contentName);
         sessionStorage.setItem("valor_plano", valor);
 
-        // Evita duplicação por duplo clique, mas não bloqueia outros planos.
-        var planoLockKey = 'evento_plano_lock_' + String(p.id);
+        // Evita duplicação por duplo clique e só marca o evento depois da confirmação do Render.
+        var planoLockKey = 'evento_plano_lock_v2_' + String(p.id);
         var planoNow = Date.now();
         var planoLast = Number(sessionStorage.getItem(planoLockKey) || 0);
         if (planoNow - planoLast >= 1500) {
           sessionStorage.setItem(planoLockKey, String(planoNow));
-          fetch('https://midianetdigital.onrender.com/evento', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ tipo: 'plano', plano: contentName })
-          }).catch(() => {});
+          var planoTrackKey = 'mn24_track_v2_plano_' + String(servico) + '_' + String(p.id);
+          if(!sessionStorage.getItem(planoTrackKey)){
+            try {
+              var planoResp = await fetch('https://midianetdigital.onrender.com/evento', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ tipo: 'plano', plano: contentName }),
+                keepalive: true
+              });
+              var planoJson = await planoResp.json().catch(function(){return {ok:false};});
+              if(planoResp.ok && planoJson.ok) sessionStorage.setItem(planoTrackKey,'1');
+            } catch(err) { console.warn('[Rastreamento plano]',err); }
+          }
         }
 
         if(typeof fbq === "function"){
@@ -359,9 +367,7 @@
 
         console.log("ViewContent plano:", contentName, valor);
 
-        setTimeout(function(){
-          window.location.href = "checkout.html?plano="+p.id+"&servico="+encodeURIComponent(servico)+"&pagamento=pix";
-        }, 250);
+        window.location.href = "checkout.html?plano="+p.id+"&servico="+encodeURIComponent(servico)+"&pagamento=pix";
       });
 
       grid.appendChild(card);
