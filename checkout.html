@@ -1273,11 +1273,39 @@ function limparUsuarioInstagram(valor){
 
       var total = valorTotal();
 
+      function obterRastreamentoMeta(){
+        var cookies = {};
+        document.cookie.split(';').forEach(function(parte){
+          var p = parte.trim();
+          if(!p) return;
+          var idx = p.indexOf('=');
+          if(idx < 0) return;
+          cookies[p.slice(0,idx)] = decodeURIComponent(p.slice(idx+1));
+        });
+
+        var paramsMeta = new URLSearchParams(window.location.search);
+        var fbclid = paramsMeta.get('fbclid') || sessionStorage.getItem('fbclid') || '';
+        var fbp = cookies['_fbp'] || sessionStorage.getItem('_fbp') || '';
+        var fbc = cookies['_fbc'] || sessionStorage.getItem('_fbc') || '';
+
+        if(fbclid && !fbc){
+          fbc = 'fb.1.' + Date.now() + '.' + fbclid;
+        }
+
+        if(fbp) sessionStorage.setItem('_fbp', fbp);
+        if(fbc) sessionStorage.setItem('_fbc', fbc);
+        if(fbclid) sessionStorage.setItem('fbclid', fbclid);
+
+        return {fbp:fbp || null, fbc:fbc || null, fbclid:fbclid || null};
+      }
+
+      var metaTracking = obterRastreamentoMeta();
+
       try {
         var r = await fetch(BACKEND + "/criar-pedido", {
           method:"POST",
           headers:{"Content-Type":"application/json"},
-          body:JSON.stringify({nome,telefone,instagram:ig,servico,plano,pagamento:"pix",valor:total,bump:isCombo?false:bumpAtivo,bump_publicacao:isCombo?null:bumpPublicacao,distribuicao:distribuicao})
+          body:JSON.stringify({nome,telefone,instagram:ig,servico,plano,pagamento:"pix",valor:total,bump:isCombo?false:bumpAtivo,bump_publicacao:isCombo?null:bumpPublicacao,distribuicao:distribuicao,meta:metaTracking})
         });
         var d = await r.json();
         if(!r.ok || !d.success) throw new Error(d.error || "Erro ao gerar pagamento");
@@ -1352,7 +1380,14 @@ function limparUsuarioInstagram(valor){
           var msgSucesso="Ola! Quero acompanhar meu pedido.\n\nPedido: "+(dadosPedido.pedidoId||pedidoId)+"\nNome: "+(dadosPedido.nome||"")+"\nWhatsApp: "+(dadosPedido.telefone||"")+"\nInstagram: "+(dadosPedido.instagram||sessionStorage.getItem("instagram")||"")+"\nPacote: "+(dadosPedido.servico||servico)+" "+(dadosPedido.plano||plano)+"\nValor pago: R$ "+Number((dadosPedido.valor||valorTotal())/100).toFixed(2).replace(".",",")+"\nStatus: Pagamento confirmado\n\nQuero acompanhar o andamento do meu pedido.";
           document.getElementById("btnWaSucesso").href="https://wa.me/"+WHATSAPP_NUMERO+"?text="+encodeURIComponent(msgSucesso);
           if(typeof fbq === "function"){
-            fbq("track","Purchase",{value:valorTotal(),currency:"BRL"});
+            var purchaseValue = Number((dadosPedido.valor || valorTotal()*100) / 100);
+            var purchaseEventId = dadosPedido.metaEventId || ("purchase_" + (dadosPedido.pedidoId || pedidoId));
+            fbq("track","Purchase",{
+              value:purchaseValue,
+              currency:"BRL",
+              content_name:(dadosPedido.servico || servico) + " " + (dadosPedido.plano || plano),
+              content_type:"product"
+            },{eventID:purchaseEventId});
           }
         }
       } catch(e){}
