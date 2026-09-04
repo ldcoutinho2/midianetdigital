@@ -383,6 +383,9 @@ app.get('/admin/site-config',async(req,res)=>{if(!senhaAdminValida(req))return r
 app.post('/admin/site-config',async(req,res)=>{if(!senhaAdminValida(req))return res.status(401).json({error:'Não autorizado'});try{return res.json({ok:true,item:await salvarSiteConfig(req.body||{})});}catch(err){return res.status(500).json({ok:false,error:err.message||'Erro ao salvar configuração do site'});}});
 
 app.get('/dashboard',(req,res)=>{
+  res.setHeader('Cache-Control','no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma','no-cache');
+  res.setHeader('Expires','0');
   const usuario=req.query.usuario,senha=req.query.senha;
   if(usuario!=='admin'||senha!==process.env.DASHBOARD_PASSWORD)return res.send(`<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Login Dashboard</title><style>body{margin:0;background:#080810;color:#fff;font-family:Arial,sans-serif;display:flex;align-items:center;justify-content:center;height:100vh}.box{width:360px;background:#111120;border:1px solid rgba(255,255,255,.08);padding:30px;border-radius:18px}h2{text-align:center;margin-bottom:20px}input{width:100%;padding:13px;margin:8px 0;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:#181828;color:#fff}button{width:100%;padding:13px;margin-top:12px;border:0;border-radius:999px;background:#e8ff47;color:#080810;font-weight:800;cursor:pointer}</style></head><body><div class="box"><h2>MidiaNetDigital Dashboard</h2><form action="/dashboard"><input type="text" name="usuario" placeholder="Usuário" required><input type="password" name="senha" placeholder="Senha" required><button type="submit">Entrar</button></form></div></body></html>`);
   // Dashboard administrativo modular: uma única fonte de UI, separada da lógica do servidor.
