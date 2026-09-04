@@ -157,7 +157,7 @@ async function enviarComponenteSMM({ servico, quantidade, links, nome, smmId: sm
       link: link.startsWith('http') ? link : `https://instagram.com/${link.replace('@', '')}`,
       quantity: qtds[i]
     }), { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } });
-    resultados.push({ service: servico, quantity: qtds[i], link, order: smmResp.data?.order || null });
+    if(smmResp.data?.error)return Promise.reject(new Error(String(smmResp.data.error)));resultados.push({ service: servico, quantity: qtds[i], link, order: smmResp.data?.order || null });
   }
   return resultados;
 }
@@ -354,7 +354,7 @@ async function enviarPedidoSMM(pedido) {
   let links=[]; try { links=JSON.parse(pedido.instagram); if(!Array.isArray(links)) links=[pedido.instagram]; } catch { links=[pedido.instagram]; }
   links=links.filter(x=>x&&String(x).trim()); if(!links.length) throw new Error('Nenhum link válido para enviar ao SMM');
   const total=Number(pedido.plano), porLink=Math.floor(total/links.length), resultados=[];
-  for(const linkOriginal of links){ const link=String(linkOriginal).trim(); const r=await axios.post(process.env.SMM_API_URL,new URLSearchParams({key:process.env.SMM_API_KEY,action:'add',service:pedido.smmId,link:link.startsWith('http')?link:`https://instagram.com/${link.replace('@','')}`,quantity:porLink}),{headers:{'Content-Type':'application/x-www-form-urlencoded'}}); resultados.push(r.data); }
+  for(const linkOriginal of links){ const link=String(linkOriginal).trim(); const r=await axios.post(process.env.SMM_API_URL,new URLSearchParams({key:process.env.SMM_API_KEY,action:'add',service:pedido.smmId,link:link.startsWith('http')?link:`https://instagram.com/${link.replace('@','')}`,quantity:porLink}),{headers:{'Content-Type':'application/x-www-form-urlencoded'}}); if(r.data?.error)throw new Error(String(r.data.error)); resultados.push(r.data); }
   return {multiplos:links.length>1,quantidadeTotal:total,quantidadePorLink:porLink,totalLinks:links.length,pedidos:resultados,order:resultados.map(r=>r.order).filter(Boolean).join(', ')};
 }
 
