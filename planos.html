@@ -302,12 +302,33 @@
 
     var grid = document.getElementById("grid");
 
+    async function aplicarConfiguracaoDoPainel(){
+      try{
+        var resp = await fetch("https://midianetdigital.onrender.com/config/public?servico="+encodeURIComponent(servico), {cache:"no-store"});
+        if(!resp.ok) throw new Error("config");
+        var cfg = await resp.json();
+        var mapa = {};
+        (cfg.servicos || []).forEach(function(x){ mapa[String(x.plano)] = x; });
+        dados.planos = dados.planos.map(function(p){
+          var x = mapa[String(p.id)];
+          if(!x) return p;
+          return Object.assign({}, p, {
+            preco: Number(x.preco || 0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}),
+            ativo: x.ativo !== false
+          });
+        }).filter(function(p){ return p.ativo !== false; });
+      }catch(err){
+        console.warn("[CONFIG PAINEL] usando valores locais", err);
+      }
+    }
+
     function precoParaNumero(preco){
       return parseFloat(
         preco.replace("R$","").replace(".","").replace(",",".").trim()
       );
     }
 
+    async function renderizarPlanos(){
     dados.planos.forEach(function(p){
       var feats = p.features.map(function(f){ return "<li>"+f+"</li>"; }).join("");
       var badge = p.hot ? "<span class=\"cbadge\">🔥 Melhor custo-benefício</span>" : "";
@@ -372,6 +393,9 @@
 
       grid.appendChild(card);
     });
+    }
+
+    aplicarConfiguracaoDoPainel().then(renderizarPlanos);
   </script>
 </body>
 </html>
