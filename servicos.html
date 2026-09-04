@@ -92,84 +92,60 @@
         <span class="trust-pill">⚡ Entrega após confirmação</span>
       </div>
     </div>
-    <div class="grid">
-      <a class="card hot" href="planos.html?servico=engajamento-30-70" data-service="Engajamento 30% BR + 70% Mundial">
-        <span class="cbadge">Mais escolhido</span>
-        <span class="cico">🌎🇧🇷</span>
-        <h3>30% BRASILEIROS + 70% Mundiais</h3>
-        <p>Opção econômica para ampliar o perfil com um combo completo.</p>
-        <ul class="clist"><li>Seguidores + bônus de engajamento</li></ul>
-        <div class="cprice">A partir de R$ 5,00<small>por 500 seguidores</small></div>
-      </a>
-      <a class="card" href="planos.html?servico=engajamento-60-40" data-service="Engajamento 60% BR + 40% Mundial">
-        <span class="cico">🌎🇧🇷</span>
-        <h3>60% BRASILEIROS + 40% Mundiais</h3>
-        <p>Mais presença brasileira mantendo alcance internacional.</p>
-        <ul class="clist"><li>Seguidores + bônus de engajamento</li></ul>
-        <div class="cprice">A partir de R$ 8,99<small>por 500 seguidores</small></div>
-      </a>
-      <a class="card" href="planos.html?servico=engajamento-br" data-service="Engajamento 100% Brasileiros">
-        <span class="cico">🇧🇷</span>
-        <h3>100% Brasileiros</h3>
-        <p>Combo voltado para um público totalmente brasileiro.</p>
-        <ul class="clist"><li>Seguidores + curtidas + views</li></ul>
-        <div class="cprice">A partir de R$ 15,00<small>por 250 seguidores</small></div>
-      </a>
-      <a class="card" href="planos.html?servico=engajamento-premium" data-service="Engajamento BR Premium Ativos">
-        <span class="cico">🎖️</span>
-        <h3>BR Premium Ativos</h3>
-        <p>Perfis com atividade recente nos últimos 30 dias, para quem quer engajamento mais próximo do orgânico.</p>
-        <ul class="clist"><li>Contas ativas verificadas periodicamente</li></ul>
-        <div class="cprice">A partir de R$ 80,00<small>por 500 seguidores</small></div>
-      </a>
-    </div>
+    <div class="grid" id="serviceGrid"></div>
     <footer>© 2025 MidiaNetDigital — Todos os direitos reservados</footer>
   </section>
   <script>
-    document.querySelectorAll('.card').forEach(function(card){
-      card.addEventListener('click', async function(e){
+(async function(){
+  const BACKEND='https://midianetdigital.onrender.com';
+  const grid=document.getElementById('serviceGrid');
+  function esc(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+  try{
+    const r=await fetch(BACKEND+'/config/public',{cache:'no-store'});
+    if(!r.ok) throw new Error('config');
+    const cfg=await r.json();
+    const grupos={};
+    (cfg.servicos||[]).filter(x=>x.ativo!==false).forEach(x=>{
+      if(!grupos[x.servico]) grupos[x.servico]=[];
+      grupos[x.servico].push(x);
+    });
+    const cards=Object.keys(grupos).map(slug=>{
+      const itens=grupos[slug].sort((a,b)=>Number(a.preco)-Number(b.preco));
+      const x=itens[0];
+      const nome=x.nome||slug;
+      const desc=x.descricao||'Escolha o pacote ideal para o seu perfil.';
+      const destaque=itens.some(i=>i.destaque===true);
+      const qtd=x.qtd||x.plano;
+      const href='planos.html?servico='+encodeURIComponent(slug);
+      return '<a class="card '+(destaque?'hot':'')+'" href="'+href+'" data-service="'+esc(slug)+'" data-name="'+esc(nome)+'">'+
+        (destaque?'<span class="cbadge">Mais escolhido</span>':'')+
+        '<span class="cico">'+esc(x.icone||'📦')+'</span>'+
+        '<h3>'+esc(nome)+'</h3>'+
+        '<p>'+esc(desc)+'</p>'+
+        '<ul class="clist"><li>'+itens.length+' pacote(s) disponíveis</li></ul>'+
+        '<div class="cprice">A partir de '+Number(x.preco||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})+'<small>conforme o pacote escolhido</small></div>'+
+        '</a>';
+    }).join('');
+    grid.innerHTML=cards||'<div class="small">Nenhum serviço disponível no momento.</div>';
+    grid.querySelectorAll('.card').forEach(card=>{
+      card.addEventListener('click',async function(e){
         e.preventDefault();
-        var nome=this.dataset.service||'';
-        var href=this.getAttribute('href')||'';
-        var slug=href.split('servico=')[1]||'';
+        const slug=this.getAttribute('data-service'),nome=this.getAttribute('data-name')||slug,href=this.getAttribute('href');
         sessionStorage.setItem('servico',slug);
-        var lockKey='evento_servico_lock_v4_'+slug;
-        var now=Date.now(),last=Number(sessionStorage.getItem(lockKey)||0);
-        if(now-last<1500)return;
-        sessionStorage.setItem(lockKey,String(now));
-        if(typeof fbq==='function')fbq('track','ViewContent',{content_name:nome,content_category:'Servico'});
-        var key='mn24_track_v4_servico_'+slug;
+        if(typeof fbq==='function') fbq('track','ViewContent',{content_name:nome,content_category:'Servico'});
+        const key='mn24_track_v5_servico_'+slug;
         if(!sessionStorage.getItem(key)){
           try{
-            var r=await fetch('https://midianetdigital.onrender.com/evento',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tipo:'servico',servico:nome}),keepalive:true});
-            var j=await r.json().catch(function(){return {ok:false};});
-            if(r.ok&&j.ok)sessionStorage.setItem(key,'1');
-          }catch(err){console.warn('[Rastreamento]',err);}
+            const rr=await fetch(BACKEND+'/evento',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tipo:'servico',servico:nome}),keepalive:true});
+            const jj=await rr.json().catch(()=>({ok:false}));
+            if(rr.ok&&jj.ok) sessionStorage.setItem(key,'1');
+          }catch(_){}
         }
         window.location.href=href;
       });
     });
-  </script>
-  <script>
-    (async function(){
-      try{
-        var r=await fetch('https://midianetdigital.onrender.com/config/public',{cache:'no-store'});
-        if(!r.ok) return;
-        var cfg=await r.json();
-        var mapa={};
-        (cfg.servicos||[]).forEach(function(x){
-          if(!mapa[x.servico]) mapa[x.servico]=[];
-          mapa[x.servico].push(x);
-        });
-        document.querySelectorAll('.card[data-service]').forEach(function(card){
-          var slug=card.getAttribute('data-service');
-          var itens=(mapa[slug]||[]).filter(function(x){return x.ativo!==false;}).sort(function(a,b){return Number(a.preco)-Number(b.preco);});
-          if(!itens.length){card.style.display='none';return;}
-          var price=card.querySelector('.cprice');
-          if(price) price.innerHTML='A partir de '+Number(itens[0].preco||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})+'<small>conforme o pacote escolhido</small>';
-        });
-      }catch(e){console.warn('[CONFIG PAINEL]',e);}
-    })();
-  </script>
+  }catch(e){console.warn('[CONFIG PAINEL]',e);}
+})();
+</script>
 </body>
 </html>
