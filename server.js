@@ -220,15 +220,28 @@ const SERVICO_TITULOS = {
   'engajamento-br': '100% Brasileiros', 'engajamento-premium': 'BR Premium Ativos'
 };
 
+function ordemPadraoServico(servico) {
+  const ordem = {
+    'engajamento-30-70': 1,
+    'engajamento-60-40': 2,
+    'engajamento-br': 3,
+    'curtidas-brasileiras': 4,
+    'curtidas-mundiais': 5,
+    'visualizacoes': 6,
+    'visualizacoes-reels': 6
+  };
+  return ordem[servico] || 100;
+}
+
 function montarConfiguracaoPadrao() {
   const servicos = {};
   for (const [chave, preco] of Object.entries(PRECOS)) {
     const [servico, plano] = chave.split('__');
-    servicos[chave] = { servico, plano, id: SERVICO_MAP[chave] || '', preco: Number(preco || 0), custo: 0, ativo: true, nome: SERVICO_TITULOS[servico] || servico, qtd: plano, chave };
+    servicos[chave] = { servico, plano, id: SERVICO_MAP[chave] || '', preco: Number(preco || 0), custo: 0, ativo: true, nome: SERVICO_TITULOS[servico] || servico, qtd: plano, chave, ordem: ordemPadraoServico(servico) };
   }
   for (const [chave, preco] of Object.entries(COMBO_PRECOS)) {
     const [servico, plano] = chave.split('__');
-    servicos[chave] = { servico, plano, id: COMBOS[servico]?.followerServiceId || '', preco: Number(preco || 0), custo: 0, ativo: true, nome: SERVICO_TITULOS[servico] || servico, qtd: plano, chave };
+    servicos[chave] = { servico, plano, id: COMBOS[servico]?.followerServiceId || '', preco: Number(preco || 0), custo: 0, ativo: true, nome: SERVICO_TITULOS[servico] || servico, qtd: plano, chave, ordem: ordemPadraoServico(servico) };
   }
   return { servicos, anuncios: [], site: { nome: 'MidiaNetDigital', whatsapp: '5521991689838', horario: '09:00 às 22:00', garantia: '30 dias', texto: '' } };
 }
@@ -271,7 +284,7 @@ async function salvarConfiguracaoServico(item) {
     nome: String(item.nome || SERVICO_TITULOS[item.servico] || item.servico || '').trim(),
     qtd: String(item.qtd || item.plano || '').trim(),
     descricao: String(item.descricao || '').trim(), icone: String(item.icone || '📦').trim(),
-    destaque: item.destaque === true, por: String(item.por || '').trim()
+    destaque: item.destaque === true, por: String(item.por || '').trim(), ordem: Number.isFinite(Number(item.ordem)) ? Number(item.ordem) : 100
   };
   await registrarEvento(CONFIG_TIPO_SERVICO, JSON.stringify(payload), 0);
   return payload;
@@ -378,6 +391,7 @@ app.get('/config/public',async(req,res)=>{try{
 function senhaAdminValida(req){return req.query.senha===process.env.DASHBOARD_PASSWORD||req.headers['x-dashboard-password']===process.env.DASHBOARD_PASSWORD;}
 app.get('/admin/config',async(req,res)=>{if(!senhaAdminValida(req))return res.status(401).json({error:'Não autorizado'});try{return res.json(await buscarConfiguracao());}catch{return res.status(500).json({error:'Erro ao carregar configurações'});}});
 app.post('/admin/config/servico',async(req,res)=>{if(!senhaAdminValida(req))return res.status(401).json({error:'Não autorizado'});try{return res.json({ok:true,item:await salvarConfiguracaoServico(req.body||{})});}catch(err){return res.status(500).json({ok:false,error:err.message||'Erro ao salvar serviço'});}});
+app.post('/admin/config/ordem',async(req,res)=>{if(!senhaAdminValida(req))return res.status(401).json({error:'Não autorizado'});try{const itens=Array.isArray(req.body?.itens)?req.body.itens:[];const config=await buscarConfiguracao();const salvos=[];for(const it of itens){const x=config.servicos?.[it.chave];if(!x)continue;salvos.push(await salvarConfiguracaoServico({...x,ordem:Number(it.ordem||100)}));}return res.json({ok:true,itens:salvos});}catch(err){return res.status(500).json({ok:false,error:err.message||'Erro ao salvar ordem'});}});
 app.post('/admin/config/anuncio',async(req,res)=>{if(!senhaAdminValida(req))return res.status(401).json({error:'Não autorizado'});try{return res.json({ok:true,item:await salvarAnuncio(req.body||{})});}catch(err){return res.status(500).json({ok:false,error:err.message||'Erro ao salvar anúncio'});}});
 app.get('/admin/site-config',async(req,res)=>{if(!senhaAdminValida(req))return res.status(401).json({error:'Não autorizado'});try{return res.json((await buscarConfiguracao()).site||{});}catch(err){return res.status(500).json({error:'Erro ao carregar configuração do site'});}});
 app.post('/admin/site-config',async(req,res)=>{if(!senhaAdminValida(req))return res.status(401).json({error:'Não autorizado'});try{return res.json({ok:true,item:await salvarSiteConfig(req.body||{})});}catch(err){return res.status(500).json({ok:false,error:err.message||'Erro ao salvar configuração do site'});}});
