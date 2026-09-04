@@ -303,7 +303,271 @@
       .home-service-btn b{font-size:1.1rem}
     }
 
-  </style>
+  
+    /* ===== HOMEPAGE V7 — visual Instagram mobile, somente apresentação ===== */
+    :root{
+      --bg:#fff;
+      --s1:#fff7fb;
+      --s2:#fff;
+      --ac:#e1306c;
+      --ac2:#833ab4;
+      --ac3:#f77737;
+      --text:#111827;
+      --muted:#6b7280;
+      --border:rgba(225,48,108,.14);
+      --ig:linear-gradient(135deg,#833ab4 0%,#e1306c 52%,#f77737 100%);
+      --yellow:#ffd600;
+      --yellow2:#ffcc00;
+    }
+    html,body{background:#fff;color:var(--text)}
+    body{
+      background:
+        radial-gradient(circle at 0% 18%,rgba(225,48,108,.13),transparent 22rem),
+        radial-gradient(circle at 100% 36%,rgba(131,58,180,.13),transparent 24rem),
+        radial-gradient(circle at 50% 100%,rgba(247,119,55,.10),transparent 28rem),
+        #fff;
+    }
+    nav{
+      background:rgba(255,255,255,.94);
+      border-bottom:1px solid rgba(225,48,108,.10);
+      box-shadow:0 4px 24px rgba(131,58,180,.07);
+      backdrop-filter:blur(18px);
+    }
+    .logo{color:#111827}
+    .logo em{color:#e1306c}
+    .nav-links a{color:#4b5563}
+    .nav-links a:hover{color:#e1306c}
+    .nav-cta{
+      background:var(--yellow);
+      color:#111!important;
+      box-shadow:0 7px 20px rgba(255,214,0,.28);
+    }
+    .hero{
+      background:transparent;
+      padding-top:7.1rem;
+      padding-bottom:1.7rem;
+      max-width:1100px;
+    }
+    .hero-glow{
+      width:620px;height:620px;top:-270px;
+      background:radial-gradient(circle,rgba(225,48,108,.16) 0%,rgba(131,58,180,.08) 35%,transparent 70%);
+    }
+    .hero-content{position:relative}
+    .hero h1{
+      color:#111827;
+      font-size:clamp(2.35rem,7vw,4.7rem);
+      font-weight:900;
+      letter-spacing:-.055em;
+      text-shadow:0 3px 18px rgba(225,48,108,.08);
+    }
+    .hero h1 .hl{color:#e1306c}
+    .hero h1::first-letter{}
+    .hero-sub{
+      color:#374151;
+      font-size:clamp(.95rem,2vw,1.15rem);
+      font-weight:600;
+      max-width:720px;
+    }
+    .online-pill{
+      background:rgba(255,255,255,.92);
+      border:1px solid rgba(225,48,108,.18);
+      box-shadow:0 8px 28px rgba(225,48,108,.09);
+    }
+    .online-pill strong{color:#e1306c}
+    .online-pill>span:last-child{color:#111827}
+    .services-section{
+      background:transparent;
+      padding-top:1.1rem;
+    }
+    .home-service-grid{gap:1rem}
+    .home-service-card{
+      background:rgba(255,255,255,.94);
+      border:1px solid rgba(225,48,108,.16);
+      box-shadow:0 8px 28px rgba(131,58,180,.08);
+      color:#111827;
+    }
+    .home-service-card:hover{
+      box-shadow:0 14px 36px rgba(225,48,108,.14);
+    }
+    .service-icon{
+      background:var(--ig);
+      border:0;
+      color:#fff;
+      box-shadow:0 8px 22px rgba(225,48,108,.20);
+    }
+    .service-copy h3{color:#e1306c}
+    .service-copy p{color:#374151}
+    .from{color:#6b7280}
+    .price{color:#111827}
+    .price b{color:#e1306c}
+    .service-art{filter:drop-shadow(0 8px 15px rgba(225,48,108,.15))}
+    .home-service-btn,
+    .btn-eng,.btn-like,.btn-view{
+      background:var(--yellow)!important;
+      color:#111!important;
+      box-shadow:0 7px 18px rgba(255,204,0,.28)!important;
+      border:0;
+    }
+    .home-service-btn:hover{
+      background:var(--yellow2)!important;
+      transform:translateY(-1px);
+    }
+    .service-like,.service-view{border-color:rgba(225,48,108,.16)}
+    .service-like .service-icon,.service-view .service-icon{
+      background:var(--ig);
+      border:0;
+    }
+    .service-like .service-copy h3,.service-like .price b,
+    .service-view .service-copy h3,.service-view .price b{color:#e1306c}
+    .stories-section{
+      background:transparent;
+    }
+    .stories-sec-label,.stories-sec-h .hl,.sec-tag{color:#e1306c}
+    .stories-sec-h{color:#111827}
+    .stories-sec-sub{color:#6b7280}
+    .activity-bar,.metrics-bar,.trust-section{
+      background:rgba(255,247,251,.86);
+      border-color:rgba(225,48,108,.10);
+    }
+    .activity-text strong,.metric-num{color:#e1306c}
+    .trust-icon{
+      background:linear-gradient(135deg,rgba(131,58,180,.10),rgba(225,48,108,.10));
+      border-color:rgba(225,48,108,.15);
+    }
+    .trust-icon svg{stroke:#e1306c}
+    details{
+      background:#fff;
+      border-color:rgba(225,48,108,.12);
+      box-shadow:0 5px 18px rgba(131,58,180,.05);
+    }
+    summary{color:#111827}
+    summary::after{color:#e1306c}
+    details p{color:#6b7280}
+    footer{
+      background:#fff;
+      border-color:rgba(225,48,108,.10);
+    }
+    footer p,.footer-links a{color:#6b7280}
+    .wa-float{box-shadow:0 8px 25px rgba(37,211,102,.28)}
+    .story-ring{box-shadow:0 7px 20px rgba(225,48,108,.12)}
+    
+    /* Elementos decorativos: somente visuais, sem interação ou alteração de lógica. */
+    .hero::before,.hero::after{
+      position:absolute;
+      z-index:0;
+      pointer-events:none;
+      font-weight:900;
+      opacity:.16;
+      line-height:1;
+    }
+    .hero::before{
+      content:"◎";
+      left:-1rem;
+      top:10rem;
+      font-size:9rem;
+      color:#e1306c;
+      transform:rotate(-12deg);
+    }
+    .hero::after{
+      content:"♡";
+      right:-1rem;
+      top:12rem;
+      font-size:9rem;
+      color:#833ab4;
+      transform:rotate(12deg);
+    }
+    .hero-content::before,.hero-content::after{
+      position:absolute;
+      pointer-events:none;
+      z-index:-1;
+      font-size:3rem;
+      opacity:.20;
+    }
+    .hero-content::before{content:"♡";left:-4%;top:45%;color:#e1306c;transform:rotate(-18deg)}
+    .hero-content::after{content:"◎";right:-4%;top:55%;color:#833ab4;transform:rotate(18deg)}
+    
+    @media(max-width:800px){
+      nav{
+        height:64px;
+        padding:.65rem 4%;
+        background:rgba(255,255,255,.96);
+      }
+      .logo{font-size:1.13rem}
+      .mobile-menu{color:#111827}
+      .hero{
+        padding:5.05rem 4% 1.1rem;
+        max-width:100%;
+      }
+      .hero-glow{width:340px;height:340px;top:-135px}
+      .online-pill{
+        padding:.34rem .62rem;
+        margin-bottom:.7rem;
+        max-width:100%;
+      }
+      .online-avatars img{width:28px;height:28px}
+      .online-pill strong{font-size:.76rem}
+      .online-pill>span:last-child{font-size:.66rem}
+      .hero h1{
+        font-size:clamp(2rem,10vw,2.75rem);
+        line-height:1.02;
+        letter-spacing:-.045em;
+        margin:0 auto .55rem;
+        max-width:370px;
+      }
+      .hero-sub{
+        font-size:.82rem;
+        line-height:1.42;
+        max-width:330px;
+        font-weight:600;
+      }
+      .services-section{padding:1rem 4% 1.3rem}
+      .home-service-grid{gap:.7rem}
+      .home-service-card{
+        border-radius:16px;
+        padding:.78rem .72rem .72rem;
+        box-shadow:0 7px 22px rgba(225,48,108,.07);
+      }
+      .service-main{
+        grid-template-columns:54px 1fr 78px;
+        gap:.65rem;
+        min-height:112px;
+      }
+      .service-icon{width:54px;height:54px;border-radius:14px;font-size:1.7rem}
+      .service-copy h3{font-size:1.05rem;margin-bottom:.28rem}
+      .service-copy p{font-size:.74rem;margin-bottom:.38rem}
+      .from{font-size:.63rem}
+      .price{font-size:.72rem}
+      .price b{font-size:1.18rem}
+      .service-art{font-size:2.6rem}
+      .service-art span{font-size:1.25rem}
+      .service-art i{font-size:1.3rem}
+      .home-service-btn{
+        padding:.68rem .6rem;
+        border-radius:10px;
+        font-size:.78rem;
+        margin-top:.3rem;
+      }
+      .home-service-btn b{font-size:1rem}
+      .stories-section{padding:1.45rem 4% 1.7rem}
+      .stories-row{gap:1rem}
+      .story-ring{width:82px;height:82px}
+      .story-name{font-size:.72rem}
+      .story-handle{font-size:.61rem}
+      .story-quote{font-size:.59rem}
+      .activity-bar{padding:.7rem 4%}
+      .metrics-inner{padding:1.2rem 4%}
+      .metric-num{font-size:1.45rem}
+      .trust-section{padding:2rem 4%}
+      #faq{padding:2.4rem 4%!important}
+      
+      /* Instagram-inspired floating marks stay inside the mobile viewport. */
+      .hero::before{left:-2.8rem;top:9rem;font-size:6rem}
+      .hero::after{right:-2.8rem;top:12rem;font-size:6rem}
+      .hero-content::before{left:-2%;top:38%;font-size:2rem}
+      .hero-content::after{right:-2%;top:58%;font-size:2rem}
+    }
+
+</style>
 </head>
 <body>
 
@@ -333,8 +597,8 @@
           <span>clientes online agora</span>
         </div>
 
-        <h1>🚀Turbine seu Instagram!<br>com <span class="hl">Garantia de 30 dias + reposição inclusa em todos os serviços.</span></h1>
-        <p class="hero-sub"><br>Seguidores, curtidas e visualizações. Pagamento via Pix, sem pedir senha.</p>
+        <h1>🚀 TURBINE SEU INSTAGRAM! 🚀</h1>
+        <p class="hero-sub">Garantia de 30 dias + reposição inclusa em todos os serviços.</p>
       </div>
     </div>
   </div>
