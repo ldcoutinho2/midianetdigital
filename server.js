@@ -205,7 +205,7 @@ async function enviarComboSMM(pedido) {
       quantidade,
       links: [pedido.instagram],
       nome: pedido.instagram,
-      smmId: combo.followerServiceId
+      smmId: pedido.smmId || combo.followerServiceId
     }) || []));
   } else {
     for(const [svc,pct] of combo.followerSplit){
@@ -648,10 +648,12 @@ async function enviarBumpSMM(pedido) {
 
   if (!links.length) return null;
 
+  const configAtual = await buscarConfiguracao();
+  const bumpConfig = configAtual.servicos?.[`${BUMP_SERVICO}__${BUMP_PLANO}`];
   const bumpData = await enviarPedidoSMM({
     instagram: JSON.stringify(links),
     plano: BUMP_PLANO,
-    smmId: pedido.bumpSmmId || BUMP_SMM_ID
+    smmId: pedido.bumpSmmId || bumpConfig?.id || BUMP_SMM_ID
   });
 
   return bumpData;
@@ -1390,8 +1392,13 @@ app.post('/criar-pedido', async (req, res) => {
 
     const chave = `${servico}__${plano}`;
     const combo = COMBOS[servico];
-    const valorBaseCentavos = combo ? COMBO_PRECOS[chave] : PRECOS[chave];
-    const smmId = combo ? 'COMBO' : SERVICO_MAP[chave];
+    const configAtual = await buscarConfiguracao();
+    const itemConfig = configAtual.servicos?.[chave];
+    if (itemConfig && itemConfig.ativo === false) {
+      return res.status(400).json({ error: 'Este serviço/plano está temporariamente indisponível' });
+    }
+    const valorBaseCentavos = itemConfig ? Number(itemConfig.preco || 0) : (combo ? COMBO_PRECOS[chave] : PRECOS[chave]);
+    const smmId = itemConfig?.id || (combo ? 'COMBO' : SERVICO_MAP[chave]);
 
     if (!valorBaseCentavos || !smmId) {
       return res.status(400).json({ error: 'Servico ou plano invalido' });
@@ -1521,7 +1528,7 @@ console.log(JSON.stringify(payment, null, 2));
       // ── Order bump (500 curtidas brasileiras, divididas em até 2 publicações) ──
       bump: bumpAtivo,
       bump_publicacao: bump_publicacao || null,
-      bumpSmmId: BUMP_SMM_ID,
+      bumpSmmId: (configAtual.servicos?.[`${BUMP_SERVICO}__${BUMP_PLANO}`]?.id || BUMP_SMM_ID),
       status: 'aguardando_pagamento',
       gateway,
       paymentId: payment.id,
