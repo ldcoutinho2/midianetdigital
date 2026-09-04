@@ -292,110 +292,60 @@
 };
 
     var params = new URLSearchParams(location.search);
-    var servico = params.get("servico") || sessionStorage.getItem("servico") || "seguidores-brasileiros";
-    sessionStorage.setItem("servico", servico);
+var servico = params.get("servico") || sessionStorage.getItem("servico") || "seguidores-brasileiros";
+sessionStorage.setItem("servico", servico);
+var grid = document.getElementById("grid");
 
-    var dados = CAT[servico] || CAT["seguidores-brasileiros"];
-    document.body.setAttribute("data-service", servico);
-    document.getElementById("titulo").textContent = dados.titulo;
-    document.getElementById("sub").textContent = dados.sub;
-
-    var grid = document.getElementById("grid");
-
-    async function aplicarConfiguracaoDoPainel(){
-      try{
-        var resp = await fetch("https://midianetdigital.onrender.com/config/public?servico="+encodeURIComponent(servico), {cache:"no-store"});
-        if(!resp.ok) throw new Error("config");
-        var cfg = await resp.json();
-        var mapa = {};
-        (cfg.servicos || []).forEach(function(x){ mapa[String(x.plano)] = x; });
-        dados.planos = dados.planos.map(function(p){
-          var x = mapa[String(p.id)];
-          if(!x) return p;
-          return Object.assign({}, p, {
-            preco: Number(x.preco || 0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}),
-            ativo: x.ativo !== false
-          });
-        }).filter(function(p){ return p.ativo !== false; });
-      }catch(err){
-        console.warn("[CONFIG PAINEL] usando valores locais", err);
-      }
-    }
-
-    function precoParaNumero(preco){
-      return parseFloat(
-        preco.replace("R$","").replace(".","").replace(",",".").trim()
-      );
-    }
-
-    async function renderizarPlanos(){
-    dados.planos.forEach(function(p){
-      var feats = p.features.map(function(f){ return "<li>"+f+"</li>"; }).join("");
-      var badge = p.hot ? "<span class=\"cbadge\">🔥 Melhor custo-benefício</span>" : "";
-      var cls = p.hot ? "card hot" : "card";
-
-      var card = document.createElement("a");
-      card.className = cls;
-      card.href = "#";
-      card.innerHTML = badge +
-        "<div class=\"cname\">"+p.nome+"</div>"+
-        "<div class=\"cqtd\">"+p.qtd+"</div>"+
-        "<div class=\"cpreco\">"+p.preco+"</div>"+
-        "<div class=\"cper\">"+p.por+"</div>"+
-        "<ul class=\"clist\">"+feats+"</ul>"+
-        "<div class=\"cbtn\">Selecionar plano</div>";
-
-      card.addEventListener("click", async function(e){
+async function carregarPlanosDoPainel(){
+  try{
+    var resp=await fetch("https://midianetdigital.onrender.com/config/public?servico="+encodeURIComponent(servico),{cache:"no-store"});
+    if(!resp.ok) throw new Error("config");
+    var cfg=await resp.json();
+    var itens=(cfg.servicos||[]).filter(function(x){return x.ativo!==false;}).sort(function(a,b){return Number(a.preco)-Number(b.preco);});
+    if(!itens.length){grid.innerHTML="<p style='color:#8888aa;text-align:center'>Nenhum pacote disponível para este serviço.</p>";return;}
+    var titulo=(itens[0].nome||servico);
+    document.body.setAttribute("data-service",servico);
+    document.getElementById("titulo").textContent=titulo;
+    document.getElementById("sub").textContent=itens[0].descricao||"Escolha o pacote ideal para você.";
+    function esc(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+    grid.innerHTML="";
+    itens.forEach(function(x){
+      var card=document.createElement("a");
+      card.className="card"+(x.destaque?" hot":"");
+      card.href="#";
+      var qtd=x.qtd||x.plano;
+      var nomePlano=x.plano;
+      var por=x.por||"";
+      var desc=x.descricao||"";
+      card.innerHTML=(x.destaque?'<span class="cbadge">🔥 Melhor custo-benefício</span>':'')+
+        '<span class="cico">'+esc(x.icone||'📦')+'</span>'+
+        '<div class="cname">'+esc(nomePlano)+'</div>'+
+        '<div class="cqtd">'+esc(qtd)+'</div>'+
+        '<div class="cpreco">'+Number(x.preco||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})+'</div>'+
+        (por?'<div class="cper">'+esc(por)+'</div>':'')+
+        '<ul class="clist"><li>'+esc(desc||"Entrega rápida e suporte via WhatsApp")+'</li><li>ID configurado no painel</li></ul>'+
+        '<div class="cbtn">Selecionar plano</div>';
+      card.addEventListener("click",async function(e){
         e.preventDefault();
-
-        var valor = precoParaNumero(p.preco);
-        var contentName = p.qtd + " - " + dados.titulo;
-
-        sessionStorage.setItem("plano", p.id);
-        sessionStorage.setItem("planoLabel", p.qtd+" - "+p.preco+" ("+p.nome+")");
-        sessionStorage.setItem("plano_nome_pixel", contentName);
-        sessionStorage.setItem("valor_plano", valor);
-
-        // Evita duplicação por duplo clique e só marca o evento depois da confirmação do Render.
-        var planoLockKey = 'evento_plano_lock_v4_' + String(p.id);
-        var planoNow = Date.now();
-        var planoLast = Number(sessionStorage.getItem(planoLockKey) || 0);
-        if (planoNow - planoLast >= 1500) {
-          sessionStorage.setItem(planoLockKey, String(planoNow));
-          var planoTrackKey = 'mn24_track_v4_plano_' + String(servico) + '_' + String(p.id);
-          if(!sessionStorage.getItem(planoTrackKey)){
-            try {
-              var planoResp = await fetch('https://midianetdigital.onrender.com/evento', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ tipo: 'plano', plano: contentName }),
-                keepalive: true
-              });
-              var planoJson = await planoResp.json().catch(function(){return {ok:false};});
-              if(planoResp.ok && planoJson.ok) sessionStorage.setItem(planoTrackKey,'1');
-            } catch(err) { console.warn('[Rastreamento plano]',err); }
-          }
-        }
-
-        if(typeof fbq === "function"){
-          fbq('track','ViewContent',{
-            content_name: contentName,
-            content_category: 'Plano',
-            value: valor,
-            currency: 'BRL'
-          });
-        }
-
-        console.log("ViewContent plano:", contentName, valor);
-
-        window.location.href = "checkout.html?plano="+p.id+"&servico="+encodeURIComponent(servico)+"&pagamento=pix";
+        var valor=Number(x.preco||0);
+        sessionStorage.setItem("plano",String(x.plano));
+        sessionStorage.setItem("planoLabel",(qtd+" - "+Number(x.preco||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})));
+        sessionStorage.setItem("plano_nome_pixel",qtd+" - "+titulo);
+        sessionStorage.setItem("valor_plano",String(valor));
+        if(typeof fbq==="function") fbq("track","ViewContent",{content_name:qtd+" - "+titulo,content_category:"Plano",value:valor,currency:"BRL"});
+        try{
+          var rr=await fetch("https://midianetdigital.onrender.com/evento",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({tipo:"plano",plano:qtd+" - "+titulo}),keepalive:true});
+          await rr.json().catch(function(){});
+        }catch(_){}
+        window.location.href="checkout.html?plano="+encodeURIComponent(x.plano)+"&servico="+encodeURIComponent(servico)+"&pagamento=pix";
       });
-
       grid.appendChild(card);
     });
-    }
-
-    aplicarConfiguracaoDoPainel().then(renderizarPlanos);
-  </script>
+  }catch(err){
+    console.warn("[CONFIG PAINEL] usando catálogo local",err);
+    // O catálogo embutido antigo continua disponível somente como fallback.
+  }
+}
+carregarPlanosDoPainel();</script>
 </body>
 </html>
