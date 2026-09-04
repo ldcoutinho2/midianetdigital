@@ -511,6 +511,28 @@
     var chave = servico + "__" + plano;
     var valorBase = PRECOS[chave] || 0;
 
+async function carregarConfiguracaoCheckout(){
+  try{
+    var resp=await fetch("https://midianetdigital.onrender.com/config/public?servico="+encodeURIComponent(servico),{cache:"no-store"});
+    if(!resp.ok) return;
+    var cfg=await resp.json();
+    var item=(cfg.servicos||[]).find(function(x){return String(x.plano)===String(plano);});
+    if(!item) return;
+    if(item.ativo===false){
+      alert("Este pacote está temporariamente indisponível.");
+      return;
+    }
+    valorBase=Number(item.preco||0);
+    if(item.nome) SL[servico]=item.nome;
+    if(item.icone) ICONS[servico]=item.icone;
+    if(item.qtd) PL[plano]=item.qtd;
+    if(item.por) sessionStorage.setItem("planoPor",item.por);
+    atualizarResumo();
+    if(isCombo) atualizarResumoCombo();
+  }catch(err){console.warn("[CONFIG CHECKOUT]",err);}
+}
+carregarConfiguracaoCheckout();
+
     function valorTotal(){ return valorBase + (bumpAtivo ? BUMP_VALOR : 0); }
 
     function atualizarResumo(){
