@@ -288,7 +288,119 @@ async function buscarEventos(filtros = {}) {
   return resp.data || [];
 }
 
-function montarDashboard(eventos) {
+
+const CONFIG_TIPO_SERVICO = 'config_servico';
+const CONFIG_TIPO_ANUNCIO = 'config_anuncio';
+
+const SERVICO_TITULOS = {
+  'seguidores-brasileiros':'Seguidores Brasileiros',
+  'seguidores-mundiais':'Seguidores Mundiais',
+  'seguidores-organicos':'Seguidores Orgânicos',
+  'curtidas-brasileiras':'Curtidas Brasileiras',
+  'visualizacoes':'Visualizações de Reels',
+  'comentarios':'Comentários',
+  'engajamento-30-70':'30% BRASILEIROS + 70% Mundiais',
+  'engajamento-60-40':'60% BRASILEIROS + 40% Mundiais',
+  'engajamento-br':'100% Brasileiros',
+  'engajamento-premium':'BR Premium Ativos'
+};
+
+function montarConfiguracaoPadrao() {
+  const servicos = {};
+  for (const [chave, preco] of Object.entries(PRECOS)) {
+    const [servico, plano] = chave.split('__');
+    servicos[chave] = {
+      servico, plano, id: SERVICO_MAP[chave] || '',
+      preco: Number(preco || 0), custo: 0, ativo: true,
+      nome: SERVICO_TITULOS[servico] || servico,
+      qtd: plano
+    };
+  }
+  for (const [chave, preco] of Object.entries(COMBO_PRECOS)) {
+    const [servico, plano] = chave.split('__');
+    servicos[chave] = {
+      servico, plano,
+      id: COMBOS[servico]?.followerServiceId || '',
+      preco: Number(preco || 0), custo: 0, ativo: true,
+      nome: SERVICO_TITULOS[servico] || servico,
+      qtd: plano
+    };
+  }
+  return { servicos, anuncios: [] };
+}
+
+async function buscarConfiguracao() {
+  const base = montarConfiguracaoPadrao();
+  if (!SUPABASE_URL || !SUPABASE_KEY) return base;
+  try {
+    const url = `${SUPABASE_URL}/rest/v1/eventos?select=*&tipo=in.(${CONFIG_TIPO_SERVICO},${CONFIG_TIPO_ANUNCIO})&order=created_at.desc&limit=2000`;
+    const resp = await axios.get(url, {
+      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
+    });
+    const vistos = new Set();
+    for (const e of (resp.data || [])) {
+      try {
+        const payload = JSON.parse(e.nome || '{}');
+        if (e.tipo === CONFIG_TIPO_SERVICO) {
+          const chave = payload.chave || (payload.servico && payload.plano ? `${payload.servico}__${payload.plano}` : '');
+          if (!chave || vistos.has('s:' + chave)) continue;
+          if (base.servicos[chave]) base.servicos[chave] = { ...base.servicos[chave], ...payload, chave };
+          else base.servicos[chave] = { ...payload, chave };
+          vistos.add('s:' + chave);
+        } else if (e.tipo === CONFIG_TIPO_ANUNCIO) {
+          const id = payload.id || e.created_at;
+          if (vistos.has('a:' + id)) continue;
+          base.anuncios.push(payload);
+          vistos.add('a:' + id);
+        }
+      } catch (_) {}
+    }
+    return base;
+  } catch (err) {
+    console.error('[CONFIG] Falha ao carregar configurações:', err.response?.data || err.message);
+    return base;
+  }
+}
+
+async function salvarConfiguracaoServico(item) {
+  const chave = item.chave || `${item.servico}__${item.plano}`;
+  const payload = {
+    chave,
+    servico: String(item.servico || ''),
+    plano: String(item.plano || ''),
+    id: String(item.id || ''),
+    preco: Math.round(Number(item.preco || 0)),
+    custo: Number(item.custo || 0),
+    ativo: item.ativo !== false,
+    nome: String(item.nome || SERVICO_TITULOS[item.servico] || item.servico || ''),
+    qtd: String(item.qtd || item.plano || '')
+  };
+  await registrarEvento(CONFIG_TIPO_SERVICO, JSON.stringify(payload), 0);
+  return payload;
+}
+
+async function salvarAnuncio(anuncio) {
+  const payload = {
+    id: anuncio.id || uuidv4(),
+    data: String(anuncio.data || new Date().toISOString().slice(0,10)),
+    plataforma: String(anuncio.plataforma || 'Meta Ads'),
+    campanha: String(anuncio.campanha || ''),
+    valor: Number(anuncio.valor || 0)
+  };
+  await registrarEvento(CONFIG_TIPO_ANUNCIO, JSON.stringify(payload), payload.valor);
+  return payload;
+}
+
+function custoDoPedidoConfig(eventoNome, config) {
+  const texto = String(eventoNome || '');
+  const chave = Object.keys(config.servicos || {}).find(k => {
+    const [svc, plano] = k.split('__');
+    return texto.includes(` ${svc} ${plano}`) || texto.includes(`${svc} ${plano}`);
+  });
+  return chave ? Number(config.servicos[chave].custo || 0) : 0;
+}
+
+function montarDashboard(eventos, config = montarConfiguracaoPadrao()) {
   const dados = {
     visitantes: 0,
     servicos: 0,
@@ -669,6 +781,47 @@ app.get('/dashboard-data', async (req, res) => {
 
 
 
+
+app.get('/config/public', async (req, res) => {
+  try {
+    const config = await buscarConfiguracao();
+    const servico = String(req.query.servico || '');
+    const itens = Object.values(config.servicos || {}).filter(x => !servico || x.servico === servico);
+    return res.json({
+      servicos: itens.map(x => ({
+        chave: x.chave || `${x.servico}__${x.plano}`,
+        servico: x.servico, plano: x.plano, preco: Number(x.preco || 0) / 100,
+        ativo: x.ativo !== false, nome: x.nome || SERVICO_TITULOS[x.servico] || x.servico, qtd: x.qtd || x.plano
+      })),
+      titulos: SERVICO_TITULOS
+    });
+  } catch (err) {
+    return res.status(500).json({ error: 'Erro ao carregar configuração pública' });
+  }
+});
+
+function senhaAdminValida(req) {
+  return req.query.senha === process.env.DASHBOARD_PASSWORD || req.headers['x-dashboard-password'] === process.env.DASHBOARD_PASSWORD;
+}
+
+app.get('/admin/config', async (req, res) => {
+  if (!senhaAdminValida(req)) return res.status(401).json({error:'Não autorizado'});
+  try { return res.json(await buscarConfiguracao()); }
+  catch (err) { return res.status(500).json({error:'Erro ao carregar configurações'}); }
+});
+
+app.post('/admin/config/servico', async (req, res) => {
+  if (!senhaAdminValida(req)) return res.status(401).json({error:'Não autorizado'});
+  try { return res.json({ok:true, item: await salvarConfiguracaoServico(req.body || {})}); }
+  catch (err) { console.error('[ADMIN CONFIG]', err.response?.data || err.message); return res.status(500).json({ok:false,error:'Erro ao salvar serviço'}); }
+});
+
+app.post('/admin/config/anuncio', async (req, res) => {
+  if (!senhaAdminValida(req)) return res.status(401).json({error:'Não autorizado'});
+  try { return res.json({ok:true, item: await salvarAnuncio(req.body || {})}); }
+  catch (err) { console.error('[ADMIN ADS]', err.response?.data || err.message); return res.status(500).json({ok:false,error:'Erro ao salvar anúncio'}); }
+});
+
 app.get('/dashboard', (req, res) => {
   const usuario = req.query.usuario;
   const senha = req.query.senha;
@@ -841,6 +994,65 @@ button{background:#e8ff47;color:#080810;border:0;padding:10px 15px;border-radius
 
 <script>
 const senha = new URLSearchParams(location.search).get('senha') || '';
+async function adminFetch(url, options){
+  options = options || {};
+  options.headers = Object.assign({'x-dashboard-password': senha, 'Content-Type':'application/json'}, options.headers || {});
+  return fetch(url, options);
+}
+function moedaAdmin(v){ return Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
+let adminConfig = null;
+async function carregarAdmin(){
+  try{
+    const r = await adminFetch('/admin/config');
+    if(!r.ok) throw new Error('Não autorizado');
+    adminConfig = await r.json();
+    renderAdmin();
+  }catch(e){
+    document.getElementById('adminStatus').textContent = 'Não foi possível carregar a configuração: '+e.message;
+  }
+}
+function renderAdmin(){
+  const el=document.getElementById('servicosAdmin');
+  const itens=Object.values(adminConfig.servicos||{}).sort((a,b)=>(a.servico+a.plano).localeCompare(b.servico+b.plano));
+  el.innerHTML=itens.map(x=>`
+    <div class="row" style="display:grid;grid-template-columns:1.5fr .7fr .8fr .8fr .7fr auto;gap:8px;align-items:center">
+      <span><b>${x.nome||x.servico}</b><br><small>${x.servico} • ${x.plano}</small></span>
+      <input id="id_${CSS.escape(x.chave||x.servico+'__'+x.plano)}" value="${x.id||''}" placeholder="ID">
+      <input id="custo_${CSS.escape(x.chave||x.servico+'__'+x.plano)}" type="number" step="0.01" value="${Number(x.custo||0)}" placeholder="Custo">
+      <input id="preco_${CSS.escape(x.chave||x.servico+'__'+x.plano)}" type="number" step="0.01" value="${(Number(x.preco||0)/100).toFixed(2)}" placeholder="Venda">
+      <label style="font-size:12px"><input id="ativo_${CSS.escape(x.chave||x.servico+'__'+x.plano)}" type="checkbox" ${x.ativo!==false?'checked':''}> Ativo</label>
+      <button onclick='salvarServico(${JSON.stringify(x)})'>Salvar</button>
+    </div>`).join('');
+  renderAds();
+}
+async function salvarServico(x){
+  const chave=x.chave||x.servico+'__'+x.plano;
+  const id=(document.getElementById('id_'+CSS.escape(chave))||{}).value||'';
+  const custo=Number((document.getElementById('custo_'+CSS.escape(chave))||{}).value||0);
+  const preco=Number((document.getElementById('preco_'+CSS.escape(chave))||{}).value||0);
+  const ativo=(document.getElementById('ativo_'+CSS.escape(chave))||{}).checked;
+  const r=await adminFetch('/admin/config/servico',{method:'POST',body:JSON.stringify({...x,chave,id,custo,preco:Math.round(preco*100),ativo})});
+  const j=await r.json();
+  document.getElementById('adminStatus').textContent=j.ok?'✅ Serviço salvo: '+chave:'❌ '+(j.error||'Erro');
+  if(j.ok){ adminConfig.servicos[chave]=j.item; renderAdmin(); }
+}
+function renderAds(){
+  const el=document.getElementById('adsLista');
+  const ads=adminConfig?.anuncios||[];
+  el.innerHTML=ads.slice().sort((a,b)=>String(b.data).localeCompare(String(a.data))).map(a=>`<div class="row"><span>${a.data} • ${a.plataforma} • ${a.campanha||'Sem campanha'}</span><strong>${moedaAdmin(a.valor)}</strong></div>`).join('') || '<div class="small">Nenhum investimento cadastrado.</div>';
+}
+async function salvarAds(){
+  const data=document.getElementById('adsData').value;
+  const plataforma=document.getElementById('adsPlataforma').value;
+  const campanha=document.getElementById('adsCampanha').value;
+  const valor=Number(document.getElementById('adsValor').value||0);
+  if(!data||!valor){ alert('Informe data e valor.'); return; }
+  const r=await adminFetch('/admin/config/anuncio',{method:'POST',body:JSON.stringify({data,plataforma,campanha,valor})});
+  const j=await r.json();
+  document.getElementById('adminStatus').textContent=j.ok?'✅ Investimento salvo':'❌ '+(j.error||'Erro');
+  if(j.ok){ adminConfig.anuncios.push(j.item); renderAds(); carregar(); }
+}
+
 let dadosGlobais = null;
 
 const paginas = {
