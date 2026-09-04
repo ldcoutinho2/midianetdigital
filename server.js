@@ -385,7 +385,7 @@ app.get('/config/public',async(req,res)=>{try{
     chave:x.chave||String(x.servico)+'__'+String(x.plano),
     servico:x.servico,plano:x.plano,preco:Number(x.preco||0)/100,custo:Number(x.custo||0),
     ativo:x.ativo!==false,nome:x.nome||SERVICO_TITULOS[x.servico]||x.servico,qtd:x.qtd||x.plano,
-    descricao:x.descricao||'',icone:x.icone||'📦',destaque:x.destaque===true,por:x.por||''
+    descricao:x.descricao||'',icone:x.icone||'📦',destaque:x.destaque===true,por:x.por||'',ordem:Number(x.ordem||100)
   })),titulos:SERVICO_TITULOS,site:config.site||{}});
 }catch{res.status(500).json({error:'Erro ao carregar configuração pública'});}});
 function senhaAdminValida(req){return req.query.senha===process.env.DASHBOARD_PASSWORD||req.headers['x-dashboard-password']===process.env.DASHBOARD_PASSWORD;}
