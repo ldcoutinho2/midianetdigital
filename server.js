@@ -212,6 +212,7 @@ async function buscarEventos(filtros = {}) {
 
 const CONFIG_TIPO_SERVICO = 'config_servico';
 const CONFIG_TIPO_ANUNCIO = 'config_anuncio';
+const CONFIG_TIPO_SITE = 'config_site';
 const SERVICO_TITULOS = {
   'seguidores-brasileiros': 'Seguidores Brasileiros', 'seguidores-mundiais': 'Seguidores Mundiais', 'seguidores-organicos': 'Seguidores Orgânicos',
   'curtidas-brasileiras': 'Curtidas Brasileiras', 'visualizacoes': 'Visualizações de Reels', 'comentarios': 'Comentários',
@@ -229,14 +230,14 @@ function montarConfiguracaoPadrao() {
     const [servico, plano] = chave.split('__');
     servicos[chave] = { servico, plano, id: COMBOS[servico]?.followerServiceId || '', preco: Number(preco || 0), custo: 0, ativo: true, nome: SERVICO_TITULOS[servico] || servico, qtd: plano, chave };
   }
-  return { servicos, anuncios: [] };
+  return { servicos, anuncios: [], site: { nome: 'MidiaNetDigital', whatsapp: '5521991689838', horario: '09:00 às 22:00', garantia: '30 dias', texto: '' } };
 }
 
 async function buscarConfiguracao() {
   const base = montarConfiguracaoPadrao();
   if (!SUPABASE_URL || !SUPABASE_KEY) return base;
   try {
-    const url = `${SUPABASE_URL}/rest/v1/eventos?select=*&tipo=in.(${CONFIG_TIPO_SERVICO},${CONFIG_TIPO_ANUNCIO})&order=created_at.desc&limit=2000`;
+    const url = `${SUPABASE_URL}/rest/v1/eventos?select=*&tipo=in.(${CONFIG_TIPO_SERVICO},${CONFIG_TIPO_ANUNCIO},${CONFIG_TIPO_SITE})&order=created_at.desc&limit=2000`;
     const resp = await axios.get(url, { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } });
     const vistos = new Set();
     for (const e of resp.data || []) {
@@ -279,6 +280,18 @@ async function salvarConfiguracaoServico(item) {
 async function salvarAnuncio(anuncio) {
   const payload = { id: anuncio.id || uuidv4(), data: String(anuncio.data || new Date().toISOString().slice(0,10)), plataforma: String(anuncio.plataforma || 'Meta Ads'), campanha: String(anuncio.campanha || ''), valor: Number(anuncio.valor || 0) };
   await registrarEvento(CONFIG_TIPO_ANUNCIO, JSON.stringify(payload), 0);
+  return payload;
+}
+
+async function salvarSiteConfig(site) {
+  const payload = {
+    nome: String(site.nome || 'MidiaNetDigital').trim(),
+    whatsapp: String(site.whatsapp || '').replace(/\D/g, ''),
+    horario: String(site.horario || '').trim(),
+    garantia: String(site.garantia || '').trim(),
+    texto: String(site.texto || '').trim()
+  };
+  await registrarEvento(CONFIG_TIPO_SITE, JSON.stringify(payload), 0);
   return payload;
 }
 
@@ -360,12 +373,14 @@ app.get('/config/public',async(req,res)=>{try{
     servico:x.servico,plano:x.plano,preco:Number(x.preco||0)/100,custo:Number(x.custo||0),
     ativo:x.ativo!==false,nome:x.nome||SERVICO_TITULOS[x.servico]||x.servico,qtd:x.qtd||x.plano,
     descricao:x.descricao||'',icone:x.icone||'📦',destaque:x.destaque===true,por:x.por||''
-  })),titulos:SERVICO_TITULOS});
+  })),titulos:SERVICO_TITULOS,site:config.site||{}});
 }catch{res.status(500).json({error:'Erro ao carregar configuração pública'});}});
 function senhaAdminValida(req){return req.query.senha===process.env.DASHBOARD_PASSWORD||req.headers['x-dashboard-password']===process.env.DASHBOARD_PASSWORD;}
 app.get('/admin/config',async(req,res)=>{if(!senhaAdminValida(req))return res.status(401).json({error:'Não autorizado'});try{return res.json(await buscarConfiguracao());}catch{return res.status(500).json({error:'Erro ao carregar configurações'});}});
 app.post('/admin/config/servico',async(req,res)=>{if(!senhaAdminValida(req))return res.status(401).json({error:'Não autorizado'});try{return res.json({ok:true,item:await salvarConfiguracaoServico(req.body||{})});}catch(err){return res.status(500).json({ok:false,error:err.message||'Erro ao salvar serviço'});}});
 app.post('/admin/config/anuncio',async(req,res)=>{if(!senhaAdminValida(req))return res.status(401).json({error:'Não autorizado'});try{return res.json({ok:true,item:await salvarAnuncio(req.body||{})});}catch(err){return res.status(500).json({ok:false,error:err.message||'Erro ao salvar anúncio'});}});
+app.get('/admin/site-config',async(req,res)=>{if(!senhaAdminValida(req))return res.status(401).json({error:'Não autorizado'});try{return res.json((await buscarConfiguracao()).site||{});}catch(err){return res.status(500).json({error:'Erro ao carregar configuração do site'});}});
+app.post('/admin/site-config',async(req,res)=>{if(!senhaAdminValida(req))return res.status(401).json({error:'Não autorizado'});try{return res.json({ok:true,item:await salvarSiteConfig(req.body||{})});}catch(err){return res.status(500).json({ok:false,error:err.message||'Erro ao salvar configuração do site'});}});
 
 app.get('/dashboard',(req,res)=>{
   const usuario=req.query.usuario,senha=req.query.senha;
