@@ -323,7 +323,7 @@ async function carregarPlanosDoPainel(){
         '<div class="cqtd">'+esc(qtd)+'</div>'+
         '<div class="cpreco">'+Number(x.preco||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})+'</div>'+
         (por?'<div class="cper">'+esc(por)+'</div>':'')+
-        '<ul class="clist"><li>'+esc(desc||"Entrega rápida e suporte via WhatsApp")+'</li><li>ID configurado no painel</li></ul>'+
+        '<ul class="clist"><li>'+esc(desc||"Entrega rápida e suporte via WhatsApp")+'</li><li>ID configurado no painel</li>'+(Number(x.bonusCurtidas||0)>0?'<li>🎁 +'+Number(x.bonusCurtidas).toLocaleString("pt-BR")+' curtidas de bônus</li>':'')+(Number(x.bonusVisualizacoes||0)>0?'<li>🎁 +'+Number(x.bonusVisualizacoes).toLocaleString("pt-BR")+' visualizações de bônus</li>':'')+'</ul>'+
         '<div class="cbtn">Selecionar plano</div>';
       card.addEventListener("click",async function(e){
         e.preventDefault();
