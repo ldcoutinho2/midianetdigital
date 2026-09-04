@@ -275,11 +275,39 @@ nav{background:rgba(255,255,255,.96)!important;border:1px solid rgba(225,48,108,
 .pkg-name{color:#101827!important}.pkg-bonuses{color:#374151!important}.pkg-from{color:#6b7280!important}.pkg-price{color:#e1306c!important}.pkg-buy .cbtn{background:#ffd600!important;color:#111827!important;box-shadow:0 5px 15px rgba(255,214,0,.22)!important}.pkg-icon{background:linear-gradient(135deg,#833ab4,#e1306c,#f77737)!important}
 .cbadge{background:#e1306c!important;color:#fff!important}
 @media(max-width:600px){body{background:linear-gradient(180deg,#fff 0%,#fff7fb 55%,#ffd8ef 100%)!important}.page{padding-top:5rem!important}.card{box-shadow:0 5px 16px rgba(225,48,108,.08)!important}}
+
+/* ===== VISUAL FINAL — REFERÊNCIA INSTAGRAM / MOBILE ===== */
+:root{--pink:#e1306c;--pink2:#ff1493;--purple:#833ab4;--orange:#f77737;--yellow:#ffd600;--ink:#101828;--soft:#fff4fa}
+html,body{background:#fff!important;color:var(--ink)!important}
+body{min-height:100vh;background:radial-gradient(circle at 5% 15%,rgba(225,48,108,.16),transparent 20rem),radial-gradient(circle at 100% 38%,rgba(131,58,180,.14),transparent 22rem),linear-gradient(180deg,#fff 0%,#fff9fc 48%,#ffe1f1 100%)!important}
+body:after{content:"";position:fixed;inset:auto 0 0;height:34vh;z-index:0;pointer-events:none;background:linear-gradient(160deg,transparent 0 35%,rgba(225,48,108,.07) 36% 50%,rgba(131,58,180,.12) 51% 72%,rgba(225,48,108,.09) 73%);clip-path:polygon(0 42%,18% 60%,37% 42%,58% 72%,78% 48%,100% 67%,100% 100%,0 100%)}
+.blob{z-index:0;filter:blur(80px)}
+.b1{background:#e1306c!important;opacity:.10!important}.b2{background:#833ab4!important;opacity:.08!important}
+nav{position:relative!important;top:auto!important;left:3%!important;right:auto!important;width:94%!important;margin:10px 0 0!important;padding:.8rem 1rem!important;border:1px solid rgba(225,48,108,.12)!important;border-radius:18px!important;background:rgba(255,255,255,.94)!important;box-shadow:0 7px 25px rgba(225,48,108,.09)!important;backdrop-filter:blur(15px)!important}
+.logo{font-size:1.08rem!important;color:#101828!important}.logo em{color:var(--pink)!important}.nav-back{font-size:.72rem!important;padding:.42rem .72rem!important;color:#374151!important;border-color:rgba(225,48,108,.14)!important;background:#fff!important}
+.page{padding:1.15rem 4% 4rem!important;z-index:2!important}
+.prog{margin:0 auto 1.1rem!important;transform:scale(.86)}
+.st{font-size:.65rem!important;color:#a0a7b3!important}.st.on,.st.dn{color:var(--pink)!important}.sd{width:23px!important;height:23px!important;font-size:.63rem!important;background:#fff!important}.st.on .sd{background:linear-gradient(135deg,var(--purple),var(--pink))!important;color:#fff!important}.st.dn .sd{color:var(--pink)!important;background:#fff0f7!important;border-color:#ffc9df!important}.sl{width:20px!important;background:#f2d7e4!important}
+.ph{max-width:760px!important;margin-bottom:1.35rem!important;text-align:center!important}.ph h1{font-size:clamp(1.8rem,7vw,3.2rem)!important;line-height:1.02!important;font-weight:900!important;letter-spacing:-.055em!important;color:#101828!important;text-transform:none!important}.ph h1:after{content:"";display:block;width:74px;height:5px;border-radius:99px;margin:.75rem auto 0;background:linear-gradient(90deg,var(--pink),var(--purple))}.ph p{font-size:.82rem!important;color:#4b5563!important;margin-top:.7rem!important}.trust-line{margin-top:.75rem!important;gap:.4rem!important}.trust-pill{font-size:.62rem!important;padding:.34rem .55rem!important;background:#fff!important;color:#374151!important;border:1px solid rgba(225,48,108,.12)!important;box-shadow:0 3px 12px rgba(225,48,108,.06)!important}
+#grid{width:100%!important;max-width:920px!important;display:flex!important;flex-direction:column!important;gap:.72rem!important}
+.card{width:100%!important;min-height:112px!important;display:grid!important;grid-template-columns:70px minmax(0,1fr) 190px!important;grid-template-areas:"icon info buy"!important;align-items:center!important;gap:1rem!important;padding:1rem 1.1rem!important;position:relative!important;overflow:hidden!important;background:rgba(255,255,255,.97)!important;border:1.5px solid rgba(225,48,108,.22)!important;border-radius:19px!important;box-shadow:0 7px 22px rgba(225,48,108,.09)!important;color:#101828!important}
+.card:before{content:""!important;position:absolute!important;inset:0 auto 0 0!important;width:5px!important;height:100%!important;border-radius:19px 0 0 19px!important;background:linear-gradient(180deg,var(--purple),var(--pink),var(--orange))!important;opacity:1!important}
+.pkg-icon{grid-area:icon!important;width:66px!important;height:66px!important;border-radius:16px!important;background:linear-gradient(135deg,var(--purple),var(--pink) 55%,var(--orange))!important;color:#fff!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:1.65rem!important;font-weight:900!important;box-shadow:0 7px 17px rgba(225,48,108,.2)!important}
+.pkg-info{grid-area:info!important;min-width:0!important}.pkg-name{font-size:1.15rem!important;font-weight:900!important;color:#101828!important;margin:0 0 .28rem!important;line-height:1.15!important}.pkg-bonuses{display:flex!important;flex-direction:column!important;gap:.18rem!important;color:#273244!important;font-size:.8rem!important;font-weight:600!important;line-height:1.25!important}.pkg-bonuses span{white-space:normal!important}.pkg-bonuses span.like{color:#273244!important}.pkg-bonuses span.like:before{content:"♥";color:var(--pink);margin-right:.42rem;font-size:.95rem}.pkg-bonuses span.view:before{content:"▶";color:var(--pink);margin-right:.42rem;font-size:.78rem}.pkg-bonuses span.info:before{content:"✦";color:var(--pink);margin-right:.42rem}
+.pkg-buy{grid-area:buy!important;display:grid!important;grid-template-columns:1fr 1.35fr!important;grid-template-areas:"from from" "price btn"!important;align-items:center!important;column-gap:.75rem!important}.pkg-from{grid-area:from!important;font-size:.68rem!important;color:#6b7280!important;margin-bottom:.12rem!important}.pkg-price{grid-area:price!important;font-size:1.55rem!important;font-weight:900!important;color:var(--pink)!important;line-height:1.05!important;white-space:nowrap!important}.pkg-buy .cbtn{grid-area:btn!important;background:var(--yellow)!important;color:#111!important;border:0!important;border-radius:999px!important;padding:.78rem .7rem!important;font-size:.78rem!important;font-weight:900!important;box-shadow:0 7px 18px rgba(255,214,0,.3)!important}.pkg-buy .cbtn:hover{background:#ffca00!important}
+.card.hot{border-color:#ff2d8a!important;box-shadow:0 9px 26px rgba(225,48,108,.13)!important}.card.hot:after{content:"🔥 MAIS VENDIDO";position:absolute;top:-1px;left:50%;transform:translate(-50%,-50%);background:linear-gradient(90deg,var(--pink),var(--purple));color:#fff;padding:.25rem .8rem;border-radius:999px;font-size:.58rem;font-weight:900;letter-spacing:.03em;white-space:nowrap}
+footer{width:100%!important;max-width:920px!important;margin-top:2rem!important;padding:1.2rem!important;border:1px solid rgba(225,48,108,.15)!important;border-radius:18px!important;background:rgba(255,255,255,.86)!important;color:#6b7280!important}
+.ig-decor{position:fixed;z-index:1;pointer-events:none;opacity:.72;filter:drop-shadow(0 9px 13px rgba(225,48,108,.16))}.ig-decor svg{width:100%;height:100%}.ig1{width:110px;height:110px;left:-25px;top:150px;transform:rotate(-13deg)}.ig2{width:92px;height:92px;right:-18px;top:300px;transform:rotate(12deg)}.ig3{width:72px;height:72px;left:7px;bottom:180px;transform:rotate(9deg)}.ig4{width:76px;height:76px;right:5px;bottom:95px;transform:rotate(-12deg)}
+.heart-decor{position:fixed;z-index:1;pointer-events:none;color:#f54291;font-size:2.4rem;opacity:.22}.heart1{left:17%;top:34%}.heart2{right:15%;top:53%}
+@media(max-width:600px){
+ nav{left:2.5%!important;width:95%!important;margin-top:7px!important;padding:.7rem .8rem!important}.logo{font-size:.95rem!important}.page{padding:1rem 3.5% 3rem!important}.prog{margin-bottom:1rem!important;transform:scale(.74)}.ph{margin-bottom:1rem!important}.ph h1{font-size:1.72rem!important}.ph h1:after{width:62px;height:4px;margin:.55rem auto 0}.ph p{font-size:.7rem!important;margin-top:.55rem!important}.trust-pill{font-size:.55rem!important;padding:.28rem .42rem!important}
+ #grid{gap:.62rem!important}.card{min-height:100px!important;grid-template-columns:55px minmax(0,1fr)!important;grid-template-areas:"icon info" "icon buy"!important;gap:.08rem .65rem!important;padding:.72rem .68rem!important;border-radius:15px!important}.card:before{width:4px!important}.pkg-icon{width:50px!important;height:50px!important;border-radius:12px!important;font-size:1.2rem!important}.pkg-name{font-size:.91rem!important;margin-bottom:.18rem!important}.pkg-bonuses{font-size:.61rem!important;gap:.14rem!important}.pkg-buy{grid-area:buy!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:.45rem!important;margin-top:.15rem!important}.pkg-from{font-size:.52rem!important}.pkg-price{font-size:1.05rem!important}.pkg-buy .cbtn{min-width:112px!important;width:auto!important;padding:.54rem .55rem!important;font-size:.61rem!important}.card.hot:after{font-size:.46rem!important;padding:.2rem .55rem!important}.ig1{width:66px;height:66px;left:-15px;top:135px}.ig2{width:62px;height:62px;right:-13px;top:290px}.ig3{width:52px;height:52px;left:-4px;bottom:170px}.ig4{width:55px;height:55px;right:-3px;bottom:80px}.heart1{left:9%;top:38%;font-size:1.7rem}.heart2{right:8%;top:58%;font-size:1.7rem}
+}
 </style>
 </head>
 
 <body>
-  <div class="blob b1"></div><div class="blob b2"></div>
+  <div class="blob b1"></div><div class="blob b2"></div><div class="ig-decor ig1"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="5" fill="url(#g1)"/><circle cx="12" cy="12" r="4.2" stroke="white" stroke-width="2"/><circle cx="17.4" cy="6.7" r="1.2" fill="white"/><defs><linearGradient id="g1" x1="3" y1="21" x2="21" y2="3"><stop stop-color="#f77737"/><stop offset=".5" stop-color="#e1306c"/><stop offset="1" stop-color="#833ab4"/></linearGradient></defs></svg></div><div class="ig-decor ig2"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="5" fill="url(#g2)"/><circle cx="12" cy="12" r="4.2" stroke="white" stroke-width="2"/><circle cx="17.4" cy="6.7" r="1.2" fill="white"/><defs><linearGradient id="g2" x1="3" y1="21" x2="21" y2="3"><stop stop-color="#f77737"/><stop offset=".5" stop-color="#e1306c"/><stop offset="1" stop-color="#833ab4"/></linearGradient></defs></svg></div><div class="ig-decor ig3"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="5" fill="url(#g3)"/><circle cx="12" cy="12" r="4.2" stroke="white" stroke-width="2"/><circle cx="17.4" cy="6.7" r="1.2" fill="white"/><defs><linearGradient id="g3" x1="3" y1="21" x2="21" y2="3"><stop stop-color="#f77737"/><stop offset=".5" stop-color="#e1306c"/><stop offset="1" stop-color="#833ab4"/></linearGradient></defs></svg></div><div class="ig-decor ig4"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="5" fill="url(#g4)"/><circle cx="12" cy="12" r="4.2" stroke="white" stroke-width="2"/><circle cx="17.4" cy="6.7" r="1.2" fill="white"/><defs><linearGradient id="g4" x1="3" y1="21" x2="21" y2="3"><stop stop-color="#f77737"/><stop offset=".5" stop-color="#e1306c"/><stop offset="1" stop-color="#833ab4"/></linearGradient></defs></svg></div><div class="heart-decor heart1">♥</div><div class="heart-decor heart2">♥</div>
 
   <nav>
     <a href="index.html" class="logo">MidiaNet<em>Digital</em></a>
@@ -498,7 +526,7 @@ async function carregarPlanosDoPainel(){
     var resp=await fetch("https://midianetdigital.onrender.com/config/public?servico="+encodeURIComponent(servico),{cache:"no-store"});
     if(!resp.ok) throw new Error("config");
     var cfg=await resp.json();
-    var itens=(cfg.servicos||[]).filter(function(x){return x.ativo!==false;}).sort(function(a,b){return Number(a.preco)-Number(b.preco);});
+    var itens=(cfg.servicos||[]).filter(function(x){return x.ativo!==false;});
     if(!itens.length){grid.innerHTML="<p style='color:#8888aa;text-align:center'>Nenhum pacote disponível para este serviço.</p>";return;}
     var titulo=(itens[0].nome||servico);
     document.body.setAttribute("data-service",servico);
@@ -514,15 +542,23 @@ async function carregarPlanosDoPainel(){
       var nomePlano=x.plano;
       var por=x.por||"";
       var desc=x.descricao||"";
+      var local=(CAT[servico]&&CAT[servico].planos||[]).find(function(p){return String(p.id)===String(x.plano);})||{};
+      var likes=Number(x.bonusCurtidas||0);
+      var views=Number(x.bonusVisualizacoes||0);
+      var fallback={
+        "500":[200,200],"1000":[500,500],"1500":[700,700],"2000":[1000,1000],
+        "3000":[2000,2000],"4000":[3000,3000],"5000":[4000,4000]
+      }[String(x.plano)];
+      if(!likes && !views && servico.indexOf("engajamento-")===0 && fallback){likes=fallback[0];views=fallback[1];}
+      var bonusHtml="";
+      if(likes) bonusHtml+='<span class="like">+'+likes.toLocaleString("pt-BR")+' Curtidas</span>';
+      if(views) bonusHtml+='<span class="view">+'+views.toLocaleString("pt-BR")+' Visualizações</span>';
+      if(!bonusHtml) bonusHtml='<span class="info">'+esc(desc||por||"Entrega rápida e suporte via WhatsApp")+'</span>';
       card.innerHTML=(x.destaque?'<span class="cbadge">🔥 Mais vendido</span>':'')+
         '<div class="pkg-icon">'+esc(x.icone||'👤')+'</div>'+
         '<div class="pkg-info">'+
           '<div class="pkg-name">'+esc(qtd)+'</div>'+
-          '<div class="pkg-bonuses">'+
-            (Number(x.bonusCurtidas||0)>0?'<span>♥ +'+Number(x.bonusCurtidas).toLocaleString("pt-BR")+' Curtidas</span>':'')+
-            (Number(x.bonusVisualizacoes||0)>0?'<span>▶ +'+Number(x.bonusVisualizacoes).toLocaleString("pt-BR")+' Visualizações</span>':'')+
-            ((Number(x.bonusCurtidas||0)<=0 && Number(x.bonusVisualizacoes||0)<=0)?'<span>'+esc(desc||"Entrega rápida e suporte via WhatsApp")+'</span>':'')+
-          '</div>'+
+          '<div class="pkg-bonuses">'+bonusHtml+'</div>'+
         '</div>'+
         '<div class="pkg-buy">'+
           '<div class="pkg-from">A partir de</div>'+
