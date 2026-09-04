@@ -770,7 +770,8 @@ app.get('/dashboard-data', async (req, res) => {
     }
 
     const eventos = await buscarEventos({ start, end });
-    const dados = montarDashboard(eventos);
+    const config = await buscarConfiguracao();
+    const dados = montarDashboard(eventos, config);
 
     return res.json(dados);
   } catch (err) {
