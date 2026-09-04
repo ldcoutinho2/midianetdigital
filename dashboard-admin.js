@@ -81,7 +81,7 @@ function renderServices(){
  const q=($('serviceSearch')?.value||'').toLowerCase(),flt=$('serviceFilter')?.value||'all',g=groups();let out='';
  Object.entries(g).sort((a,b)=>Number(a[1][0].ordem||100)-Number(b[1][0].ordem||100)).forEach(([slug,items])=>{
   const arr=items.filter(x=>(slug+' '+x.nome+' '+x.plano+' '+x.qtd).toLowerCase().includes(q)&&(flt==='all'||(flt==='active'?x.ativo!==false:x.ativo===false)));if(!arr.length)return;const base=items[0];
-  out+=`<div class="service" draggable="true" data-service-slug="${esc(slug)}"><div class="servicehead"><div class="serviceinfo"><span class="drag" title="Arraste para ordenar">☰</span><div class="serviceicon">${esc(base.icone||'📦')}</div><div><b>${esc(base.nome||slug)}</b><small>${esc(slug)} • ${items.length} pacote(s)</small></div></div><div class="service-actions"><span class="pill ${items.some(x=>x.ativo!==false)?'':'off'}">${items.some(x=>x.ativo!==false)?'Ativo':'Off'}</span><button class="btn" onclick="editService('${esc(slug)}')">✎ Editar serviço</button></div></div><div class="packages">${arr.map(packageCard).join('')}</div></div>`;
+  out+=`<div class="service" draggable="true" data-service-slug="${esc(slug)}"><div class="servicehead"><div class="serviceinfo"><span class="drag" title="Arraste para ordenar">☰</span><div class="serviceicon">${esc(base.icone||'📦')}</div><div><b>${esc(base.nome||slug)}</b><small>${esc(slug)} • ${items.length} pacote(s)</small></div></div><div class="service-actions"><span class="pill ${items.some(x=>x.ativo!==false)?'':'off'}">${items.some(x=>x.ativo!==false)?'Ativo':'Off'}</span><button class="btn order-btn" onclick="moveService('${esc(slug)}',-1)" title="Mover para cima">↑</button><button class="btn order-btn" onclick="moveService('${esc(slug)}',1)" title="Mover para baixo">↓</button><button class="btn" onclick="editService('${esc(slug)}')">✎ Editar serviço</button></div></div><div class="packages">${arr.map(packageCard).join('')}</div></div>`;
  });$('servicesList').innerHTML=out||'<div class="empty">Nenhum serviço encontrado.</div>';
  const list=$('servicesList'); let dragSlug=null;
  list.querySelectorAll('.service').forEach(el=>{
@@ -97,6 +97,21 @@ function renderServices(){
    });
  });
 }
+async function persistServiceOrder(slugs){
+  const g=groups(),itens=[];slugs.forEach((slug,i)=>(g[slug]||[]).forEach(x=>itens.push({chave:x.chave,ordem:i+1})));
+  const r=await api('/admin/config/ordem',{method:'POST',body:JSON.stringify({itens})}),j=await r.json();
+  if(!j.ok)throw Error(j.error||'Erro ao salvar ordem');
+  itens.forEach(it=>{if(cfg.servicos[it.chave])cfg.servicos[it.chave].ordem=it.ordem});
+}
+async function moveService(slug,dir){
+  const q=($('serviceSearch')?.value||'').trim(),flt=$('serviceFilter')?.value||'all';
+  if(q||flt!=='all')return toast('Limpe a busca/filtro para reordenar');
+  const slugs=Object.entries(groups()).sort((a,b)=>Number(a[1][0].ordem||100)-Number(b[1][0].ordem||100)).map(x=>x[0]);
+  const i=slugs.indexOf(slug),j=i+dir;if(i<0||j<0||j>=slugs.length)return;
+  [slugs[i],slugs[j]]=[slugs[j],slugs[i]];
+  try{await persistServiceOrder(slugs);renderServices();toast('Ordem salva');}catch(e){toast(e.message)}
+}
+window.moveService=moveService;
 function packageCard(x){const k=esc(x.chave);return `<div class="package"><div class="ptop"><div><b>${esc(x.plano||x.qtd)}</b><br><small>${esc(x.qtd||x.plano)} • ID ${esc(x.id||'—')}</small></div><span class="pill ${x.ativo===false?'off':''}">${x.ativo===false?'Off':'Ativo'}</span></div><div class="pfields"><div class="field"><label>Nome</label><input id="pn_${k}" class="input" value="${esc(x.nome||'')}"></div><div class="field"><label>Quantidade</label><input id="pq_${k}" class="input" value="${esc(x.qtd||x.plano||'')}"></div><div class="field"><label>Preço R$</label><input id="pp_${k}" class="input" type="number" step=".01" value="${(Number(x.preco||0)/100).toFixed(2)}"></div><div class="field"><label>Custo R$</label><input id="pc_${k}" class="input" type="number" step=".01" value="${Number(x.custo||0)}"></div><div class="field wide"><label>Descrição</label><input id="pd_${k}" class="input" value="${esc(x.descricao||'')}"></div></div><div class="checks"><label><input id="ph_${k}" type="checkbox" ${x.destaque?'checked':''}> Destaque</label><label><input id="pa_${k}" type="checkbox" ${x.ativo!==false?'checked':''}> Publicado</label></div><div style="text-align:right"><button class="btn primary" onclick="savePackage('${k}')">Salvar pacote</button></div></div>`}
 function get(k){return cfg.servicos[k]||Object.values(cfg.servicos||{}).find(x=>x.chave===k)}
 async function savePayload(x){const r=await api('/admin/config/servico',{method:'POST',body:JSON.stringify(x)}),j=await r.json();if(!j.ok)throw Error(j.error||'Erro ao salvar');cfg.servicos[x.chave]=j.item;toast('Salvo com sucesso');renderServices();renderPlans();renderIds();dashboard()}
@@ -110,7 +125,7 @@ function closeModal(){$('modal').classList.remove('on')}window.closeModal=closeM
 function toggleNew(force){$('newBox').style.display=force===false?'none':$('newBox').style.display==='none'?'block':'none'}window.toggleNew=toggleNew;
 async function createPackage(){
  const slug=$('nslug').value.trim().toLowerCase().replace(/[^a-z0-9-]+/g,'-').replace(/^-+|-+$/g,''),pl=$('nplan').value.trim();
- const x={chave:slug+'__'+pl,servico:slug,plano:pl,qtd:$('nqty').value.trim()||pl,nome:$('nname').value.trim(),id:$('nid').value.trim(),custo:Number($('ncost').value||0),preco:Math.round(Number($('nprice').value||0)*100),icone:$('nicon').value.trim()||'📦',descricao:$('ndesc').value.trim(),por:$('npor').value.trim(),destaque:$('nhot').checked,ativo:$('nactive').checked,ordem:existing.length?Number(existing[0].ordem||100):Object.keys(cfg.servicos||{}).length+1};
+ const x={chave:slug+'__'+pl,servico:slug,plano:pl,qtd:$('nqty').value.trim()||pl,nome:$('nname').value.trim(),id:$('nid').value.trim(),custo:Number($('ncost').value||0),preco:Math.round(Number($('nprice').value||0)*100),icone:$('nicon').value.trim()||'📦',descricao:$('ndesc').value.trim(),por:$('npor').value.trim(),destaque:$('nhot').checked,ativo:$('nactive').checked,ordem:(()=>{const ex=Object.values(cfg.servicos||{}).filter(y=>y.servico===slug);return ex.length?Math.max(...ex.map(y=>Number(y.ordem||0)))+1:Object.keys(cfg.servicos||{}).length+1})()};
  if(!slug||!pl||!x.nome||!x.id||x.preco<=0)return toast('Preencha slug, nome, pacote, ID e preço');
  try{await savePayload(x);['nslug','nname','nplan','nqty','nid','ncost','nprice','ndesc','npor'].forEach(i=>$(i).value='');$('nicon').value='📦';$('nhot').checked=false;$('nactive').checked=true;$('newBox').style.display='none'}catch(e){toast(e.message)}
 }
