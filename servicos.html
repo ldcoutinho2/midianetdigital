@@ -150,5 +150,26 @@
       });
     });
   </script>
+  <script>
+    (async function(){
+      try{
+        var r=await fetch('https://midianetdigital.onrender.com/config/public',{cache:'no-store'});
+        if(!r.ok) return;
+        var cfg=await r.json();
+        var mapa={};
+        (cfg.servicos||[]).forEach(function(x){
+          if(!mapa[x.servico]) mapa[x.servico]=[];
+          mapa[x.servico].push(x);
+        });
+        document.querySelectorAll('.card[data-service]').forEach(function(card){
+          var slug=card.getAttribute('data-service');
+          var itens=(mapa[slug]||[]).filter(function(x){return x.ativo!==false;}).sort(function(a,b){return Number(a.preco)-Number(b.preco);});
+          if(!itens.length){card.style.display='none';return;}
+          var price=card.querySelector('.cprice');
+          if(price) price.innerHTML='A partir de '+Number(itens[0].preco||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})+'<small>conforme o pacote escolhido</small>';
+        });
+      }catch(e){console.warn('[CONFIG PAINEL]',e);}
+    })();
+  </script>
 </body>
 </html>
