@@ -937,6 +937,24 @@ button{background:#e8ff47;color:#080810;border:0;padding:10px 15px;border-radius
   <div class="card"><div class="num" id="ticket">R$0</div><div class="lbl">🎯 Ticket médio</div></div>
 </div>
 
+<div class="section" id="admin-config">
+  <h2>⚙️ Gerenciar site e financeiro</h2>
+  <div class="small" style="margin-bottom:14px">Altere preços, IDs, custos e status sem tocar no código ou no Render. As alterações ficam salvas no Supabase.</div>
+  <div id="adminStatus" class="small" style="margin-bottom:10px"></div>
+  <div id="servicosAdmin"></div>
+  <div style="margin-top:14px">
+    <h3 style="font-size:15px;margin-bottom:10px">📢 Adicionar investimento em anúncio</h3>
+    <div class="filters">
+      <div><label>Data</label><input type="date" id="adsData"></div>
+      <div><label>Plataforma</label><input id="adsPlataforma" value="Meta Ads"></div>
+      <div><label>Campanha</label><input id="adsCampanha" placeholder="Ex.: Seguidores"></div>
+      <div><label>Valor</label><input type="number" id="adsValor" min="0" step="0.01" placeholder="0,00"></div>
+      <button onclick="salvarAds()">💾 Salvar anúncio</button>
+    </div>
+    <div id="adsLista" style="margin-top:10px"></div>
+  </div>
+</div>
+
 <div class="section">
   <h2>💰 Controle financeiro</h2>
   <div class="grid">
@@ -1229,6 +1247,7 @@ function formatBR(centavos){
 }
 
 setPreset();
+carregarAdmin();
 setInterval(carregar, 30000);
 </script>
 
