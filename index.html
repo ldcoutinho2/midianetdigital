@@ -666,10 +666,12 @@
         });
         var ordemPadrao=['engajamento-30-70','engajamento-60-40','engajamento-br','curtidas-brasileiras','curtidas-mundiais','visualizacoes','visualizacoes-reels'];
         var ordemServicos=Object.keys(grupos).sort(function(a,b){
+          var oa=Number(grupos[a][0].ordem), ob=Number(grupos[b][0].ordem);
+          var aVal=Number.isFinite(oa)?oa:100000, bVal=Number.isFinite(ob)?ob:100000;
+          if(aVal!==bVal)return aVal-bVal;
           var ia=ordemPadrao.indexOf(a),ib=ordemPadrao.indexOf(b);
           ia=ia<0?999:ia; ib=ib<0?999:ib;
-          if(ia!==ib)return ia-ib;
-          return Number(grupos[a][0].ordem||100)-Number(grupos[b][0].ordem||100);
+          return ia-ib;
         });
         grid.innerHTML=ordemServicos.map(function(slug){
           var itens=grupos[slug],x=itens[0],nome=x.nome||slug;
