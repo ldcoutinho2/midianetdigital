@@ -683,5 +683,27 @@
       });
     });
   </script>
+  <script>
+    (async function(){
+      try{
+        var r=await fetch('https://midianetdigital.onrender.com/config/public',{cache:'no-store'});
+        if(!r.ok) return;
+        var cfg=await r.json();
+        var mapa={};
+        (cfg.servicos||[]).forEach(function(x){if(!mapa[x.servico])mapa[x.servico]=[];mapa[x.servico].push(x);});
+        document.querySelectorAll('.home-service-card[data-slug]').forEach(function(card){
+          var slug=card.getAttribute('data-slug');
+          if(slug==='engajamento'){
+            slug='engajamento-30-70';
+            card.href='planos.html?servico=engajamento-30-70';
+          }
+          var itens=(mapa[slug]||[]).filter(function(x){return x.ativo!==false;}).sort(function(a,b){return Number(a.preco)-Number(b.preco);});
+          if(!itens.length)return;
+          var from=card.querySelector('.from');
+          if(from) from.textContent='A partir de '+Number(itens[0].preco||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+        });
+      }catch(e){console.warn('[CONFIG PAINEL]',e);}
+    })();
+  </script>
 </body>
 </html>
