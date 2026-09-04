@@ -211,6 +211,11 @@ footer{color:#9ca3af;border-color:rgba(225,48,108,.10)}
  .cbadge{font-size:.48rem;padding:.18rem .45rem}
 }
 
+
+/* Cards de planos no formato da referência: quantidade + bônus + preço + CTA */
+.cpricebox{grid-area:action;min-width:0}
+.cfrom{font-size:.62rem;color:#6b7280;margin-bottom:.08rem}
+.cpricebox .cpreco{display:block;grid-area:auto}
 </style>
 </head>
 
@@ -450,14 +455,17 @@ async function carregarPlanosDoPainel(){
       var nomePlano=x.plano;
       var por=x.por||"";
       var desc=x.descricao||"";
-      card.innerHTML=(x.destaque?'<span class="cbadge">🔥 Melhor custo-benefício</span>':'')+
+      card.innerHTML=(x.destaque?'<span class="cbadge">🔥 Mais vendido</span>':'')+
         '<span class="cico">'+esc(x.icone||'📦')+'</span>'+
-        '<div class="cname">'+esc(nomePlano)+'</div>'+
-        '<div class="cqtd">'+esc(qtd)+'</div>'+
-        '<div class="cpreco">'+Number(x.preco||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})+'</div>'+
-        (por?'<div class="cper">'+esc(por)+'</div>':'')+
-        '<ul class="clist"><li>'+esc(desc||"Entrega rápida e suporte via WhatsApp")+'</li><li>ID configurado no painel</li>'+(Number(x.bonusCurtidas||0)>0?'<li>🎁 +'+Number(x.bonusCurtidas).toLocaleString("pt-BR")+' curtidas de bônus</li>':'')+(Number(x.bonusVisualizacoes||0)>0?'<li>🎁 +'+Number(x.bonusVisualizacoes).toLocaleString("pt-BR")+' visualizações de bônus</li>':'')+'</ul>'+
-        '<div class="cbtn">Selecionar plano</div>';
+        '<div class="cname">'+esc(qtd)+'</div>'+
+        '<div class="cqtd">'+
+          (Number(x.bonusCurtidas||0)>0?'♥ +'+Number(x.bonusCurtidas).toLocaleString("pt-BR")+' Curtidas':'')+
+          (Number(x.bonusCurtidas||0)>0 && Number(x.bonusVisualizacoes||0)>0?' &nbsp; ':'')+
+          (Number(x.bonusVisualizacoes||0)>0?'▶ +'+Number(x.bonusVisualizacoes).toLocaleString("pt-BR")+' Visualizações':'')+
+          ((Number(x.bonusCurtidas||0)<=0 && Number(x.bonusVisualizacoes||0)<=0)?esc(desc||"Entrega rápida e suporte via WhatsApp"):'')+
+        '</div>'+
+        '<div class="cpricebox"><div class="cfrom">A partir de</div><div class="cpreco">'+Number(x.preco||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})+'</div></div>'+
+        '<div class="cbtn">Ver pacote →</div>';
       card.addEventListener("click",async function(e){
         e.preventDefault();
         var valor=Number(x.preco||0);
