@@ -408,13 +408,50 @@ function montarDashboard(eventos) {
 
   const ticketMedio = dados.vendas > 0 ? Math.round(dados.faturamento / dados.vendas) : 0;
 
+  // Controle financeiro: custos e investimento em anúncios ficam no backend,
+  // nunca no JavaScript público. Configure SERVICE_COSTS_JSON e AD_SPEND no Render.
+  let custosConfig = {};
+  try { custosConfig = JSON.parse(process.env.SERVICE_COSTS_JSON || '{}'); } catch (_) {}
+  const investimentoAds = Math.round(Number(process.env.AD_SPEND || 0) * 100);
+  let custosServicos = 0;
+  let custoPorVendaTotal = 0;
+  let vendasComCusto = 0;
+
+  eventos.forEach(e => {
+    if (e.tipo !== 'venda') return;
+    const texto = String(e.nome || '');
+    const chaveEncontrada = Object.keys(custosConfig).find(chave => texto.includes(chave));
+    const custo = chaveEncontrada ? Number(custosConfig[chave] || 0) : 0;
+    if (custo > 0) {
+      custosServicos += Math.round(custo * 100);
+      custoPorVendaTotal += Number(custo);
+      vendasComCusto++;
+    }
+  });
+
+  const lucroBruto = dados.faturamento - custosServicos;
+  const lucroLiquido = lucroBruto - investimentoAds;
+  const roas = investimentoAds > 0 ? dados.faturamento / investimentoAds : 0;
+  const roi = investimentoAds > 0 ? lucroLiquido / investimentoAds : 0;
+
   return {
     ...dados,
     faturamentoFormatado: dinheiroBR(dados.faturamento),
     ticketMedioFormatado: dinheiroBR(ticketMedio),
     conversaoGeral: pct(dados.vendas, dados.visitantes),
     maiorGargalo: etapas[0]?.nome || 'Sem dados',
-    maiorGargaloPercentual: etapas[0] ? etapas[0].queda.toFixed(2) + '%' : '0.00%'
+    maiorGargaloPercentual: etapas[0] ? etapas[0].queda.toFixed(2) + '%' : '0.00%',
+    financeiro: {
+      custosServicos,
+      investimentoAds,
+      lucroBruto,
+      lucroLiquido,
+      roas,
+      roi,
+      margem: dados.faturamento > 0 ? (lucroLiquido / dados.faturamento) * 100 : 0,
+      vendasComCusto,
+      custoMedio: dados.vendas > 0 ? custosServicos / dados.vendas : 0
+    }
   };
 }
 
@@ -745,6 +782,19 @@ button{background:#e8ff47;color:#080810;border:0;padding:10px 15px;border-radius
 </div>
 
 <div class="section">
+  <h2>💰 Controle financeiro</h2>
+  <div class="grid">
+    <div class="card"><div class="num" id="finCusto">R$0</div><div class="lbl">Custo dos serviços</div></div>
+    <div class="card"><div class="num" id="finAds">R$0</div><div class="lbl">Investimento em anúncios</div></div>
+    <div class="card"><div class="num" id="finLucroBruto">R$0</div><div class="lbl">Lucro antes dos anúncios</div></div>
+    <div class="card"><div class="num" id="finLucro">R$0</div><div class="lbl">Lucro líquido</div></div>
+    <div class="card"><div class="num" id="finRoas">0,00x</div><div class="lbl">ROAS</div></div>
+    <div class="card"><div class="num" id="finMargem">0,00%</div><div class="lbl">Margem líquida</div></div>
+  </div>
+  <div class="small">Os custos e o investimento são calculados no backend. Configure <b>SERVICE_COSTS_JSON</b> e <b>AD_SPEND</b> nas variáveis do Render para obter lucro e ROAS reais.</div>
+</div>
+
+<div class="section">
   <h2>⚠️ Principal ponto de perda</h2>
   <div class="row"><span id="gargalo">Calculando...</span><strong class="bad" id="gargaloPct">0%</strong></div>
   <div class="small">Mostra onde mais clientes estão parando no período escolhido.</div>
@@ -931,6 +981,14 @@ async function carregar(){
 
   document.getElementById('visitantes').textContent = d.visitantes;
   document.getElementById('servicos').textContent = d.servicos;
+
+  const f = d.financeiro || {};
+  document.getElementById('finCusto').textContent = formatBR(f.custosServicos || 0);
+  document.getElementById('finAds').textContent = formatBR(f.investimentoAds || 0);
+  document.getElementById('finLucroBruto').textContent = formatBR(f.lucroBruto || 0);
+  document.getElementById('finLucro').textContent = formatBR(f.lucroLiquido || 0);
+  document.getElementById('finRoas').textContent = Number(f.roas || 0).toFixed(2).replace('.', ',') + 'x';
+  document.getElementById('finMargem').textContent = Number(f.margem || 0).toFixed(2).replace('.', ',') + '%';
   document.getElementById('planos').textContent = d.planos;
   document.getElementById('checkout').textContent = d.checkout;
   document.getElementById('pix').textContent = d.pix;
