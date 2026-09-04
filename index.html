@@ -647,6 +647,12 @@
         var r=await fetch('https://midianetdigital.onrender.com/config/public',{cache:'no-store'});
         if(!r.ok) throw new Error('config');
         var cfg=await r.json();
+        var site=cfg.site||{};
+        if(site.nome){ document.querySelectorAll('.logo').forEach(function(el){el.innerHTML=esc(site.nome);}); document.title=site.nome+' — Cresça no Instagram de Verdade'; }
+        if(site.texto){ var hs=document.querySelector('.hero-sub'); if(hs) hs.textContent=site.texto; }
+        if(site.whatsapp){ var wa=document.querySelector('.wa-float'); if(wa) wa.href='https://wa.me/'+site.whatsapp+'?text='+encodeURIComponent('Olá, quero saber mais sobre os planos'); }
+        if(site.garantia){ document.querySelectorAll('.trust-card p').forEach(function(el){if(el.textContent.toLowerCase().indexOf('garantia')>=0)el.textContent=site.garantia;}); }
+        if(site.horario){ document.querySelectorAll('.trust-card p').forEach(function(el){if(el.textContent.toLowerCase().indexOf('suporte')>=0)el.textContent='Atendimento '+site.horario;}); }
         var grupos={};
         (cfg.servicos||[]).filter(function(x){return x.ativo!==false;}).forEach(function(x){
           if(!grupos[x.servico]) grupos[x.servico]=[];
