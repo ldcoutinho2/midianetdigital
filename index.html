@@ -663,7 +663,14 @@
         Object.keys(grupos).forEach(function(slug){
           grupos[slug].sort(function(a,b){return Number(a.preco)-Number(b.preco);});
         });
-        grid.innerHTML=Object.keys(grupos).map(function(slug){
+        var ordemPadrao=['engajamento-30-70','engajamento-60-40','engajamento-br','curtidas-brasileiras','curtidas-mundiais','visualizacoes','visualizacoes-reels'];
+        var ordemServicos=Object.keys(grupos).sort(function(a,b){
+          var ia=ordemPadrao.indexOf(a),ib=ordemPadrao.indexOf(b);
+          ia=ia<0?999:ia; ib=ib<0?999:ib;
+          if(ia!==ib)return ia-ib;
+          return Number(grupos[a][0].ordem||100)-Number(grupos[b][0].ordem||100);
+        });
+        grid.innerHTML=ordemServicos.map(function(slug){
           var itens=grupos[slug],x=itens[0],nome=x.nome||slug;
           var lower=slug.toLowerCase();
           var cls=lower.indexOf('engajamento')>=0?'service-eng':lower.indexOf('curtidas')>=0?'service-like':lower.indexOf('visualiz')>=0?'service-view':'service-generic';
