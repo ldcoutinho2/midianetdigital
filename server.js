@@ -400,7 +400,7 @@ function custoDoPedidoConfig(eventoNome, config) {
   return chave ? Number(config.servicos[chave].custo || 0) : 0;
 }
 
-function montarDashboard(eventos, config = montarConfiguracaoPadrao()) {
+function montarDashboard(eventos, config = montarConfiguracaoPadrao(), filtros = {}) {
   const dados = {
     visitantes: 0,
     servicos: 0,
@@ -771,7 +771,7 @@ app.get('/dashboard-data', async (req, res) => {
 
     const eventos = await buscarEventos({ start, end });
     const config = await buscarConfiguracao();
-    const dados = montarDashboard(eventos, config);
+    const dados = montarDashboard(eventos, config, { start, end });
 
     return res.json(dados);
   } catch (err) {
@@ -965,7 +965,7 @@ button{background:#e8ff47;color:#080810;border:0;padding:10px 15px;border-radius
     <div class="card"><div class="num" id="finRoas">0,00x</div><div class="lbl">ROAS</div></div>
     <div class="card"><div class="num" id="finMargem">0,00%</div><div class="lbl">Margem líquida</div></div>
   </div>
-  <div class="small">Os custos e o investimento são calculados no backend. Configure <b>SERVICE_COSTS_JSON</b> e <b>AD_SPEND</b> nas variáveis do Render para obter lucro e ROAS reais.</div>
+  <div class="small">Os custos, preços e investimentos são controlados acima pelo próprio dashboard e ficam salvos no Supabase.</div>
 </div>
 
 <div class="section">
