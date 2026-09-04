@@ -340,49 +340,7 @@
 
   <section class="services-section" id="servicos">
     <div class="section-inner">
-      <div class="srv-grid home-service-grid">
-        <a href="servicos.html?servico=engajamento" class="home-service-card service-track service-eng" data-service="Pacotes de Engajamento" data-slug="engajamento">
-          <div class="service-main">
-            <div class="service-icon">🚀</div>
-            <div class="service-copy">
-              <h3>ENGAJAMENTO</h3>
-              <p>Seguidores + Curtidas<br>+ Visualizações</p>
-              <div class="from">A partir de</div>
-              <div class="price">R$ <b>5,00</b></div>
-            </div>
-            <div class="service-art">👥<span>❤️</span><i>👁️</i></div>
-          </div>
-          <div class="home-service-btn btn-eng">VER PACOTES <b>→</b></div>
-        </a>
-
-        <a href="planos.html?servico=curtidas-brasileiras" class="home-service-card service-track service-like" data-service="Curtidas Brasileiras" data-slug="curtidas-brasileiras">
-          <div class="service-main">
-            <div class="service-icon">❤️</div>
-            <div class="service-copy">
-              <h3>CURTIDAS</h3>
-              <p>Curtidas para<br>suas publicações</p>
-              <div class="from">A partir de</div>
-              <div class="price">R$ <b>8,00</b></div>
-            </div>
-            <div class="service-art heart-art">💬<span>🤍</span></div>
-          </div>
-          <div class="home-service-btn btn-like">VER PACOTES <b>→</b></div>
-        </a>
-
-        <a href="planos.html?servico=visualizacoes" class="home-service-card service-track service-view" data-service="Visualizações" data-slug="visualizacoes">
-          <div class="service-main">
-            <div class="service-icon">👁️</div>
-            <div class="service-copy">
-              <h3>VISUALIZAÇÕES</h3>
-              <p>Visualizações para<br>seus vídeos</p>
-              <div class="from">A partir de</div>
-              <div class="price">R$ <b>8,00</b></div>
-            </div>
-            <div class="service-art video-art">▶️<span>👁️</span></div>
-          </div>
-          <div class="home-service-btn btn-view">VER PACOTES <b>→</b></div>
-        </a>
-      </div>
+      <div class="srv-grid home-service-grid" id="homeServiceGrid"></div>
     </div>
   </section>
 
@@ -687,20 +645,54 @@
     (async function(){
       try{
         var r=await fetch('https://midianetdigital.onrender.com/config/public',{cache:'no-store'});
-        if(!r.ok) return;
+        if(!r.ok) throw new Error('config');
         var cfg=await r.json();
-        var mapa={};
-        (cfg.servicos||[]).forEach(function(x){if(!mapa[x.servico])mapa[x.servico]=[];mapa[x.servico].push(x);});
-        document.querySelectorAll('.home-service-card[data-slug]').forEach(function(card){
-          var slug=card.getAttribute('data-slug');
-          if(slug==='engajamento'){
-            slug='engajamento-30-70';
-            card.href='planos.html?servico=engajamento-30-70';
-          }
-          var itens=(mapa[slug]||[]).filter(function(x){return x.ativo!==false;}).sort(function(a,b){return Number(a.preco)-Number(b.preco);});
-          if(!itens.length)return;
-          var from=card.querySelector('.from');
-          if(from) from.textContent='A partir de '+Number(itens[0].preco||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+        var grupos={};
+        (cfg.servicos||[]).filter(function(x){return x.ativo!==false;}).forEach(function(x){
+          if(!grupos[x.servico]) grupos[x.servico]=[];
+          grupos[x.servico].push(x);
+        });
+        var grid=document.getElementById('homeServiceGrid');
+        function esc(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+        Object.keys(grupos).forEach(function(slug){
+          grupos[slug].sort(function(a,b){return Number(a.preco)-Number(b.preco);});
+        });
+        grid.innerHTML=Object.keys(grupos).map(function(slug){
+          var itens=grupos[slug],x=itens[0],nome=x.nome||slug;
+          var lower=slug.toLowerCase();
+          var cls=lower.indexOf('engajamento')>=0?'service-eng':lower.indexOf('curtidas')>=0?'service-like':lower.indexOf('visualiz')>=0?'service-view':'service-generic';
+          var href='planos.html?servico='+encodeURIComponent(slug);
+          return '<a href="'+href+'" class="home-service-card service-track '+cls+'" data-service="'+esc(nome)+'" data-slug="'+esc(slug)+'">'+
+            '<div class="service-main">'+
+              '<div class="service-icon">'+esc(x.icone||'📦')+'</div>'+
+              '<div class="service-copy">'+
+                '<h3>'+esc(nome)+'</h3>'+
+                '<p>'+esc(x.descricao||'Escolha o pacote ideal para o seu perfil.')+'</p>'+
+                '<div class="from">A partir de</div>'+
+                '<div class="price">R$ <b>'+Number(x.preco||0).toFixed(2).replace('.',',')+'</b></div>'+
+              '</div>'+
+              '<div class="service-art">✨<span>✓</span><i>⚡</i></div>'+
+            '</div>'+
+            '<div class="home-service-btn btn-eng">VER PACOTES <b>→</b></div>'+
+          '</a>';
+        }).join('')||'<div class="small">Nenhum serviço disponível.</div>';
+
+        grid.querySelectorAll('.service-track').forEach(function(card){
+          card.addEventListener('click',async function(e){
+            e.preventDefault();
+            var slug=this.getAttribute('data-slug'),nome=this.getAttribute('data-service')||slug,href=this.getAttribute('href');
+            sessionStorage.setItem('servico',slug);
+            if(typeof fbq==='function') fbq('track','ViewContent',{content_name:nome,content_category:'Servico'});
+            var key='mn24_track_v5_servico_'+slug;
+            if(!sessionStorage.getItem(key)){
+              try{
+                var rr=await fetch('https://midianetdigital.onrender.com/evento',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tipo:'servico',servico:nome}),keepalive:true});
+                var jj=await rr.json().catch(function(){return {ok:false};});
+                if(rr.ok&&jj.ok) sessionStorage.setItem(key,'1');
+              }catch(_){}
+            }
+            window.location.href=href;
+          });
         });
       }catch(e){console.warn('[CONFIG PAINEL]',e);}
     })();
