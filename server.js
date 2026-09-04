@@ -18,6 +18,9 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Painel administrativo modular: rotas/configurações devem ser registradas antes das rotas legadas do dashboard.
+require('./preload-dashboard');
+
 app.use('/dashboard-data', (req, res, next) => {
   res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
   res.set('Pragma', 'no-cache');
