@@ -78,7 +78,140 @@
     @keyframes up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
     .a1{animation:up .6s ease both}.a2{animation:up .6s .1s ease both}.a3{animation:up .6s .2s ease both}
     @media(max-width:600px){.page{padding:6.5rem 5% 4rem}nav{padding:1rem 5%}#grid{grid-template-columns:1fr}.sl{width:18px}}
-  </style>
+  
+/* ===== VISUAL INSTAGRAM MOBILE — PLANOS (somente CSS) ===== */
+:root{--bg:#fff;--s1:#fff;--s2:#fff7fb;--ac:#e1306c;--ac2:#833ab4;--ac3:#f77737;--text:#111827;--muted:#6b7280;--border:rgba(225,48,108,.14);--yellow:#ffd600;--yellow2:#ffcc00;--ig:linear-gradient(135deg,#833ab4,#e1306c 52%,#f77737)}
+body{
+ background:
+  radial-gradient(circle at 0% 12%,rgba(225,48,108,.12),transparent 24rem),
+  radial-gradient(circle at 100% 35%,rgba(131,58,180,.10),transparent 25rem),
+  #fff;
+ color:var(--text);
+}
+body::before{opacity:.018}
+.blob.b1{background:#e1306c;opacity:.06}.blob.b2{background:#f77737;opacity:.05}
+nav{
+ background:rgba(255,255,255,.95);
+ border-bottom:1px solid rgba(225,48,108,.10);
+ box-shadow:0 4px 22px rgba(225,48,108,.07);
+}
+.logo{color:#111827}.logo em{color:#e1306c}
+.nav-back{color:#374151;border-color:rgba(225,48,108,.15);background:#fff}
+.nav-back:hover{color:#e1306c;border-color:rgba(225,48,108,.3)}
+.page{padding-top:6.2rem}
+.st{color:#9ca3af}.st.on{color:#e1306c}.st.dn{color:#e1306c}
+.sd{background:#fff;border-color:rgba(225,48,108,.15);color:#6b7280}
+.st.on .sd{background:var(--ig);border-color:transparent;color:#fff}
+.st.dn .sd{background:rgba(225,48,108,.08);border-color:rgba(225,48,108,.2);color:#e1306c}
+.sl{background:rgba(225,48,108,.12)}.sl.dn{background:rgba(225,48,108,.28)}
+.ph h1{color:#111827;font-weight:900}
+.ph p{color:#6b7280}
+.trust-pill{color:#374151;background:#fff;border-color:rgba(225,48,108,.12);box-shadow:0 4px 15px rgba(131,58,180,.05)}
+#grid{
+ max-width:850px;
+ grid-template-columns:1fr;
+ gap:.85rem;
+}
+.card{
+ background:rgba(255,255,255,.96);
+ border:1px solid rgba(225,48,108,.15);
+ border-radius:16px;
+ padding:1rem 1.05rem;
+ min-height:0;
+ box-shadow:0 6px 22px rgba(131,58,180,.06);
+ display:grid;
+ grid-template-columns:56px minmax(0,1fr) 105px;
+ grid-template-areas:"ico info action";
+ align-items:center;
+ gap:.8rem;
+}
+.card::before{
+ height:100%;
+ width:4px;
+ left:0;right:auto;
+ background:var(--ig);
+ opacity:1;
+}
+.card:hover{
+ transform:translateY(-2px);
+ border-color:rgba(225,48,108,.25);
+ box-shadow:0 12px 30px rgba(225,48,108,.10);
+}
+.card.hot{background:linear-gradient(135deg,#fff,#fff7fb);border-color:rgba(225,48,108,.28)}
+.cb badge{}
+.cbade{}
+.cbadge{top:.7rem;right:.7rem;background:var(--yellow);color:#111;font-size:.56rem}
+.cico{
+ grid-area:ico;
+ width:56px;height:56px;border-radius:14px;
+ background:var(--ig);
+ color:#fff;
+ display:flex;align-items:center;justify-content:center;
+ font-size:1.7rem;
+ box-shadow:0 6px 16px rgba(225,48,108,.18);
+}
+.cname{grid-area:info;font-size:1.02rem;font-weight:900;color:#111827;margin:0}
+.cqtd{grid-area:info;color:#374151;font-size:.78rem;font-weight:600;margin:.2rem 0 .25rem}
+.cpreco{grid-area:action;color:#e1306c;font-size:1.35rem;font-weight:900;text-align:left;margin:0}
+.cper{display:none}
+.clist{
+ grid-area:info;
+ display:flex;flex-wrap:wrap;gap:.25rem .65rem;
+ margin:.2rem 0 0;
+}
+.clist li{font-size:.68rem;color:#6b7280;line-height:1.25}
+.clist li::before{color:#e1306c}
+.cbtn{
+ grid-area:action;
+ width:100%;
+ padding:.65rem .45rem;
+ margin-top:.35rem;
+ background:var(--yellow)!important;
+ border:0!important;
+ color:#111!important;
+ border-radius:10px;
+ font-size:.7rem;
+ font-weight:900;
+ box-shadow:0 6px 16px rgba(255,214,0,.25);
+}
+.card:hover .cbtn{background:var(--yellow2)!important;color:#111!important}
+footer{color:#9ca3af;border-color:rgba(225,48,108,.10)}
+@media(max-width:600px){
+ nav{padding:.75rem 4%;min-height:58px}
+ .page{padding:5.8rem 4% 3rem}
+ .prog{margin-bottom:1.5rem;transform:scale(.88)}
+ .ph{margin-bottom:1.25rem}
+ .ph h1{font-size:1.65rem}
+ .ph p{font-size:.78rem}
+ .trust-line{gap:.35rem;margin-top:.7rem}
+ .trust-pill{font-size:.62rem;padding:.34rem .55rem}
+ #grid{gap:.65rem}
+ .card{
+   grid-template-columns:48px minmax(0,1fr);
+   grid-template-areas:"ico info" "ico action";
+   gap:.15rem .65rem;
+   padding:.78rem .72rem;
+   border-radius:14px;
+ }
+ .cico{width:48px;height:48px;border-radius:12px;font-size:1.35rem}
+ .cname{font-size:.9rem;line-height:1.1}
+ .cqtd{font-size:.68rem;margin:.12rem 0}
+ .clist{gap:.18rem .45rem;margin:0}
+ .clist li{font-size:.57rem}
+ .cpreco{font-size:1.15rem;text-align:right;display:inline-block;margin-right:.45rem}
+ .cbtn{
+   width:45%;
+   min-width:110px;
+   display:inline-block;
+   padding:.55rem .4rem;
+   font-size:.62rem;
+   float:right;
+   margin-top:-1.85rem;
+ }
+ .cbadge{font-size:.48rem;padding:.18rem .45rem}
+}
+
+</style>
 </head>
 
 <body>
