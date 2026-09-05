@@ -282,22 +282,25 @@ async function buscarPedidosPersistidos(){if(!SUPABASE_URL||!SUPABASE_KEY)return
 async function localizarPedido(paymentId,campo){const mem=Object.values(pedidos).find(p=>String(p[campo]||'').toLowerCase()===String(paymentId).toLowerCase());if(mem)return mem;const lista=await buscarPedidosPersistidos();return lista.find(p=>String(p[campo]||'').toLowerCase()===String(paymentId).toLowerCase())||null;}
 async function carregarPedidoAdmin(id){if(pedidos[id])return pedidos[id];const lista=await buscarPedidosPersistidos();const p=lista.find(x=>String(x.id)===String(id));if(p)pedidos[p.id]=p;return p||null;}
 async function registrarVendaEPurchase(pedido){
-  if(!pedido||pedido.vendaRegistrada)return;
-  const detalhesVenda=pedido.distribuicao?.publicacoes?.map((p,i)=>`Pub ${i+1}: ${p.link} | ❤️ ${p.curtidas||0} | 👁️ ${p.visualizacoes||0}`).join(' || ')||'';
-  await registrarEvento('venda',`${pedido.nome} | ${pedido.telefone} | Perfil: ${pedido.instagram} | ${pedido.servico} ${pedido.plano}${detalhesVenda?' | '+detalhesVenda:''}${pedido.bump?' + bump 500 curtidas | Publicação bump: '+pedido.bump_publicacao:''}`,Number((pedido.valor/100).toFixed(2)));
-  pedido.vendaRegistrada=true;
-  pedido.vendaRegistradaEm=new Date().toISOString();
-  await salvarPedidoPersistido(pedido);
+  if(!pedido)return;
+  if(!pedido.vendaRegistrada){
+    const detalhesVenda=pedido.distribuicao?.publicacoes?.map((p,i)=>`Pub ${i+1}: ${p.link} | ❤️ ${p.curtidas||0} | 👁️ ${p.visualizacoes||0}`).join(' || ')||'';
+    await registrarEvento('venda',`${pedido.nome} | ${pedido.telefone} | Perfil: ${pedido.instagram} | ${pedido.servico} ${pedido.plano}${detalhesVenda?' | '+detalhesVenda:''}${pedido.bump?' + bump 500 curtidas | Publicação bump: '+pedido.bump_publicacao:''}`,Number((pedido.valor/100).toFixed(2)));
+    pedido.vendaRegistrada=true;
+    pedido.vendaRegistradaEm=new Date().toISOString();
+    await salvarPedidoPersistido(pedido);
+  }
+  // Purchase é independente do envio ao SMM: pagamento confirmado = evento de venda.
   if(!pedido.purchaseMetaEnviado){
     const metaResult=await enviarPurchaseMeta(pedido);
     if(metaResult?.ok){
       pedido.purchaseMetaEnviado=true;
       pedido.purchaseMetaEnviadoEm=new Date().toISOString();
-      await salvarPedidoPersistido(pedido);
+      pedido.purchaseMetaErro=null;
     }else{
       pedido.purchaseMetaErro=metaResult?.error||'Não foi possível enviar o Purchase para a Meta';
-      await salvarPedidoPersistido(pedido);
     }
+    await salvarPedidoPersistido(pedido);
   }
 }
 
