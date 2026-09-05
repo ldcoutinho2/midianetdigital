@@ -281,7 +281,73 @@ async function salvarPedidoPersistido(pedido){await registrarEvento(CONFIG_TIPO_
 async function buscarPedidosPersistidos(){if(!SUPABASE_URL||!SUPABASE_KEY)return Object.values(pedidos);try{const eventos=await buscarEventos();const mapa=new Map();for(const e of eventos.filter(x=>x.tipo===CONFIG_TIPO_PEDIDO)){try{const p=JSON.parse(e.nome||'{}');if(p.id)mapa.set(p.id,{...p,atualizadoEm:e.created_at});}catch(_){}}return Array.from(mapa.values()).sort((a,b)=>String(b.atualizadoEm||b.criadoEm||'').localeCompare(String(a.atualizadoEm||a.criadoEm||'')));}catch(e){console.error('[PEDIDOS]',e.message);return Object.values(pedidos);}}
 async function localizarPedido(paymentId,campo){const mem=Object.values(pedidos).find(p=>String(p[campo]||'').toLowerCase()===String(paymentId).toLowerCase());if(mem)return mem;const lista=await buscarPedidosPersistidos();return lista.find(p=>String(p[campo]||'').toLowerCase()===String(paymentId).toLowerCase())||null;}
 async function carregarPedidoAdmin(id){if(pedidos[id])return pedidos[id];const lista=await buscarPedidosPersistidos();const p=lista.find(x=>String(x.id)===String(id));if(p)pedidos[p.id]=p;return p||null;}
-async function confirmarPagamento(pedido){if(!pedido||pedido.status==='concluido')return;pedido.status='aguardando_aprovacao';pedido.pagamentoConfirmadoEm=new Date().toISOString();await salvarPedidoPersistido(pedido);}
+async function registrarVendaEPurchase(pedido){
+  if(!pedido||pedido.vendaRegistrada)return;
+  const detalhesVenda=pedido.distribuicao?.publicacoes?.map((p,i)=>`Pub ${i+1}: ${p.link} | ❤️ ${p.curtidas||0} | 👁️ ${p.visualizacoes||0}`).join(' || ')||'';
+  await registrarEvento('venda',`${pedido.nome} | ${pedido.telefone} | Perfil: ${pedido.instagram} | ${pedido.servico} ${pedido.plano}${detalhesVenda?' | '+detalhesVenda:''}${pedido.bump?' + bump 500 curtidas | Publicação bump: '+pedido.bump_publicacao:''}`,Number((pedido.valor/100).toFixed(2)));
+  pedido.vendaRegistrada=true;
+  pedido.vendaRegistradaEm=new Date().toISOString();
+  await salvarPedidoPersistido(pedido);
+  if(!pedido.purchaseMetaEnviado){
+    const metaResult=await enviarPurchaseMeta(pedido);
+    if(metaResult?.ok){
+      pedido.purchaseMetaEnviado=true;
+      pedido.purchaseMetaEnviadoEm=new Date().toISOString();
+      await salvarPedidoPersistido(pedido);
+    }else{
+      pedido.purchaseMetaErro=metaResult?.error||'Não foi possível enviar o Purchase para a Meta';
+      await salvarPedidoPersistido(pedido);
+    }
+  }
+}
+
+async function processarPedidoAutomaticamente(pedido){
+  if(!pedido)return;
+  if(pedido.status==='concluido')return;
+  if(pedido.processamentoAutomaticoEm&&!pedido.erroSmm)return;
+  pedido.status='processando_smm';
+  pedido.processamentoAutomaticoEm=new Date().toISOString();
+  pedido.erroSmm=null;
+  await salvarPedidoPersistido(pedido);
+
+  // O pagamento confirmado gera a venda e o Purchase imediatamente,
+  // independentemente do resultado posterior do fornecedor SMM.
+  await registrarVendaEPurchase(pedido);
+
+  try{
+    const smmData=pedido.combo?await enviarComboSMM(pedido):await enviarPedidoSMM(pedido);
+    let bonusData=null;
+    if(!pedido.combo){
+      try{bonusData=await enviarBonusConfigurado(pedido);}
+      catch(e){console.error('[SMM BONUS]',e.response?.data||e.message);throw e;}
+    }
+    let bumpData=null;
+    try{bumpData=await enviarBumpSMM(pedido);}
+    catch(e){console.error('[SMM BUMP]',e.response?.data||e.message);}
+
+    pedido.status='concluido';
+    pedido.smmOrderId=pedido.combo?JSON.stringify(smmData):smmData?.order||null;
+    pedido.bumpSmmOrderId=bumpData?bumpData.order:null;
+    pedido.bonusData=bonusData||null;
+    pedido.concluidoEm=new Date().toISOString();
+    pedido.erroSmm=null;
+    await salvarPedidoPersistido(pedido);
+  }catch(err){
+    pedido.status='erro_smm';
+    pedido.erroSmm=err.response?.data||err.message;
+    pedido.falhouNoFornecedorEm=new Date().toISOString();
+    await salvarPedidoPersistido(pedido);
+    console.error('[SMM AUTO]',pedido.erroSmm);
+  }
+}
+
+async function confirmarPagamento(pedido){
+  if(!pedido)return;
+  if(pedido.status==='concluido')return;
+  pedido.pagamentoConfirmadoEm=pedido.pagamentoConfirmadoEm||new Date().toISOString();
+  await salvarPedidoPersistido(pedido);
+  await processarPedidoAutomaticamente(pedido);
+}
 
 async function salvarConfiguracaoServico(item) {
   const chave = item.chave || `${item.servico}__${item.plano}`;
@@ -569,7 +635,26 @@ async function enviarBonusConfigurado(pedido){
 }
 
 app.get('/admin/pedidos',async(req,res)=>{if(!senhaAdminValida(req))return res.status(401).json({error:'Não autorizado'});try{return res.json({pedidos:await buscarPedidosPersistidos()});}catch(e){return res.status(500).json({error:e.message})}});
-app.post('/admin/pedidos/:id/aprovar',async(req,res)=>{if(!senhaAdminValida(req))return res.status(401).json({error:'Não autorizado'});const pedido=await carregarPedidoAdmin(req.params.id);if(!pedido)return res.status(404).json({error:'Pedido não encontrado'});if(pedido.status!=='aguardando_aprovacao'&&pedido.status!=='erro_smm')return res.status(400).json({error:'Pedido não está aguardando processamento'});try{pedido.status='processando_smm';pedido.aprovadoEm=new Date().toISOString();pedido.erroSmm=null;await salvarPedidoPersistido(pedido);const smmData=pedido.combo?await enviarComboSMM(pedido):await enviarPedidoSMM(pedido);let bonusData=null;if(!pedido.combo){try{bonusData=await enviarBonusConfigurado(pedido)}catch(e){console.error('[SMM BONUS]',e.response?.data||e.message);throw e}}let bumpData=null;try{bumpData=await enviarBumpSMM(pedido)}catch(e){console.error('[SMM BUMP]',e.response?.data||e.message)}pedido.status='concluido';pedido.smmOrderId=pedido.combo?JSON.stringify(smmData):smmData?.order||null;pedido.bumpSmmOrderId=bumpData?bumpData.order:null;pedido.bonusData=bonusData||null;pedido.concluidoEm=new Date().toISOString();await salvarPedidoPersistido(pedido);const detalhesVenda=pedido.distribuicao?.publicacoes?.map((p,i)=>`Pub ${i+1}: ${p.link} | ❤️ ${p.curtidas||0} | 👁️ ${p.visualizacoes||0}`).join(' || ')||'';await registrarEvento('venda',`${pedido.nome} | ${pedido.telefone} | Perfil: ${pedido.instagram} | ${pedido.servico} ${pedido.plano}${detalhesVenda?' | '+detalhesVenda:''}${pedido.bump?' + bump 500 curtidas | Publicação bump: '+pedido.bump_publicacao:''}`,Number((pedido.valor/100).toFixed(2)));await enviarPurchaseMeta(pedido);return res.json({ok:true,pedido});}catch(err){pedido.status='erro_smm';pedido.erroSmm=err.response?.data||err.message;await salvarPedidoPersistido(pedido);return res.status(500).json({ok:false,error:pedido.erroSmm,pedido});}});
+app.post('/admin/pedidos/:id/aprovar',async(req,res)=>{
+  if(!senhaAdminValida(req))return res.status(401).json({error:'Não autorizado'});
+  const pedido=await carregarPedidoAdmin(req.params.id);
+  if(!pedido)return res.status(404).json({error:'Pedido não encontrado'});
+  if(pedido.status!=='erro_smm'&&pedido.status!=='aguardando_aprovacao')return res.status(400).json({error:'Pedido não está aguardando reprocessamento'});
+  try{
+    pedido.status='processando_smm';
+    pedido.aprovadoEm=new Date().toISOString();
+    pedido.erroSmm=null;
+    pedido.processamentoAutomaticoEm=null;
+    await salvarPedidoPersistido(pedido);
+    await processarPedidoAutomaticamente(pedido);
+    return res.json({ok:pedido.status==='concluido',pedido});
+  }catch(err){
+    pedido.status='erro_smm';
+    pedido.erroSmm=err.response?.data||err.message;
+    await salvarPedidoPersistido(pedido);
+    return res.status(500).json({ok:false,error:pedido.erroSmm,pedido});
+  }
+});
 app.get('/servicos-smm',async(req,res)=>{try{const r=await axios.post(process.env.SMM_API_URL,new URLSearchParams({key:process.env.SMM_API_KEY,action:'services'}),{headers:{'Content-Type':'application/x-www-form-urlencoded'}});return res.json(Array.isArray(r.data)?r.data.filter(s=>s.name?.toLowerCase().includes('instagram')||s.category?.toLowerCase().includes('instagram')):r.data);}catch(err){return res.status(500).json({error:err.message})}});
 app.get('/health',async(req,res)=>{const eventos=await buscarEventos();res.json({status:'ok',supabase:SUPABASE_URL?'configurado':'ausente',meta_pixel:process.env.META_PIXEL_ID?'configurado':'ausente',pedidos_em_memoria:Object.keys(pedidos).length,eventos_salvos:eventos.length,timestamp:new Date().toISOString()})});
 
