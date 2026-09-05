@@ -545,11 +545,6 @@ async function carregarPlanosDoPainel(){
       var local=(CAT[servico]&&CAT[servico].planos||[]).find(function(p){return String(p.id)===String(x.plano);})||{};
       var likes=Number(x.bonusCurtidas||0);
       var views=Number(x.bonusVisualizacoes||0);
-      var fallback={
-        "500":[200,200],"1000":[500,500],"1500":[700,700],"2000":[1000,1000],
-        "3000":[2000,2000],"4000":[3000,3000],"5000":[4000,4000]
-      }[String(x.plano)];
-      if(!likes && !views && servico.indexOf("engajamento-")===0 && fallback){likes=fallback[0];views=fallback[1];}
       var bonusHtml="";
       if(likes) bonusHtml+='<span class="like">+'+likes.toLocaleString("pt-BR")+' Curtidas</span>';
       if(views) bonusHtml+='<span class="view">+'+views.toLocaleString("pt-BR")+' Visualizações</span>';
