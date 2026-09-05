@@ -646,6 +646,16 @@ async function carregarConfiguracaoCheckout(){
     if(item.icone) ICONS[servico]=item.icone;
     if(item.qtd) PL[plano]=item.qtd;
     if(item.por) sessionStorage.setItem("planoPor",item.por);
+    // Para combos, o painel administrativo é a fonte oficial dos bônus.
+    // Se o admin zerar/remover um bônus, o checkout também deve ficar sem ele.
+    if(isCombo){
+      comboInfo = Object.assign({}, comboInfo || {}, {
+        seguidores:Number(item.plano || plano),
+        likes:Number(item.bonusCurtidas || 0),
+        views:Number(item.bonusVisualizacoes || 0)
+      });
+      exigeDistribuicaoCombo = !!(comboInfo.likes || comboInfo.views);
+    }
     atualizarResumo();
     if(isCombo) atualizarResumoCombo();
   }catch(err){console.warn("[CONFIG CHECKOUT]",err);}
