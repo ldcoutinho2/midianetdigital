@@ -36,6 +36,7 @@ function show(id){
  if(target==='site')loadSite();
  if(target==='integrations')health();
  history.replaceState(null,'','#'+target);
+ window.scrollTo({top:0,left:0,behavior:'auto'});
 }
 window.show=show;
 document.addEventListener('click',e=>{const b=e.target.closest('.nav');if(b){e.preventDefault();show(b.dataset.s)}});
