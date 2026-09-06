@@ -81,7 +81,7 @@ function renderOrigins(origins){
 function gerarLinkRastreio(){
  const source=($('trackSource')?.value||'outro').trim().toLowerCase().replace(/\s+/g,'_');
  const raw=($('trackCampaign')?.value||'').trim();
- const isUrl=/^https?:\\/\\//i.test(raw);
+ const isUrl=/^https?:\/\//i.test(raw);
  const baseUrl=isUrl?raw:'https://midianetdigital.vercel.app/index.html';
  const campaign=isUrl?'':raw;
  const medium=source==='whatsapp'?'messaging':source==='instagram'?'social':source==='meta_ads'?'cpc':source==='tiktok'?'social':source==='google_ads'?'cpc':'referral';
@@ -97,8 +97,7 @@ function gerarLinkRastreio(){
  }
 }
 function copiarLinkRastreio(){
- const el=$('trackUrl'); if(!el||!el.value){gerarLinkRastreio();return;}
- navigator.clipboard?.writeText(el.value).then(()=>toast('Link copiado')).catch(()=>{el.select();document.execCommand('copy');toast('Link copiado')});
+ const el=$('trackUrl'); if(!el||!el.value){gerarLinkRastreio();return;} navigator.clipboard?.writeText(el.value).then(()=>toast('Link copiado')).catch(()=>{el.select();document.execCommand('copy');toast('Link copiado')});
 }
 window.gerarLinkRastreio=gerarLinkRastreio;
 window.copiarLinkRastreio=copiarLinkRastreio;
