@@ -20,16 +20,16 @@ const api=(u,o={})=>{o.headers=Object.assign({'X-Dashboard-Password':senha,'Cont
 function toast(t){const el=$('toast');if(!el)return;el.textContent=t;el.classList.add('on');setTimeout(()=>el.classList.remove('on'),2200)}
 function show(id){
  const target=titles[id]?id:'dashboard';
- document.body.dataset.section=target;
- document.querySelectorAll('.nav').forEach(b=>b.classList.toggle('on',b.dataset.s===target));
  document.querySelectorAll('.section').forEach(s=>{
-   const active=s.id===target;
-   s.classList.toggle('on',active);
+   s.classList.toggle('on',s.id===target);
    s.removeAttribute('hidden');
-   s.setAttribute('aria-hidden',active?'false':'true');
-   s.style.setProperty('display',active?'block':'none','important');
+   s.style.display=s.id===target?'block':'none';
  });
- if(titles[target]){$('title').textContent=titles[target][0];$('subtitle').textContent=titles[target][1]}
+ document.querySelectorAll('.nav').forEach(b=>b.classList.toggle('on',b.dataset.s===target));
+ $('title').textContent=titles[target][0];
+ $('subtitle').textContent=titles[target][1];
+ history.replaceState(null,'','#'+target);
+ window.scrollTo(0,0);
  if(target==='services')renderServices();
  if(target==='plans')renderPlans();
  if(target==='ids')renderIds();
@@ -37,8 +37,6 @@ function show(id){
  if(target==='orders')loadOrders();
  if(target==='site')loadSite();
  if(target==='integrations')health();
- history.replaceState(null,'','#'+target);
- window.scrollTo({top:0,left:0,behavior:'auto'});
 }
 window.show=show;
 document.addEventListener('click',e=>{const b=e.target.closest('.nav');if(b){e.preventDefault();show(b.dataset.s)}});
