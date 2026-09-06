@@ -25,7 +25,7 @@ function show(id){
    const active=s.id===target;
    s.classList.toggle('on',active);
    s.hidden=!active;
-   s.style.display=active?'block':'none';
+   s.style.setProperty('display',active?'block':'none','important');
  });
  if(titles[target]){$('title').textContent=titles[target][0];$('subtitle').textContent=titles[target][1]}
  if(target==='services')renderServices();
@@ -107,7 +107,7 @@ function corrigirRotulosDashboard(){
  if(co?.parentElement?.querySelector('.kh'))co.parentElement.querySelector('.kh').childNodes[0].nodeValue='Iniciaram Checkout ';
 }
 async function loadConfig(){
- try{const r=await api('/admin/config'),j=await r.json();if(!r.ok)throw Error(j.error||'Não autorizado');cfg=j;cfg.servicos=cfg.servicos||{};cfg.anuncios=cfg.anuncios||[];cfg.site=cfg.site||{};renderServices();renderPlans();renderIds();renderAds()}
+ try{const r=await api('/admin/config'),j=await r.json();if(!r.ok)throw Error(j.error||'Não autorizado');cfg=j;cfg.servicos=cfg.servicos||{};cfg.anuncios=cfg.anuncios||[];cfg.site=cfg.site||{};renderServices();renderPlans();renderIds();renderAds();const active=location.hash.slice(1);if(titles[active])show(active)}
  catch(e){toast('Configuração: '+e.message)}
 }
 function groups(){const g={};Object.values(cfg.servicos||{}).filter(x=>x.excluido!==true).forEach(x=>{(g[x.servico]??=[]).push(x)});return g}
