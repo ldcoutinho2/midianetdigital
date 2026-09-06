@@ -533,6 +533,15 @@ function obterRastreamentoOrigem(){
 var rastreamentoOrigem=obterRastreamentoOrigem();
 var grid = document.getElementById("grid");
 
+function esc(v){
+  return String(v ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#39;");
+}
+
 function precoNumero(v){
   if(typeof v==="number") return v;
   var t=String(v??"").replace(/[^0-9,.-]/g,"").replace(/\./g,"").replace(",",".");
@@ -583,7 +592,13 @@ function renderPlanoItens(itens,titulo){
 
 async function carregarPlanosDoPainel(){
   try{
-    var resp=await fetch("https://midianetdigital.onrender.com/config/public?servico="+encodeURIComponent(servico),{cache:"no-store"});
+    var controller = new AbortController();
+    var timer = setTimeout(function(){controller.abort();},5000);
+    var resp=await fetch("https://midianetdigital.onrender.com/config/public?servico="+encodeURIComponent(servico),{
+      cache:"no-store",
+      signal:controller.signal
+    });
+    clearTimeout(timer);
     if(!resp.ok) throw new Error("config");
     var cfg=await resp.json();
     var itens=(cfg.servicos||[]).filter(function(x){return x.ativo!==false;});
