@@ -575,10 +575,14 @@ function renderPlanoItens(itens,titulo){
     if(likes) bonusHtml+='<span class="like">+'+likes.toLocaleString("pt-BR")+" Curtidas</span>";
     if(views) bonusHtml+='<span class="view">+'+views.toLocaleString("pt-BR")+" Visualizações</span>";
     if(!bonusHtml) bonusHtml='<span class="info">'+esc(desc)+"</span>";
-    card.innerHTML=(x.destaque||x.hot?'<span class="cbadge">🔥 Mais vendido</span>':"")+
-      '<div class="pkg-icon">'+esc(x.icone||"👤")+"</div>"+
-      '<div class="pkg-info"><div class="pkg-name">'+esc(qtd)+"</div><div class="pkg-bonuses">"+bonusHtml+"</div></div>"+
-      '<div class="pkg-buy"><div class="pkg-from">A partir de</div><div class="pkg-price">'+preco.toLocaleString("pt-BR",{style:"currency",currency:"BRL"})+'</div><div class="cbtn">Ver pacote →</div></div>';
+    var badgeHtml=(x.destaque||x.hot)?'<span class="cbadge">🔥 Mais vendido</span>':"";
+    var precoFormatado=preco.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+    card.innerHTML=[
+      badgeHtml,
+      '<div class="pkg-icon">'+esc(x.icone||"👤")+'</div>',
+      '<div class="pkg-info"><div class="pkg-name">'+esc(qtd)+'</div><div class="pkg-bonuses">'+bonusHtml+'</div></div>',
+      '<div class="pkg-buy"><div class="pkg-from">A partir de</div><div class="pkg-price">'+precoFormatado+'</div><div class="cbtn">Ver pacote →</div></div>'
+    ].join("");
     card.addEventListener("click",function(e){
       e.preventDefault();
       var planoId=String(x.plano||x.id||"");
