@@ -1021,20 +1021,17 @@ footer{background:rgba(255,255,255,.9)!important;border-color:rgba(225,48,108,.1
         }).join('')||'<div class="small">Nenhum serviço disponível.</div>';
 
         grid.querySelectorAll('.service-track').forEach(function(card){
-          card.addEventListener('click',async function(e){
+          card.addEventListener('click',function(e){
             e.preventDefault();
             var slug=this.getAttribute('data-slug'),nome=this.getAttribute('data-service')||slug,href=this.getAttribute('href');
             sessionStorage.setItem('servico',slug);
             if(typeof fbq==='function') fbq('track','ViewContent',{content_name:nome,content_category:'Servico'});
-            var key='mn24_track_v5_servico_'+slug;
-            if(!sessionStorage.getItem(key)){
-              try{
-                var rr=await fetch('https://midianetdigital.onrender.com/evento',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tipo:'servico',servico:nome}),keepalive:true});
-                var jj=await rr.json().catch(function(){return {ok:false};});
-                if(rr.ok&&jj.ok) sessionStorage.setItem(key,'1');
-              }catch(_){}
-            }
-            window.location.href=href;
+            // O rastreamento nunca pode bloquear a navegação do cliente.
+            // Dispara em segundo plano e a página segue imediatamente para os planos.
+            try{
+              registrarRastreamento('servico',{servico:nome},'servico_'+slug);
+            }catch(_){}
+            window.location.assign(href);
           });
         });
       }catch(e){console.warn('[CONFIG PAINEL]',e);}
