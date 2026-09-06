@@ -136,12 +136,10 @@
         const key='mn24_track_v5_servico_'+slug;
         if(!sessionStorage.getItem(key)){
           try{
-            const rr=await fetch(BACKEND+'/evento',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tipo:'servico',servico:nome}),keepalive:true});
-            const jj=await rr.json().catch(()=>({ok:false}));
-            if(rr.ok&&jj.ok) sessionStorage.setItem(key,'1');
+            fetch(BACKEND+'/evento',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tipo:'servico',servico:nome}),keepalive:true}).catch(function(){});
           }catch(_){}
         }
-        window.location.href=href;
+        window.location.assign(href);
       });
     });
   }catch(e){
@@ -169,10 +167,7 @@
         const slug=this.getAttribute('data-service'),nome=this.getAttribute('data-name')||slug,href=this.getAttribute('href');
         sessionStorage.setItem('servico',slug);
         if(typeof fbq==='function') fbq('track','ViewContent',{content_name:nome,content_category:'Servico'});
-        try{
-          await fetch(BACKEND+'/evento',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tipo:'servico',servico:nome}),keepalive:true});
-        }catch(_){}
-        window.location.href=href;
+        try{ fetch(BACKEND+'/evento',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tipo:'servico',servico:nome}),keepalive:true}).catch(function(){}); }catch(_){} window.location.assign(href);
       });
     });
   }
