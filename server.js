@@ -426,7 +426,7 @@ async function salvarSiteConfig(site) {
 }
 
 function custoDoPedidoConfig(eventoNome, config) {
-  const texto = String(eventoNome || '');
+  const texto = parseEventoNome(eventoNome).display;
   const chave = Object.keys(config.servicos || {}).find(k => {
     const [svc, plano] = k.split('__');
     return texto.includes(`${svc} ${plano}`);
