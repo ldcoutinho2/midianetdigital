@@ -79,22 +79,15 @@ function renderOrigins(origins){
  el.innerHTML=rows.length?rows.map(([nome,x])=>`<tr><td><b>${esc(nome)}</b></td><td>${x.visitantes||0}</td><td>${x.servicos||0}</td><td>${x.planos||0}</td><td>${x.checkout||0}</td><td>${x.pix||0}</td><td><b>${x.vendas||0}</b></td><td><b>${money((x.faturamento||0)/100)}</b></td></tr>`).join(''):'<tr><td colspan="8"><div class="empty">Nenhum tráfego registrado.</div></td></tr>';
 }
 function gerarLinkRastreio(){
- const source=($('trackSource')?.value||'outro').trim().toLowerCase().replace(/\s+/g,'_');
+ const source=($('trackSource')?.value||'outro').trim().toLowerCase().replace(/[^a-z0-9_-]+/g,'_').replace(/^_+|_+$/g,'')||'outro';
  const raw=($('trackCampaign')?.value||'').trim();
- const isUrl=/^https?:\/\//i.test(raw);
- const baseUrl=isUrl?raw:'https://midianetdigital.vercel.app/index.html';
- const campaign=isUrl?'':raw;
- const medium=source==='whatsapp'?'messaging':source==='instagram'?'social':source==='meta_ads'?'cpc':source==='tiktok'?'social':source==='google_ads'?'cpc':'referral';
- try{
-   const url=new URL(baseUrl);
-   url.searchParams.set('utm_source',source);
-   url.searchParams.set('utm_medium',medium);
-   if(campaign)url.searchParams.set('utm_campaign',campaign);
-   $('trackUrl').value=url.toString();
-   toast('Link de rastreio gerado');
- }catch(e){
-   toast('URL inválida');
- }
+ const base='https://midianetdigital.vercel.app';
+ // O link público fica limpo no domínio da MidiaNet. O Vercel reescreve
+ // /r/origem internamente para index.html com os parâmetros UTM,
+ // preservando a atribuição sem expor ?utm_... ao cliente.
+ const link=base+'/r/'+encodeURIComponent(source);
+ $('trackUrl').value=link;
+ toast(raw ? 'Link limpo de '+source+' gerado' : 'Link de rastreio gerado');
 }
 function copiarLinkRastreio(){
  const el=$('trackUrl'); if(!el||!el.value){gerarLinkRastreio();return;} navigator.clipboard?.writeText(el.value).then(()=>toast('Link copiado')).catch(()=>{el.select();document.execCommand('copy');toast('Link copiado')});
