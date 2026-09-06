@@ -605,6 +605,8 @@ app.post('/admin/config/anuncio',async(req,res)=>{if(!senhaAdminValida(req))retu
 app.get('/admin/site-config',async(req,res)=>{if(!senhaAdminValida(req))return res.status(401).json({error:'Não autorizado'});try{return res.json((await buscarConfiguracao()).site||{});}catch(err){return res.status(500).json({error:'Erro ao carregar configuração do site'});}});
 app.post('/admin/site-config',async(req,res)=>{if(!senhaAdminValida(req))return res.status(401).json({error:'Não autorizado'});try{return res.json({ok:true,item:await salvarSiteConfig(req.body||{})});}catch(err){return res.status(500).json({ok:false,error:err.message||'Erro ao salvar configuração do site'});}});
 
+app.get('/favicon.ico',(req,res)=>{res.status(204).end();});
+
 app.get('/dashboard-admin.js',(req,res)=>{
   res.setHeader('Content-Type','application/javascript; charset=utf-8');
   res.setHeader('Cache-Control','no-store, no-cache, must-revalidate, proxy-revalidate');
