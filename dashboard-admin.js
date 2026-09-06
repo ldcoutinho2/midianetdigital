@@ -20,6 +20,7 @@ const api=(u,o={})=>{o.headers=Object.assign({'X-Dashboard-Password':senha,'Cont
 function toast(t){const el=$('toast');if(!el)return;el.textContent=t;el.classList.add('on');setTimeout(()=>el.classList.remove('on'),2200)}
 function show(id){
  const target=titles[id]?id:'dashboard';
+ document.body.dataset.section=target;
  document.querySelectorAll('.nav').forEach(b=>b.classList.toggle('on',b.dataset.s===target));
  document.querySelectorAll('.section').forEach(s=>{
    const active=s.id===target;
