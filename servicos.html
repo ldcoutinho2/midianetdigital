@@ -144,7 +144,38 @@
         window.location.href=href;
       });
     });
-  }catch(e){console.warn('[CONFIG PAINEL]',e);}
+  }catch(e){
+    console.warn('[CONFIG PAINEL] usando catálogo local de emergência',e);
+    const fallback=[
+      {slug:'engajamento-30-70',nome:'30% Brasileiros + 70% Mundiais',desc:'Seguidores mistos + bônus de curtidas e visualizações.',preco:5,icone:'🌎🇧🇷'},
+      {slug:'engajamento-br',nome:'100% Brasileiros',desc:'Seguidores brasileiros + bônus de engajamento.',preco:15,icone:'🇧🇷'},
+      {slug:'engajamento-premium',nome:'BR Premium Ativos',desc:'Perfis premium ativos + bônus de engajamento.',preco:80,icone:'🎖️'},
+      {slug:'visualizacoes',nome:'Visualizações',desc:'Visualizações para Reels e vídeos.',preco:8,icone:'▶️'},
+      {slug:'curtidas-brasileiras',nome:'Curtidas Brasileiras',desc:'Curtidas brasileiras para aumentar o engajamento.',preco:8,icone:'❤️'}
+    ];
+    grid.innerHTML=fallback.map(function(x){
+      const href='planos.html?servico='+encodeURIComponent(x.slug);
+      return '<a class="card" href="'+href+'" data-service="'+esc(x.slug)+'" data-name="'+esc(x.nome)+'">'+
+        '<span class="cico">'+esc(x.icone)+'</span>'+
+        '<h3>'+esc(x.nome)+'</h3>'+
+        '<p>'+esc(x.desc)+'</p>'+
+        '<ul class="clist"><li>Pacotes disponíveis</li></ul>'+
+        '<div class="cprice">A partir de '+Number(x.preco).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})+'<small>conforme o pacote escolhido</small></div>'+
+      '</a>';
+    }).join('');
+    grid.querySelectorAll('.card').forEach(function(card){
+      card.addEventListener('click',async function(e){
+        e.preventDefault();
+        const slug=this.getAttribute('data-service'),nome=this.getAttribute('data-name')||slug,href=this.getAttribute('href');
+        sessionStorage.setItem('servico',slug);
+        if(typeof fbq==='function') fbq('track','ViewContent',{content_name:nome,content_category:'Servico'});
+        try{
+          await fetch(BACKEND+'/evento',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tipo:'servico',servico:nome}),keepalive:true});
+        }catch(_){}
+        window.location.href=href;
+      });
+    });
+  }
 })();
 </script>
 </body>
