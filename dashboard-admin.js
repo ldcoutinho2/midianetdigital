@@ -183,7 +183,8 @@ async function loadSite(){try{const r=await api('/admin/site-config'),x=await r.
 async function saveSite(){const r=await api('/admin/site-config',{method:'POST',body:JSON.stringify({nome:$('siteName').value,whatsapp:$('siteWhats').value,horario:$('siteHours').value,garantia:$('siteGuarantee').value,texto:$('siteText').value})}),j=await r.json();$('siteStatus').textContent=j.ok?'✅ Site salvo':'❌ '+(j.error||'Erro');if(j.ok)toast('Site salvo')}window.saveSite=saveSite;
 async function health(){try{const r=await fetch('/health?_='+Date.now(),{cache:'no-store'}),x=await r.json();$('sup').textContent=x.supabase==='configurado'?'conectado':'ausente';$('meta').textContent=x.meta_pixel==='configurado'?'conectado':'ausente'}catch(e){$('sup').textContent='erro'}}
 async function reloadAll(){await loadConfig();await dashboard();await loadOrders();toast('Painel atualizado')}window.reloadAll=reloadAll;
-document.addEventListener('DOMContentLoaded',()=>{\n corrigirRotulosDashboard();
+document.addEventListener('DOMContentLoaded',()=>{
+ corrigirRotulosDashboard();
  $('adDate').value=localDate();
  $('serviceSearch')?.addEventListener('input',renderServices);$('serviceFilter')?.addEventListener('change',renderServices);
  $('planSearch')?.addEventListener('input',renderPlans);$('planService')?.addEventListener('change',renderPlans);
