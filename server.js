@@ -435,31 +435,122 @@ function custoDoPedidoConfig(eventoNome, config) {
 }
 
 function montarDashboard(eventos, config = montarConfiguracaoPadrao(), filtros = {}) {
-  const dados = { visitantes: 0, servicos: 0, planos: 0, checkout: 0, pix: 0, vendas: 0, faturamento: 0, servicosDetalhes: {}, planosDetalhes: {}, pixDetalhes: [], vendasDetalhes: [], dias: {}, funil: {}, origens: {} };
+  const dados = {
+    visitantes:0, servicos:0, planos:0, checkout:0, pix:0, vendas:0, faturamento:0,
+    servicosDetalhes:{}, planosDetalhes:{}, pixDetalhes:[], vendasDetalhes:[], dias:{}, funil:{}, origens:{}
+  };
+
+  // Eventos de navegação continuam sendo contabilizados normalmente.
+  // Vendas, porém, são derivadas dos pedidos pagos e deduplicadas pelo ID do pedido.
+  // Isso evita que webhooks/reprocessamentos gerem vendas e lucro duplicados.
+  const pedidosPagos = new Map();
+  const vendasLegadas = [];
+
   for (const e of eventos) {
-    const tipo = e.tipo, parsed = parseEventoNome(e.nome || ''), nome = parsed.display, origem = parsed.origem, valorCentavos = Math.round(Number(e.valor || 0) * 100), data = new Date(e.created_at), dia = data.toLocaleDateString('pt-BR', {timeZone:'America/Sao_Paulo'});
-    if (!dados.dias[dia]) dados.dias[dia] = { visitantes:0, servicos:0, planos:0, checkout:0, pix:0, vendas:0, faturamento:0 };
-    if (!dados.origens[origem]) dados.origens[origem] = {visitantes:0,servicos:0,planos:0,checkout:0,pix:0,vendas:0,faturamento:0};
-    if (tipo==='visitante') { dados.visitantes++; dados.dias[dia].visitantes++; dados.origens[origem].visitantes++; }
-    if (tipo==='servico') { dados.servicos++; dados.dias[dia].servicos++; dados.origens[origem].servicos++; incrementarDetalhe(dados.servicosDetalhes,nome); }
-    if (tipo==='plano') { dados.planos++; dados.dias[dia].planos++; dados.origens[origem].planos++; incrementarDetalhe(dados.planosDetalhes,nome); }
-    if (tipo==='checkout') { dados.checkout++; dados.dias[dia].checkout++; dados.origens[origem].checkout++; }
-    if (tipo==='pix') { dados.pix++; dados.dias[dia].pix++; dados.origens[origem].pix++; dados.pixDetalhes.push({hora:data.toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo'}),info:nome||'Pedido',valor:dinheiroBR(valorCentavos),origem}); }
-    if (tipo==='venda') { dados.vendas++; dados.dias[dia].vendas++; dados.faturamento+=valorCentavos; dados.dias[dia].faturamento+=valorCentavos; dados.origens[origem].vendas++; dados.origens[origem].faturamento+=valorCentavos; dados.vendasDetalhes.push({hora:data.toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo'}),info:nome||'Venda',valor:dinheiroBR(valorCentavos),origem}); }
+    if (e.tipo === 'pedido') {
+      try {
+        const p = JSON.parse(e.nome || '{}');
+        if (p && p.id && p.pagamentoConfirmadoEm) pedidosPagos.set(String(p.id), {...p, __created_at:e.created_at});
+      } catch (_) {}
+    } else if (e.tipo === 'venda') {
+      vendasLegadas.push(e);
+    }
   }
+
+  const registrarVenda = (pedido, createdAt, origemFallback='direto') => {
+    const valorCentavos = Math.round(Number(pedido.valor || 0) || 0);
+    const data = new Date(createdAt || pedido.pagamentoConfirmadoEm || pedido.criadoEm || Date.now());
+    const dia = data.toLocaleDateString('pt-BR',{timeZone:'America/Sao_Paulo'});
+    const meta = {origem:normalizarOrigem(pedido.origem || origemFallback), utm:pedido.utm || {}};
+    if(!dados.dias[dia]) dados.dias[dia]={visitantes:0,servicos:0,planos:0,checkout:0,pix:0,vendas:0,faturamento:0};
+    if(!dados.origens[meta.origem]) dados.origens[meta.origem]={visitantes:0,servicos:0,planos:0,checkout:0,pix:0,vendas:0,faturamento:0};
+    dados.vendas++;
+    dados.dias[dia].vendas++;
+    dados.faturamento+=valorCentavos;
+    dados.dias[dia].faturamento+=valorCentavos;
+    dados.origens[meta.origem].vendas++;
+    dados.origens[meta.origem].faturamento+=valorCentavos;
+    dados.vendasDetalhes.push({
+      hora:data.toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo'}),
+      info:(pedido.nome||'Venda')+' | '+(pedido.instagram||'')+' | '+(pedido.servico||'')+' '+(pedido.plano||''),
+      valor:dinheiroBR(valorCentavos),
+      origem:meta.origem
+    });
+  };
+
+  for (const e of eventos) {
+    const tipo=e.tipo, parsed=parseEventoNome(e.nome||''), nome=parsed.display, origem=parsed.origem;
+    const valorCentavos=Math.round(Number(e.valor||0)*100);
+    const data=new Date(e.created_at);
+    const dia=data.toLocaleDateString('pt-BR',{timeZone:'America/Sao_Paulo'});
+    if(!dados.dias[dia]) dados.dias[dia]={visitantes:0,servicos:0,planos:0,checkout:0,pix:0,vendas:0,faturamento:0};
+    if(!dados.origens[origem]) dados.origens[origem]={visitantes:0,servicos:0,planos:0,checkout:0,pix:0,vendas:0,faturamento:0};
+
+    if(tipo==='visitante'){dados.visitantes++;dados.dias[dia].visitantes++;dados.origens[origem].visitantes++;}
+    if(tipo==='servico'){dados.servicos++;dados.dias[dia].servicos++;dados.origens[origem].servicos++;incrementarDetalhe(dados.servicosDetalhes,nome);}
+    if(tipo==='plano'){dados.planos++;dados.dias[dia].planos++;dados.origens[origem].planos++;incrementarDetalhe(dados.planosDetalhes,nome);}
+    if(tipo==='checkout'){dados.checkout++;dados.dias[dia].checkout++;dados.origens[origem].checkout++;}
+    if(tipo==='pix'){dados.pix++;dados.dias[dia].pix++;dados.origens[origem].pix++;dados.pixDetalhes.push({hora:data.toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo'}),info:nome||'Pedido',valor:dinheiroBR(valorCentavos),origem});}
+  }
+
+  // Fonte principal: pedidos persistidos com pagamento confirmado.
+  // O snapshot mais recente por ID representa o estado atual do pedido.
+  for(const pedido of pedidosPagos.values()) registrarVenda(pedido,pedido.__created_at);
+
+  // Compatibilidade com vendas antigas que não possuem snapshot de pedido pago.
+  if(pedidosPagos.size===0){
+    for(const e of vendasLegadas){
+      const parsed=parseEventoNome(e.nome||''), valorCentavos=Math.round(Number(e.valor||0)*100), data=new Date(e.created_at), dia=data.toLocaleDateString('pt-BR',{timeZone:'America/Sao_Paulo'}), origem=parsed.origem;
+      if(!dados.dias[dia]) dados.dias[dia]={visitantes:0,servicos:0,planos:0,checkout:0,pix:0,vendas:0,faturamento:0};
+      if(!dados.origens[origem]) dados.origens[origem]={visitantes:0,servicos:0,planos:0,checkout:0,pix:0,vendas:0,faturamento:0};
+      dados.vendas++;dados.dias[dia].vendas++;dados.faturamento+=valorCentavos;dados.dias[dia].faturamento+=valorCentavos;dados.origens[origem].vendas++;dados.origens[origem].faturamento+=valorCentavos;
+      dados.vendasDetalhes.push({hora:data.toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo'}),info:parsed.display||'Venda',valor:dinheiroBR(valorCentavos),origem});
+    }
+  }
+
   const pct=(a,b)=>!b||b<=0?'0.00%':((a/b)*100).toFixed(2)+'%';
   const queda=(a,b)=>!a||a<=0?'0.00%':(((a-b)/a)*100).toFixed(2)+'%';
-  dados.funil={visitanteServico:pct(dados.servicos,dados.visitantes),servicoPlano:pct(dados.planos,dados.servicos),planoCheckout:pct(dados.checkout,dados.planos),checkoutPix:pct(dados.pix,dados.checkout),pixVenda:pct(dados.vendas,dados.pix),quedaVisitanteServico:queda(dados.visitantes,dados.servicos),quedaServicoPlano:queda(dados.servicos,dados.planos),quedaPlanoCheckout:queda(dados.planos,dados.checkout),quedaCheckoutPix:queda(dados.checkout,dados.pix),quedaPixVenda:queda(dados.pix,dados.vendas)};
-  const etapas=[['Visitante → Serviço',dados.funil.quedaVisitanteServico],['Serviço → Plano',dados.funil.quedaServicoPlano],['Plano → Checkout',dados.funil.quedaPlanoCheckout],['Checkout → Pix',dados.funil.quedaCheckoutPix],['Pix → Venda',dados.funil.quedaPixVenda]].map(x=>({nome:x[0],queda:Number(String(x[1]).replace('%',''))})).sort((a,b)=>b.queda-a.queda);
+  dados.funil={
+    visitanteServico:pct(dados.servicos,dados.visitantes),servicoPlano:pct(dados.planos,dados.servicos),
+    planoCheckout:pct(dados.checkout,dados.planos),checkoutPix:pct(dados.pix,dados.checkout),pixVenda:pct(dados.vendas,dados.pix),
+    quedaVisitanteServico:queda(dados.visitantes,dados.servicos),quedaServicoPlano:queda(dados.servicos,dados.planos),
+    quedaPlanoCheckout:queda(dados.planos,dados.checkout),quedaCheckoutPix:queda(dados.checkout,dados.pix),quedaPixVenda:queda(dados.pix,dados.vendas)
+  };
+  const etapas=[['Visitante → Serviço',dados.funil.quedaVisitanteServico],['Serviço → Plano',dados.funil.quedaServicoPlano],['Plano → Checkout',dados.funil.quedaPlanoCheckout],['Checkout → Pix',dados.funil.quedaCheckoutPix],['Pix → Venda',dados.funil.quedaPixVenda]]
+    .map(x=>({nome:x[0],queda:Number(String(x[1]).replace('%',''))})).sort((a,b)=>b.queda-a.queda);
   const ticketMedio=dados.vendas>0?Math.round(dados.faturamento/dados.vendas):0;
+
+  // Custo calculado pelo próprio snapshot do pedido, com fallback para a configuração atual.
   let custosServicos=0,vendasComCusto=0;
-  for(const e of eventos) if(e.tipo==='venda'){ const custo=custoDoPedidoConfig(e.nome,config); if(custo>0){ custosServicos+=Math.round(custo*100); vendasComCusto++; } }
+  for(const pedido of pedidosPagos.values()){
+    const chave=String(pedido.servico||'')+'__'+String(pedido.plano||'');
+    const custo=Number(config.servicos?.[chave]?.custo||0);
+    if(custo>0){custosServicos+=Math.round(custo*100);vendasComCusto++;}
+  }
+  if(pedidosPagos.size===0){
+    for(const e of vendasLegadas){
+      const custo=custoDoPedidoConfig(e.nome,config);
+      if(custo>0){custosServicos+=Math.round(custo*100);vendasComCusto++;}
+    }
+  }
+
   const adsNoPeriodo=(config.anuncios||[]).filter(a=>(!filtros.start||String(a.data)>=String(filtros.start))&&(!filtros.end||String(a.data)<=String(filtros.end)));
   const investimentoAds=Math.round(adsNoPeriodo.reduce((s,a)=>s+Number(a.valor||0),0)*100);
-  const lucroBruto=dados.faturamento-custosServicos, lucroLiquido=lucroBruto-investimentoAds, roas=investimentoAds>0?dados.faturamento/investimentoAds:0, roi=investimentoAds>0?lucroLiquido/investimentoAds:0;
-  return {...dados,faturamentoFormatado:dinheiroBR(dados.faturamento),ticketMedioFormatado:dinheiroBR(ticketMedio),conversaoGeral:pct(dados.vendas,dados.visitantes),maiorGargalo:etapas[0]?.nome||'Sem dados',maiorGargaloPercentual:etapas[0]?etapas[0].queda.toFixed(2)+'%':'0.00%',financeiro:{custosServicos,investimentoAds,lucroBruto,lucroLiquido,roas,roi,margem:dados.faturamento>0?(lucroLiquido/dados.faturamento)*100:0,vendasComCusto,custoMedio:dados.vendas>0?custosServicos/dados.vendas:0}};
-}
+  const lucroBruto=dados.faturamento-custosServicos;
+  const lucroLiquido=lucroBruto-investimentoAds;
+  const roas=investimentoAds>0?dados.faturamento/investimentoAds:0;
+  const roi=investimentoAds>0?lucroLiquido/investimentoAds:0;
 
+  return {
+    ...dados,
+    faturamentoFormatado:dinheiroBR(dados.faturamento),
+    ticketMedioFormatado:dinheiroBR(ticketMedio),
+    conversaoGeral:pct(dados.vendas,dados.visitantes),
+    maiorGargalo:etapas[0]?.nome||'Sem dados',
+    maiorGargaloPercentual:etapas[0]?etapas[0].queda.toFixed(2)+'%':'0.00%',
+    financeiro:{custosServicos,investimentoAds,lucroBruto,lucroLiquido,roas,roi,margem:dados.faturamento>0?(lucroLiquido/dados.faturamento)*100:0,vendasComCusto,custoMedio:dados.vendas>0?custosServicos/dados.vendas:0}
+  };
+}
 async function enviarPedidoSMM(pedido) {
   let links=[]; try { links=JSON.parse(pedido.instagram); if(!Array.isArray(links)) links=[pedido.instagram]; } catch { links=[pedido.instagram]; }
   links=links.filter(x=>x&&String(x).trim()); if(!links.length) throw new Error('Nenhum link válido para enviar ao SMM');
