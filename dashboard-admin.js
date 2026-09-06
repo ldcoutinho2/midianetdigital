@@ -24,7 +24,8 @@ function show(id){
  document.querySelectorAll('.section').forEach(s=>{
    const active=s.id===target;
    s.classList.toggle('on',active);
-   s.hidden=!active;
+   s.removeAttribute('hidden');
+   s.setAttribute('aria-hidden',active?'false':'true');
    s.style.setProperty('display',active?'block':'none','important');
  });
  if(titles[target]){$('title').textContent=titles[target][0];$('subtitle').textContent=titles[target][1]}
@@ -40,6 +41,7 @@ function show(id){
 }
 window.show=show;
 document.addEventListener('click',e=>{const b=e.target.closest('.nav');if(b){e.preventDefault();show(b.dataset.s)}});
+window.addEventListener('error',e=>{console.error('Dashboard admin error:',e.error||e.message);});
 window.addEventListener('hashchange',()=>{const id=location.hash.slice(1);if(titles[id])show(id)});
 function preset(){
  const p=$('preset').value,h=new Date(),a=new Date(h),b=new Date(h);
