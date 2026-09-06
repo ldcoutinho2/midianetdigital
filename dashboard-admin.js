@@ -19,28 +19,20 @@ const localDate=(d=new Date())=>d.getFullYear()+'-'+String(d.getMonth()+1).padSt
 const api=(u,o={})=>{o.headers=Object.assign({'X-Dashboard-Password':senha,'Content-Type':'application/json'},o.headers||{});o.cache='no-store';return fetch(u,o)};
 function toast(t){const el=$('toast');if(!el)return;el.textContent=t;el.classList.add('on');setTimeout(()=>el.classList.remove('on'),2200)}
 function show(id){
- const target=titles[id]?id:'dashboard';
- document.querySelectorAll('.section').forEach(s=>{
-   s.classList.toggle('on',s.id===target);
-   s.removeAttribute('hidden');
-   s.style.display=s.id===target?'block':'none';
- });
- document.querySelectorAll('.nav').forEach(b=>b.classList.toggle('on',b.dataset.s===target));
- $('title').textContent=titles[target][0];
- $('subtitle').textContent=titles[target][1];
- history.replaceState(null,'','#'+target);
- window.scrollTo(0,0);
- if(target==='services')renderServices();
- if(target==='plans')renderPlans();
- if(target==='ids')renderIds();
- if(target==='ads'){renderAds();adSummary()}
- if(target==='orders')loadOrders();
- if(target==='site')loadSite();
- if(target==='integrations')health();
+ document.querySelectorAll('.nav').forEach(b=>b.classList.toggle('on',b.dataset.s===id));
+ document.querySelectorAll('.section').forEach(s=>s.classList.toggle('on',s.id===id));
+ if(titles[id]){$('title').textContent=titles[id][0];$('subtitle').textContent=titles[id][1]}
+ if(id==='services')renderServices();
+ if(id==='plans')renderPlans();
+ if(id==='ids')renderIds();
+ if(id==='ads'){renderAds();adSummary()}
+ if(id==='orders')loadOrders();
+ if(id==='site')loadSite();
+ if(id==='integrations')health();
+ history.replaceState(null,'','#'+id);
 }
 window.show=show;
 document.addEventListener('click',e=>{const b=e.target.closest('.nav');if(b){e.preventDefault();show(b.dataset.s)}});
-window.addEventListener('error',e=>{console.error('Dashboard admin error:',e.error||e.message);});
 window.addEventListener('hashchange',()=>{const id=location.hash.slice(1);if(titles[id])show(id)});
 function preset(){
  const p=$('preset').value,h=new Date(),a=new Date(h),b=new Date(h);
