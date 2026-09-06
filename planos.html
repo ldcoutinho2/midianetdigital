@@ -519,6 +519,18 @@ footer{width:100%!important;max-width:920px!important;margin-top:2rem!important;
     var params = new URLSearchParams(location.search);
 var servico = params.get("servico") || sessionStorage.getItem("servico") || "seguidores-brasileiros";
 sessionStorage.setItem("servico", servico);
+function obterRastreamentoOrigem(){
+  var p=new URLSearchParams(location.search),saved=JSON.parse(sessionStorage.getItem("mn24_atribuicao")||"null"),source=p.get("utm_source")||"";
+  var origem=source;
+  if(!origem&&p.get("fbclid"))origem="meta ads";
+  if(!origem&&p.get("ttclid"))origem="tiktok ads";
+  if(!origem&&p.get("gclid"))origem="google ads";
+  if(!origem&&document.referrer){var ref=document.referrer.toLowerCase();if(ref.includes("instagram.com"))origem="instagram";else if(ref.includes("whatsapp.com")||ref.includes("wa.me"))origem="whatsapp";else if(ref.includes("facebook.com"))origem="facebook";else if(ref.includes("tiktok.com"))origem="tiktok";}
+  origem=(origem||saved?.origem||"direto").toLowerCase().replace(/[-_]+/g," ");
+  var utm={utm_source:p.get("utm_source")||(saved?.utm?.utm_source||""),utm_medium:p.get("utm_medium")||(saved?.utm?.utm_medium||""),utm_campaign:p.get("utm_campaign")||(saved?.utm?.utm_campaign||""),utm_content:p.get("utm_content")||(saved?.utm?.utm_content||""),utm_term:p.get("utm_term")||(saved?.utm?.utm_term||""),fbclid:p.get("fbclid")||(saved?.utm?.fbclid||""),ttclid:p.get("ttclid")||(saved?.utm?.ttclid||""),gclid:p.get("gclid")||(saved?.utm?.gclid||"")};
+  var atrib={origem:origem,utm:utm};sessionStorage.setItem("mn24_atribuicao",JSON.stringify(atrib));return atrib;
+}
+var rastreamentoOrigem=obterRastreamentoOrigem();
 var grid = document.getElementById("grid");
 
 async function carregarPlanosDoPainel(){
@@ -568,7 +580,7 @@ async function carregarPlanosDoPainel(){
         sessionStorage.setItem("valor_plano",String(valor));
         if(typeof fbq==="function") fbq("track","ViewContent",{content_name:qtd+" - "+titulo,content_category:"Plano",value:valor,currency:"BRL"});
         try{
-          var rr=await fetch("https://midianetdigital.onrender.com/evento",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({tipo:"plano",plano:qtd+" - "+titulo}),keepalive:true});
+          var rr=await fetch("https://midianetdigital.onrender.com/evento",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({tipo:"plano",plano:qtd+" - "+titulo,origem:rastreamentoOrigem.origem,utm:rastreamentoOrigem.utm,referrer:document.referrer}),keepalive:true});
           await rr.json().catch(function(){});
         }catch(_){}
         window.location.href="checkout.html?plano="+encodeURIComponent(x.plano)+"&servico="+encodeURIComponent(servico)+"&pagamento=pix";
