@@ -1,8 +1,10 @@
 {
-  "rewrites": [
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
     {
       "source": "/r/:source",
-      "destination": "/index.html?utm_source=:source&utm_medium=referral&utm_campaign=:source"
+      "destination": "/index.html?utm_source=:source&utm_medium=referral&utm_campaign=:source",
+      "permanent": false
     }
   ]
 }
