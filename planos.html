@@ -533,63 +533,72 @@ function obterRastreamentoOrigem(){
 var rastreamentoOrigem=obterRastreamentoOrigem();
 var grid = document.getElementById("grid");
 
+function precoNumero(v){
+  if(typeof v==="number") return v;
+  var t=String(v??"").replace(/[^0-9,.-]/g,"").replace(/\./g,"").replace(",",".");
+  var n=parseFloat(t); return Number.isFinite(n)?n:0;
+}
+function renderPlanoItens(itens,titulo){
+  var grid=document.getElementById("grid");
+  if(!itens||!itens.length){
+    grid.innerHTML="<p style='color:#6b7280;text-align:center;padding:2rem'>Nenhum pacote disponível para este serviço.</p>";
+    return;
+  }
+  document.getElementById("titulo").textContent=titulo||servico;
+  document.body.setAttribute("data-service",servico);
+  grid.innerHTML="";
+  itens.forEach(function(x){
+    var card=document.createElement("a");
+    card.className="card"+(x.destaque||x.hot?" hot":"");
+    card.href="#";
+    var qtd=x.qtd||x.plano||"Pacote";
+    var preco=precoNumero(x.preco);
+    var desc=x.descricao||x.por||"Entrega rápida e suporte via WhatsApp";
+    var likes=Number(x.bonusCurtidas||0),views=Number(x.bonusVisualizacoes||0);
+    var bonusHtml="";
+    if(likes) bonusHtml+='<span class="like">+'+likes.toLocaleString("pt-BR")+" Curtidas</span>";
+    if(views) bonusHtml+='<span class="view">+'+views.toLocaleString("pt-BR")+" Visualizações</span>";
+    if(!bonusHtml) bonusHtml='<span class="info">'+esc(desc)+"</span>";
+    card.innerHTML=(x.destaque||x.hot?'<span class="cbadge">🔥 Mais vendido</span>':"")+
+      '<div class="pkg-icon">'+esc(x.icone||"👤")+"</div>"+
+      '<div class="pkg-info"><div class="pkg-name">'+esc(qtd)+"</div><div class="pkg-bonuses">"+bonusHtml+"</div></div>"+
+      '<div class="pkg-buy"><div class="pkg-from">A partir de</div><div class="pkg-price">'+preco.toLocaleString("pt-BR",{style:"currency",currency:"BRL"})+'</div><div class="cbtn">Ver pacote →</div></div>';
+    card.addEventListener("click",async function(e){
+      e.preventDefault();
+      sessionStorage.setItem("plano",String(x.plano||x.id||""));
+      sessionStorage.setItem("planoLabel",qtd+" - "+preco.toLocaleString("pt-BR",{style:"currency",currency:"BRL"}));
+      sessionStorage.setItem("plano_nome_pixel",qtd+" - "+titulo);
+      sessionStorage.setItem("valor_plano",String(preco));
+      if(typeof fbq==="function") fbq("track","ViewContent",{content_name:qtd+" - "+titulo,content_category:"Plano",value:preco,currency:"BRL"});
+      try{
+        await fetch("https://midianetdigital.onrender.com/evento",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({tipo:"plano",plano:qtd+" - "+titulo,origem:rastreamentoOrigem.origem,utm:rastreamentoOrigem.utm,referrer:document.referrer}),keepalive:true);
+      }catch(_){}
+      window.location.href="checkout.html?plano="+encodeURIComponent(x.plano||x.id||"")+"&servico="+encodeURIComponent(servico)+"&pagamento=pix";
+    });
+    grid.appendChild(card);
+  });
+}
+
 async function carregarPlanosDoPainel(){
   try{
     var resp=await fetch("https://midianetdigital.onrender.com/config/public?servico="+encodeURIComponent(servico),{cache:"no-store"});
     if(!resp.ok) throw new Error("config");
     var cfg=await resp.json();
     var itens=(cfg.servicos||[]).filter(function(x){return x.ativo!==false;});
-    if(!itens.length){grid.innerHTML="<p style='color:#8888aa;text-align:center'>Nenhum pacote disponível para este serviço.</p>";return;}
+    if(!itens.length) throw new Error("sem pacotes");
     var titulo=(itens[0].nome||servico);
-    document.body.setAttribute("data-service",servico);
-    document.getElementById("titulo").textContent=titulo;
-    document.getElementById("sub").textContent=itens[0].descricao||"Escolha o pacote ideal para você.";
-    function esc(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
-    grid.innerHTML="";
-    itens.forEach(function(x){
-      var card=document.createElement("a");
-      card.className="card"+(x.destaque?" hot":"");
-      card.href="#";
-      var qtd=x.qtd||x.plano;
-      var nomePlano=x.plano;
-      var por=x.por||"";
-      var desc=x.descricao||"";
-      var local=(CAT[servico]&&CAT[servico].planos||[]).find(function(p){return String(p.id)===String(x.plano);})||{};
-      var likes=Number(x.bonusCurtidas||0);
-      var views=Number(x.bonusVisualizacoes||0);
-      var bonusHtml="";
-      if(likes) bonusHtml+='<span class="like">+'+likes.toLocaleString("pt-BR")+' Curtidas</span>';
-      if(views) bonusHtml+='<span class="view">+'+views.toLocaleString("pt-BR")+' Visualizações</span>';
-      if(!bonusHtml) bonusHtml='<span class="info">'+esc(desc||por||"Entrega rápida e suporte via WhatsApp")+'</span>';
-      card.innerHTML=(x.destaque?'<span class="cbadge">🔥 Mais vendido</span>':'')+
-        '<div class="pkg-icon">'+esc(x.icone||'👤')+'</div>'+
-        '<div class="pkg-info">'+
-          '<div class="pkg-name">'+esc(qtd)+'</div>'+
-          '<div class="pkg-bonuses">'+bonusHtml+'</div>'+
-        '</div>'+
-        '<div class="pkg-buy">'+
-          '<div class="pkg-from">A partir de</div>'+
-          '<div class="pkg-price">'+Number(x.preco||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})+'</div>'+
-          '<div class="cbtn">Ver pacote →</div>'+
-        '</div>';      card.addEventListener("click",async function(e){
-        e.preventDefault();
-        var valor=Number(x.preco||0);
-        sessionStorage.setItem("plano",String(x.plano));
-        sessionStorage.setItem("planoLabel",(qtd+" - "+Number(x.preco||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})));
-        sessionStorage.setItem("plano_nome_pixel",qtd+" - "+titulo);
-        sessionStorage.setItem("valor_plano",String(valor));
-        if(typeof fbq==="function") fbq("track","ViewContent",{content_name:qtd+" - "+titulo,content_category:"Plano",value:valor,currency:"BRL"});
-        try{
-          var rr=await fetch("https://midianetdigital.onrender.com/evento",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({tipo:"plano",plano:qtd+" - "+titulo,origem:rastreamentoOrigem.origem,utm:rastreamentoOrigem.utm,referrer:document.referrer}),keepalive:true});
-          await rr.json().catch(function(){});
-        }catch(_){}
-        window.location.href="checkout.html?plano="+encodeURIComponent(x.plano)+"&servico="+encodeURIComponent(servico)+"&pagamento=pix";
-      });
-      grid.appendChild(card);
-    });
+    renderPlanoItens(itens,titulo);
   }catch(err){
-    console.warn("[CONFIG PAINEL] usando catálogo local",err);
-    // O catálogo embutido antigo continua disponível somente como fallback.
+    console.warn("[CONFIG PAINEL] usando catálogo local de emergência",err);
+    var local=CAT[servico];
+    if(local&&Array.isArray(local.planos)){
+      var fallback=local.planos.map(function(p){
+        return {plano:p.id,qtd:p.qtd,preco:p.preco,por:p.por,descricao:p.features&&p.features.join(" • "),hot:p.hot};
+      });
+      renderPlanoItens(fallback,local.titulo);
+    }else{
+      document.getElementById("grid").innerHTML="<p style='color:#6b7280;text-align:center;padding:2rem'>Não foi possível carregar os pacotes agora. Tente novamente em alguns segundos.</p>";
+    }
   }
 }
 carregarPlanosDoPainel();</script>
