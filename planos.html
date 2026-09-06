@@ -563,17 +563,19 @@ function renderPlanoItens(itens,titulo){
       '<div class="pkg-icon">'+esc(x.icone||"👤")+"</div>"+
       '<div class="pkg-info"><div class="pkg-name">'+esc(qtd)+"</div><div class="pkg-bonuses">"+bonusHtml+"</div></div>"+
       '<div class="pkg-buy"><div class="pkg-from">A partir de</div><div class="pkg-price">'+preco.toLocaleString("pt-BR",{style:"currency",currency:"BRL"})+'</div><div class="cbtn">Ver pacote →</div></div>';
-    card.addEventListener("click",async function(e){
+    card.addEventListener("click",function(e){
       e.preventDefault();
-      sessionStorage.setItem("plano",String(x.plano||x.id||""));
+      var planoId=String(x.plano||x.id||"");
+      sessionStorage.setItem("plano",planoId);
       sessionStorage.setItem("planoLabel",qtd+" - "+preco.toLocaleString("pt-BR",{style:"currency",currency:"BRL"}));
       sessionStorage.setItem("plano_nome_pixel",qtd+" - "+titulo);
       sessionStorage.setItem("valor_plano",String(preco));
       if(typeof fbq==="function") fbq("track","ViewContent",{content_name:qtd+" - "+titulo,content_category:"Plano",value:preco,currency:"BRL"});
       try{
-        await fetch("https://midianetdigital.onrender.com/evento",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({tipo:"plano",plano:qtd+" - "+titulo,origem:rastreamentoOrigem.origem,utm:rastreamentoOrigem.utm,referrer:document.referrer}),keepalive:true);
+        var origem=(typeof rastreamentoOrigem!=="undefined"&&rastreamentoOrigem)||{};
+        fetch("https://midianetdigital.onrender.com/evento",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({tipo:"plano",plano:qtd+" - "+titulo,origem:origem.origem||"",utm:origem.utm||{},referrer:document.referrer}),keepalive:true}).catch(function(){});
       }catch(_){}
-      window.location.href="checkout.html?plano="+encodeURIComponent(x.plano||x.id||"")+"&servico="+encodeURIComponent(servico)+"&pagamento=pix";
+      window.location.assign("checkout.html?plano="+encodeURIComponent(planoId)+"&servico="+encodeURIComponent(servico)+"&pagamento=pix");
     });
     grid.appendChild(card);
   });
