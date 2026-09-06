@@ -80,15 +80,32 @@ function renderOrigins(origins){
 }
 function gerarLinkRastreio(){
  const source=($('trackSource')?.value||'outro').trim().toLowerCase().replace(/\s+/g,'_');
- const campaign=($('trackCampaign')?.value||'').trim();
+ const raw=($('trackCampaign')?.value||'').trim();
+ const isUrl=/^https?:\\/\\//i.test(raw);
+ const baseUrl=isUrl?raw:'https://midianetdigital.vercel.app/index.html';
+ const campaign=isUrl?'':raw;
  const medium=source==='whatsapp'?'messaging':source==='instagram'?'social':source==='meta_ads'?'cpc':source==='tiktok'?'social':source==='google_ads'?'cpc':'referral';
- const p=new URLSearchParams({utm_source:source,utm_medium:medium});
- if(campaign)p.set('utm_campaign',campaign);
- $('trackUrl').value='https://midianetdigital.vercel.app/?'+p.toString();
+ try{
+   const url=new URL(baseUrl);
+   url.searchParams.set('utm_source',source);
+   url.searchParams.set('utm_medium',medium);
+   if(campaign)url.searchParams.set('utm_campaign',campaign);
+   $('trackUrl').value=url.toString();
+   toast('Link de rastreio gerado');
+ }catch(e){
+   toast('URL inválida');
+ }
 }
 function copiarLinkRastreio(){
  const el=$('trackUrl'); if(!el||!el.value){gerarLinkRastreio();return;}
  navigator.clipboard?.writeText(el.value).then(()=>toast('Link copiado')).catch(()=>{el.select();document.execCommand('copy');toast('Link copiado')});
+}
+window.gerarLinkRastreio=gerarLinkRastreio;
+window.copiarLinkRastreio=copiarLinkRastreio;
+function corrigirRotulosDashboard(){
+ const sv=$('sv'),co=$('co');
+ if(sv?.parentElement?.querySelector('.kh'))sv.parentElement.querySelector('.kh').childNodes[0].nodeValue='Serviços clicados ';
+ if(co?.parentElement?.querySelector('.kh'))co.parentElement.querySelector('.kh').childNodes[0].nodeValue='Iniciaram Checkout ';
 }
 async function loadConfig(){
  try{const r=await api('/admin/config'),j=await r.json();if(!r.ok)throw Error(j.error||'Não autorizado');cfg=j;cfg.servicos=cfg.servicos||{};cfg.anuncios=cfg.anuncios||[];cfg.site=cfg.site||{};renderServices();renderPlans();renderIds();renderAds()}
@@ -167,7 +184,7 @@ async function loadSite(){try{const r=await api('/admin/site-config'),x=await r.
 async function saveSite(){const r=await api('/admin/site-config',{method:'POST',body:JSON.stringify({nome:$('siteName').value,whatsapp:$('siteWhats').value,horario:$('siteHours').value,garantia:$('siteGuarantee').value,texto:$('siteText').value})}),j=await r.json();$('siteStatus').textContent=j.ok?'✅ Site salvo':'❌ '+(j.error||'Erro');if(j.ok)toast('Site salvo')}window.saveSite=saveSite;
 async function health(){try{const r=await fetch('/health?_='+Date.now(),{cache:'no-store'}),x=await r.json();$('sup').textContent=x.supabase==='configurado'?'conectado':'ausente';$('meta').textContent=x.meta_pixel==='configurado'?'conectado':'ausente'}catch(e){$('sup').textContent='erro'}}
 async function reloadAll(){await loadConfig();await dashboard();await loadOrders();toast('Painel atualizado')}window.reloadAll=reloadAll;
-document.addEventListener('DOMContentLoaded',()=>{
+document.addEventListener('DOMContentLoaded',()=>{\n corrigirRotulosDashboard();
  $('adDate').value=localDate();
  $('serviceSearch')?.addEventListener('input',renderServices);$('serviceFilter')?.addEventListener('change',renderServices);
  $('planSearch')?.addEventListener('input',renderPlans);$('planService')?.addEventListener('change',renderPlans);
