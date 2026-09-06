@@ -520,7 +520,14 @@ footer{width:100%!important;max-width:920px!important;margin-top:2rem!important;
 var servico = params.get("servico") || sessionStorage.getItem("servico") || "seguidores-brasileiros";
 sessionStorage.setItem("servico", servico);
 function obterRastreamentoOrigem(){
-  var p=new URLSearchParams(location.search),saved=JSON.parse(sessionStorage.getItem("mn24_atribuicao")||"null"),source=p.get("utm_source")||"";
+  var p=new URLSearchParams(location.search),saved=null,source=p.get("utm_source")||"";
+  try{
+    var raw=sessionStorage.getItem("mn24_atribuicao");
+    if(raw) saved=JSON.parse(raw);
+  }catch(_){
+    // Atribuição corrompida nunca pode impedir a página de planos de funcionar.
+    sessionStorage.removeItem("mn24_atribuicao");
+  }
   var origem=source;
   if(!origem&&p.get("fbclid"))origem="meta ads";
   if(!origem&&p.get("ttclid"))origem="tiktok ads";
@@ -592,7 +599,25 @@ function renderPlanoItens(itens,titulo){
 
 function renderCatalogoLocal(){
   var local=CAT[servico];
+
+  // Compatibilidade com slugs antigos/novos usados pelo painel.
+  if(!local){
+    var alias={
+      "seguidores-mistos":"engajamento-30-70",
+      "seguidores-30-70":"engajamento-30-70",
+      "seguidores-60-40":"engajamento-60-40",
+      "seguidores-br":"engajamento-br",
+      "seguidores-premium":"engajamento-premium",
+      "premium":"engajamento-premium",
+      "curtidas-br":"curtidas-brasileiras",
+      "views":"visualizacoes"
+    };
+    var chave=alias[String(servico||"").toLowerCase()];
+    if(chave) local=CAT[chave];
+  }
+
   if(!local||!Array.isArray(local.planos)) return false;
+
   var fallback=local.planos.map(function(p){
     return {
       plano:p.id,
@@ -627,7 +652,20 @@ async function carregarPlanosDoPainel(){
     var cfg=await resp.json();
     var raw=cfg.servicos||[];
     var itens=Array.isArray(raw)?raw:Object.values(raw);
-    itens=itens.filter(function(x){return x&&x.ativo!==false;});
+
+    // Alguns formatos de configuração podem retornar grupos como arrays.
+    // Achata esses grupos antes de renderizar.
+    itens=itens.reduce(function(acc,x){
+      if(Array.isArray(x)) return acc.concat(x);
+      if(x&&Array.isArray(x.pacotes)) return acc.concat(x.pacotes.map(function(p){return Object.assign({servico:x.servico||servico},p);}));
+      if(x) acc.push(x);
+      return acc;
+    },[]);
+
+    itens=itens.filter(function(x){
+      return x&&x.ativo!==false&&x.excluido!==true;
+    });
+
     if(!itens.length) throw new Error("sem pacotes no painel");
 
     var titulo=(cfg.titulo||itens[0].nome||servico);
