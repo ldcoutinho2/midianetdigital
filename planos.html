@@ -590,32 +590,55 @@ function renderPlanoItens(itens,titulo){
   });
 }
 
+function renderCatalogoLocal(){
+  var local=CAT[servico];
+  if(!local||!Array.isArray(local.planos)) return false;
+  var fallback=local.planos.map(function(p){
+    return {
+      plano:p.id,
+      qtd:p.qtd,
+      preco:p.preco,
+      por:p.por,
+      descricao:p.features&&p.features.join(" • "),
+      hot:p.hot
+    };
+  });
+  renderPlanoItens(fallback,local.titulo);
+  var sub=document.getElementById("sub");
+  if(sub&&local.sub) sub.textContent=local.sub;
+  return true;
+}
+
+// Renderiza imediatamente para nunca deixar a tela de planos vazia.
+// Depois tenta atualizar com os dados atuais do painel administrativo.
+renderCatalogoLocal();
+
 async function carregarPlanosDoPainel(){
   try{
-    var controller = new AbortController();
-    var timer = setTimeout(function(){controller.abort();},5000);
+    var controller=new AbortController();
+    var timer=setTimeout(function(){controller.abort();},5000);
     var resp=await fetch("https://midianetdigital.onrender.com/config/public?servico="+encodeURIComponent(servico),{
       cache:"no-store",
       signal:controller.signal
     });
     clearTimeout(timer);
-    if(!resp.ok) throw new Error("config");
+    if(!resp.ok) throw new Error("config HTTP "+resp.status);
+
     var cfg=await resp.json();
-    var itens=(cfg.servicos||[]).filter(function(x){return x.ativo!==false;});
-    if(!itens.length) throw new Error("sem pacotes");
-    var titulo=(itens[0].nome||servico);
+    var raw=cfg.servicos||[];
+    var itens=Array.isArray(raw)?raw:Object.values(raw);
+    itens=itens.filter(function(x){return x&&x.ativo!==false;});
+    if(!itens.length) throw new Error("sem pacotes no painel");
+
+    var titulo=(cfg.titulo||itens[0].nome||servico);
     renderPlanoItens(itens,titulo);
-  }catch(err){
-    console.warn("[CONFIG PAINEL] usando catálogo local de emergência",err);
-    var local=CAT[servico];
-    if(local&&Array.isArray(local.planos)){
-      var fallback=local.planos.map(function(p){
-        return {plano:p.id,qtd:p.qtd,preco:p.preco,por:p.por,descricao:p.features&&p.features.join(" • "),hot:p.hot};
-      });
-      renderPlanoItens(fallback,local.titulo);
-    }else{
-      document.getElementById("grid").innerHTML="<p style='color:#6b7280;text-align:center;padding:2rem'>Não foi possível carregar os pacotes agora. Tente novamente em alguns segundos.</p>";
+    if(cfg.sub){
+      var sub=document.getElementById("sub");
+      if(sub) sub.textContent=cfg.sub;
     }
+  }catch(err){
+    // O catálogo local já está na tela; não substituímos por uma tela vazia.
+    console.warn("[CONFIG PAINEL] mantendo catálogo local",err);
   }
 }
 carregarPlanosDoPainel();</script>
