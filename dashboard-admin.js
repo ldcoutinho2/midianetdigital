@@ -57,7 +57,7 @@ async function dashboard(){
  try{
   const r=await fetch('/dashboard-data?senha='+encodeURIComponent(senha)+'&start='+encodeURIComponent($('start').value)+'&end='+encodeURIComponent($('end').value)+'&_='+Date.now(),{cache:'no-store'});
   const d=await r.json();if(!r.ok)throw Error(d.error||'Erro no dashboard');data=d;
-  $('v').textContent=d.visitantes||0;$('sv').textContent=d.servicos||0;$('pl').textContent=d.planos||0;$('co').textContent=d.checkout||0;$('px').textContent=d.pix||0;$('sales').textContent=d.vendas||0;$('fat').textContent=d.faturamentoFormatado||money(0);$('conv').textContent=Number(d.conversaoGeral||0).toFixed(2).replace('.',',')+'%';
+  $('v').textContent=d.visitantes||0;$('sv').textContent=d.servicos||0;$('pl').textContent=d.planos||0;$('co').textContent=d.checkout||0;$('px').textContent=d.pix||0;$('sales').textContent=d.vendas||0;$('fat').textContent=d.faturamentoFormatado||money(0);renderOrigins(d.origens||{});$('conv').textContent=Number(d.conversaoGeral||0).toFixed(2).replace('.',',')+'%';
   const days=Object.entries(d.dias||{}),labels=days.map(x=>x[0].slice(0,5));chart('visChart',days.map(x=>x[1].visitantes||0),labels,'#1683ff');chart('salesChart',days.map(x=>x[1].vendas||0),labels,'#7546ff');
   const z=d.funil||{},steps=[['Visitante → Serviço',d.visitantes,d.servicos,z.visitanteServico,z.quedaVisitanteServico],['Serviço → Plano',d.servicos,d.planos,z.servicoPlano,z.quedaServicoPlano],['Plano → Checkout',d.planos,d.checkout,z.planoCheckout,z.quedaPlanoCheckout],['Checkout → Pix',d.checkout,d.pix,z.checkoutPix,z.quedaCheckoutPix],['Pix → Venda',d.pix,d.vendas,z.pixVenda,z.quedaPixVenda]];
   $('funnel').innerHTML=steps.map(s=>`<div class="frow"><span>${s[0]}</span><div><div class="bar"><div class="fill" style="width:${Math.min(100,Number(s[1]||0)?Number(s[2]||0)/Number(s[1])*100:0)}%"></div></div><small class="muted">${esc(s[3]||'0%')}</small></div><b>${s[2]||0} <span style="color:#ff626b">↓${esc(s[4]||'0%')}</span></b></div>`).join('');
@@ -73,6 +73,23 @@ async function dashboard(){
 }
 window.dashboard=dashboard;
 function rank(id,a){a=a.sort((x,y)=>y[1]-x[1]).slice(0,7);$(id).innerHTML=a.length?a.map((x,i)=>`<div class="rankrow"><span class="ranknum">${i+1}</span><div><b style="font-size:10px">${esc(x[0])}</b><div class="progress"><span style="width:${Math.min(100,x[1]/Math.max(1,a[0][1])*100)}%"></span></div></div><b>${x[1]}</b></div>`).join(''):'<div class="empty">Nenhum dado</div>'}
+function renderOrigins(origins){
+ const el=$('originsTable'); if(!el)return;
+ const rows=Object.entries(origins||{}).sort((a,b)=>(b[1].visitantes||0)-(a[1].visitantes||0));
+ el.innerHTML=rows.length?rows.map(([nome,x])=>`<tr><td><b>${esc(nome)}</b></td><td>${x.visitantes||0}</td><td>${x.servicos||0}</td><td>${x.planos||0}</td><td>${x.checkout||0}</td><td>${x.pix||0}</td><td><b>${x.vendas||0}</b></td><td><b>${money((x.faturamento||0)/100)}</b></td></tr>`).join(''):'<tr><td colspan="8"><div class="empty">Nenhum tráfego registrado.</div></td></tr>';
+}
+function gerarLinkRastreio(){
+ const source=($('trackSource')?.value||'outro').trim().toLowerCase().replace(/\s+/g,'_');
+ const campaign=($('trackCampaign')?.value||'').trim();
+ const medium=source==='whatsapp'?'messaging':source==='instagram'?'social':source==='meta_ads'?'cpc':source==='tiktok'?'social':source==='google_ads'?'cpc':'referral';
+ const p=new URLSearchParams({utm_source:source,utm_medium:medium});
+ if(campaign)p.set('utm_campaign',campaign);
+ $('trackUrl').value='https://midianetdigital.vercel.app/?'+p.toString();
+}
+function copiarLinkRastreio(){
+ const el=$('trackUrl'); if(!el||!el.value){gerarLinkRastreio();return;}
+ navigator.clipboard?.writeText(el.value).then(()=>toast('Link copiado')).catch(()=>{el.select();document.execCommand('copy');toast('Link copiado')});
+}
 async function loadConfig(){
  try{const r=await api('/admin/config'),j=await r.json();if(!r.ok)throw Error(j.error||'Não autorizado');cfg=j;cfg.servicos=cfg.servicos||{};cfg.anuncios=cfg.anuncios||[];cfg.site=cfg.site||{};renderServices();renderPlans();renderIds();renderAds()}
  catch(e){toast('Configuração: '+e.message)}
