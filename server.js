@@ -196,9 +196,49 @@ const SUPABASE_KEY = process.env.SUPABASE_KEY;
 function dinheiroBR(valorCentavos) { return (valorCentavos / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
 function incrementarDetalhe(obj, nome) { if (nome) obj[nome] = (obj[nome] || 0) + 1; }
 
-async function registrarEvento(tipo, nome = '', valor = 0) {
+function normalizarOrigem(origem) {
+  const v = String(origem || '').trim().toLowerCase();
+  const mapa = { ig:'instagram', instagram:'instagram', instagram_ads:'instagram', meta:'meta ads', meta_ads:'meta ads', facebook_ads:'meta ads', whatsapp:'whatsapp', wa:'whatsapp', tiktok:'tiktok', tiktok_ads:'tiktok ads', google:'google', google_ads:'google ads' };
+  return mapa[v] || (v ? v.replace(/[-_]+/g, ' ') : 'direto');
+}
+
+function metaDoRequest(req) {
+  const body = req.body || {}, q = req.query || {}, u = body.utm || {};
+  const source = u.utm_source || body.utm_source || q.utm_source || '';
+  const ref = String(body.referrer || u.referrer || '').toLowerCase();
+  let origem = source ? normalizarOrigem(source) : '';
+  if (!origem && (body.fbclid || u.fbclid || q.fbclid)) origem = 'meta ads';
+  if (!origem && (body.ttclid || u.ttclid || q.ttclid)) origem = 'tiktok ads';
+  if (!origem && (body.gclid || u.gclid || q.gclid)) origem = 'google ads';
+  if (!origem && ref.includes('instagram.com')) origem = 'instagram';
+  if (!origem && (ref.includes('whatsapp.com') || ref.includes('wa.me'))) origem = 'whatsapp';
+  if (!origem && ref.includes('facebook.com')) origem = 'facebook';
+  if (!origem && ref.includes('tiktok.com')) origem = 'tiktok';
+  return { origem: origem || 'direto', utm: {
+    source:String(u.utm_source || body.utm_source || q.utm_source || '').trim(),
+    medium:String(u.utm_medium || body.utm_medium || q.utm_medium || '').trim(),
+    campaign:String(u.utm_campaign || body.utm_campaign || q.utm_campaign || '').trim(),
+    content:String(u.utm_content || body.utm_content || q.utm_content || '').trim(),
+    term:String(u.utm_term || body.utm_term || q.utm_term || '').trim(),
+    fbclid:String(u.fbclid || body.fbclid || q.fbclid || '').trim(),
+    ttclid:String(u.ttclid || body.ttclid || q.ttclid || '').trim(),
+    gclid:String(u.gclid || body.gclid || q.gclid || '').trim()
+  }};
+}
+
+function parseEventoNome(nome) {
+  const raw = String(nome || '');
+  try {
+    const x = JSON.parse(raw);
+    if (x && x.__mn_track === 1) return { display:String(x.display || ''), origem:normalizarOrigem(x.origem), utm:x.utm || {} };
+  } catch (_) {}
+  return { display:raw, origem:'direto', utm:{} };
+}
+
+async function registrarEvento(tipo, nome = '', valor = 0, meta = null) {
   if (!SUPABASE_URL || !SUPABASE_KEY) return;
-  await axios.post(`${SUPABASE_URL}/rest/v1/eventos`, { tipo, nome, valor }, { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', Prefer: 'return=minimal' } });
+  const storedName = meta ? JSON.stringify({__mn_track:1,display:String(nome || ''),origem:normalizarOrigem(meta.origem),utm:meta.utm || {}}) : nome;
+  await axios.post(`${SUPABASE_URL}/rest/v1/eventos`, { tipo, nome:storedName, valor }, { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', Prefer: 'return=minimal' } });
 }
 
 async function buscarEventos(filtros = {}) {
@@ -285,7 +325,7 @@ async function registrarVendaEPurchase(pedido){
   if(!pedido)return;
   if(!pedido.vendaRegistrada){
     const detalhesVenda=pedido.distribuicao?.publicacoes?.map((p,i)=>`Pub ${i+1}: ${p.link} | ❤️ ${p.curtidas||0} | 👁️ ${p.visualizacoes||0}`).join(' || ')||'';
-    await registrarEvento('venda',`${pedido.nome} | ${pedido.telefone} | Perfil: ${pedido.instagram} | ${pedido.servico} ${pedido.plano}${detalhesVenda?' | '+detalhesVenda:''}${pedido.bump?' + bump 500 curtidas | Publicação bump: '+pedido.bump_publicacao:''}`,Number((pedido.valor/100).toFixed(2)));
+    await registrarEvento('venda',`${pedido.nome} | ${pedido.telefone} | Perfil: ${pedido.instagram} | ${pedido.servico} ${pedido.plano}${detalhesVenda?' | '+detalhesVenda:''}${pedido.bump?' + bump 500 curtidas | Publicação bump: '+pedido.bump_publicacao:''}`,Number((pedido.valor/100).toFixed(2)),{origem:pedido.origem,utm:pedido.utm});
     pedido.vendaRegistrada=true;
     pedido.vendaRegistradaEm=new Date().toISOString();
     await salvarPedidoPersistido(pedido);
@@ -395,16 +435,17 @@ function custoDoPedidoConfig(eventoNome, config) {
 }
 
 function montarDashboard(eventos, config = montarConfiguracaoPadrao(), filtros = {}) {
-  const dados = { visitantes: 0, servicos: 0, planos: 0, checkout: 0, pix: 0, vendas: 0, faturamento: 0, servicosDetalhes: {}, planosDetalhes: {}, pixDetalhes: [], vendasDetalhes: [], dias: {}, funil: {} };
+  const dados = { visitantes: 0, servicos: 0, planos: 0, checkout: 0, pix: 0, vendas: 0, faturamento: 0, servicosDetalhes: {}, planosDetalhes: {}, pixDetalhes: [], vendasDetalhes: [], dias: {}, funil: {}, origens: {} };
   for (const e of eventos) {
-    const tipo = e.tipo, nome = e.nome || '', valorCentavos = Math.round(Number(e.valor || 0) * 100), data = new Date(e.created_at), dia = data.toLocaleDateString('pt-BR', {timeZone:'America/Sao_Paulo'});
+    const tipo = e.tipo, parsed = parseEventoNome(e.nome || ''), nome = parsed.display, origem = parsed.origem, valorCentavos = Math.round(Number(e.valor || 0) * 100), data = new Date(e.created_at), dia = data.toLocaleDateString('pt-BR', {timeZone:'America/Sao_Paulo'});
     if (!dados.dias[dia]) dados.dias[dia] = { visitantes:0, servicos:0, planos:0, checkout:0, pix:0, vendas:0, faturamento:0 };
-    if (tipo==='visitante') { dados.visitantes++; dados.dias[dia].visitantes++; }
-    if (tipo==='servico') { dados.servicos++; dados.dias[dia].servicos++; incrementarDetalhe(dados.servicosDetalhes,nome); }
-    if (tipo==='plano') { dados.planos++; dados.dias[dia].planos++; incrementarDetalhe(dados.planosDetalhes,nome); }
-    if (tipo==='checkout') { dados.checkout++; dados.dias[dia].checkout++; }
-    if (tipo==='pix') { dados.pix++; dados.dias[dia].pix++; dados.pixDetalhes.push({hora:data.toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo'}),info:nome||'Pedido',valor:dinheiroBR(valorCentavos)}); }
-    if (tipo==='venda') { dados.vendas++; dados.dias[dia].vendas++; dados.faturamento+=valorCentavos; dados.dias[dia].faturamento+=valorCentavos; dados.vendasDetalhes.push({hora:data.toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo'}),info:nome||'Venda',valor:dinheiroBR(valorCentavos)}); }
+    if (!dados.origens[origem]) dados.origens[origem] = {visitantes:0,servicos:0,planos:0,checkout:0,pix:0,vendas:0,faturamento:0};
+    if (tipo==='visitante') { dados.visitantes++; dados.dias[dia].visitantes++; dados.origens[origem].visitantes++; }
+    if (tipo==='servico') { dados.servicos++; dados.dias[dia].servicos++; dados.origens[origem].servicos++; incrementarDetalhe(dados.servicosDetalhes,nome); }
+    if (tipo==='plano') { dados.planos++; dados.dias[dia].planos++; dados.origens[origem].planos++; incrementarDetalhe(dados.planosDetalhes,nome); }
+    if (tipo==='checkout') { dados.checkout++; dados.dias[dia].checkout++; dados.origens[origem].checkout++; }
+    if (tipo==='pix') { dados.pix++; dados.dias[dia].pix++; dados.origens[origem].pix++; dados.pixDetalhes.push({hora:data.toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo'}),info:nome||'Pedido',valor:dinheiroBR(valorCentavos),origem}); }
+    if (tipo==='venda') { dados.vendas++; dados.dias[dia].vendas++; dados.faturamento+=valorCentavos; dados.dias[dia].faturamento+=valorCentavos; dados.origens[origem].vendas++; dados.origens[origem].faturamento+=valorCentavos; dados.vendasDetalhes.push({hora:data.toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo'}),info:nome||'Venda',valor:dinheiroBR(valorCentavos),origem}); }
   }
   const pct=(a,b)=>!b||b<=0?'0.00%':((a/b)*100).toFixed(2)+'%';
   const queda=(a,b)=>!a||a<=0?'0.00%':(((a-b)/a)*100).toFixed(2)+'%';
@@ -450,7 +491,7 @@ async function enviarPurchaseMeta(pedido){
   }catch(err){console.error('[META] Erro ao enviar Purchase:',err.response?.data||err.message);return {ok:false,error:err.response?.data||err.message};}
 }
 
-app.post('/evento',async(req,res)=>{try{const{tipo,servico,plano,nome,valor}=req.body||{};const tipos=new Set(['visitante','servico','plano','checkout','pix','venda']);if(!tipos.has(tipo))return res.status(400).json({ok:false,error:'Tipo de evento invalido'});await registrarEvento(tipo,nome||servico||plano||'',valor||0);return res.json({ok:true});}catch(err){console.error('[EVENTO]',err.response?.data||err.message);return res.status(500).json({ok:false,error:err.message});}});
+app.post('/evento',async(req,res)=>{try{const{tipo,servico,plano,nome,valor}=req.body||{};const tipos=new Set(['visitante','servico','plano','checkout','pix','venda']);if(!tipos.has(tipo))return res.status(400).json({ok:false,error:'Tipo de evento invalido'});const meta=metaDoRequest(req);await registrarEvento(tipo,nome||servico||plano||'',valor||0,meta);return res.json({ok:true});}catch(err){console.error('[EVENTO]',err.response?.data||err.message);return res.status(500).json({ok:false,error:err.message});}});
 
 app.get('/dashboard-data',async(req,res)=>{try{const senha=req.query.senha||'';const start=req.query.start||'';const end=req.query.end||'';if(process.env.DASHBOARD_PASSWORD&&senha!==process.env.DASHBOARD_PASSWORD)return res.status(401).json({error:'Senha incorreta'});const eventos=await buscarEventos({start,end});const config=await buscarConfiguracao();return res.json(montarDashboard(eventos,config,{start,end}));}catch(err){console.error('[DASHBOARD]',err.response?.data||err.message);return res.status(500).json({error:'Erro ao carregar dashboard'});}});
 
@@ -618,7 +659,7 @@ app.get('/instagram/posts',async(req,res)=>{try{const user=String(req.query.user
 app.get('/proxy-img',async(req,res)=>{try{const url=req.query.url;if(!url||!url.startsWith('https://'))return res.status(400).send('URL inválida');const img=await axios.get(url,{responseType:'arraybuffer',headers:{'User-Agent':'Mozilla/5.0',Referer:'https://www.instagram.com/'}});res.set('Content-Type',img.headers['content-type']||'image/jpeg');res.set('Cache-Control','public, max-age=86400');return res.send(img.data);}catch(err){console.error('[ERRO proxy-img]',err.message);return res.status(500).send('Erro ao carregar imagem');}});
 
 app.post('/criar-pedido',async(req,res)=>{try{const{nome,telefone,instagram,servico,plano,bump,bump_publicacao}=req.body;if(!nome||!telefone||!instagram||!servico||!plano)return res.status(400).json({error:'Dados incompletos'});const chave=`${servico}__${plano}`,combo=COMBOS[servico],configAtual=await buscarConfiguracao(),itemConfig=configAtual.servicos?.[chave];if(itemConfig?.ativo===false)return res.status(400).json({error:'Este serviço/plano está temporariamente indisponível'});const valorBaseCentavos=itemConfig?Number(itemConfig.preco||0):(combo?COMBO_PRECOS[chave]:PRECOS[chave]);const smmId=itemConfig?.id||(combo?'COMBO':SERVICO_MAP[chave]);if(!valorBaseCentavos||!smmId)return res.status(400).json({error:'Servico ou plano invalido'});const bumpAtivo=bump===true,valorTotalCentavos=valorBaseCentavos+(bumpAtivo?BUMP_VALOR_CENTAVOS:0),pedidoId=uuidv4(),valorReais=Number((valorTotalCentavos/100).toFixed(2));let gateway='pushinpay',payment=null,pixData=null;try{const pushResp=await axios.post('https://api.pushinpay.com.br/api/pix/cashIn',{value:valorTotalCentavos,webhook_url:'https://midianetdigital.onrender.com/webhook-pushinpay'},{headers:{Authorization:`Bearer ${process.env.PUSHINPAY_TOKEN}`,Accept:'application/json','Content-Type':'application/json'}});payment=pushResp.data;pixData={qr_code:payment.qr_code,qr_code_base64:payment.qr_code_base64};}catch(pushErr){gateway='mercado_pago';const mpResp=await axios.post('https://api.mercadopago.com/v1/payments',{transaction_amount:valorReais,description:`MidiaNetDigital - ${servico} ${plano}`,payment_method_id:'pix',external_reference:pedidoId,notification_url:'https://midianetdigital.onrender.com/webhook-mercadopago',payer:{email:`cliente_${pedidoId.slice(0,8)}@midianetdigital.com`,first_name:nome}},{headers:{Authorization:`Bearer ${process.env.MERCADO_PAGO_ACCESS_TOKEN}`,'Content-Type':'application/json','X-Idempotency-Key':pedidoId}});payment=mpResp.data;pixData=payment.point_of_interaction?.transaction_data;}
-pedidos[pedidoId]={id:pedidoId,nome,telefone,instagram,servico,plano,pagamento:'pix',valor:valorTotalCentavos,smmId,combo:!!combo,distribuicao:req.body.distribuicao||null,bump:bumpAtivo,bump_publicacao:bump_publicacao||null,bumpSmmId:(configAtual.servicos?.[`${BUMP_SERVICO}__${BUMP_PLANO}`]?.id||BUMP_SMM_ID),bonusCurtidas:Number(itemConfig?.bonusCurtidas||0),bonusCurtidasTipo:String(itemConfig?.bonusCurtidasTipo||'curtidas-brasileiras'),bonusCurtidasId:String(itemConfig?.bonusCurtidasId||''),bonusVisualizacoes:Number(itemConfig?.bonusVisualizacoes||0),bonusVisualizacoesId:String(itemConfig?.bonusVisualizacoesId||''),status:'aguardando_pagamento',gateway,paymentId:payment.id,mercadoPagoPaymentId:gateway==='mercado_pago'?payment.id:null,pushinPayPaymentId:gateway==='pushinpay'?payment.id:null,meta:{fbp:req.body?.meta?.fbp||null,fbc:req.body?.meta?.fbc||null,fbclid:req.body?.meta?.fbclid||null,client_user_agent:req.get('user-agent')||'',client_ip_address:req.ip||req.socket?.remoteAddress||''},criadoEm:new Date().toISOString()};await salvarPedidoPersistido(pedidos[pedidoId]);const detalhesPedido=combo&&req.body.distribuicao?req.body.distribuicao.publicacoes.map((p,i)=>`Pub ${i+1}: ${p.link} | ❤️ ${p.curtidas||0} | 👁️ ${p.visualizacoes||0}`).join(' || '):'';await registrarEvento('pix',`${nome} | ${telefone} | Perfil: ${instagram} | ${servico} ${plano}${detalhesPedido?' | '+detalhesPedido:''}${bump?' + bump 500 curtidas | Publicação bump: '+bump_publicacao:''}`,valorReais);return res.json({success:true,pedidoId,gateway,valor:valorReais.toFixed(2),pix:{copia_e_cola:pixData?.qr_code||null,qr_code_image:pixData?.qr_code_base64||null,expira_em:null},paymentId:payment.id});}catch(err){console.error('[ERRO criar-pedido]',err.response?.data||err.message);return res.status(500).json({error:'Erro ao criar pedido',detail:err.response?.data||err.message});}});
+pedidos[pedidoId]={id:pedidoId,nome,telefone,instagram,servico,plano,pagamento:'pix',valor:valorTotalCentavos,smmId,origem:normalizarOrigem(req.body?.origem||metaDoRequest(req).origem),utm:req.body?.utm||metaDoRequest(req).utm,combo:!!combo,distribuicao:req.body.distribuicao||null,bump:bumpAtivo,bump_publicacao:bump_publicacao||null,bumpSmmId:(configAtual.servicos?.[`${BUMP_SERVICO}__${BUMP_PLANO}`]?.id||BUMP_SMM_ID),bonusCurtidas:Number(itemConfig?.bonusCurtidas||0),bonusCurtidasTipo:String(itemConfig?.bonusCurtidasTipo||'curtidas-brasileiras'),bonusCurtidasId:String(itemConfig?.bonusCurtidasId||''),bonusVisualizacoes:Number(itemConfig?.bonusVisualizacoes||0),bonusVisualizacoesId:String(itemConfig?.bonusVisualizacoesId||''),status:'aguardando_pagamento',gateway,paymentId:payment.id,mercadoPagoPaymentId:gateway==='mercado_pago'?payment.id:null,pushinPayPaymentId:gateway==='pushinpay'?payment.id:null,meta:{fbp:req.body?.meta?.fbp||null,fbc:req.body?.meta?.fbc||null,fbclid:req.body?.meta?.fbclid||null,client_user_agent:req.get('user-agent')||'',client_ip_address:req.ip||req.socket?.remoteAddress||''},criadoEm:new Date().toISOString()};await salvarPedidoPersistido(pedidos[pedidoId]);const detalhesPedido=combo&&req.body.distribuicao?req.body.distribuicao.publicacoes.map((p,i)=>`Pub ${i+1}: ${p.link} | ❤️ ${p.curtidas||0} | 👁️ ${p.visualizacoes||0}`).join(' || '):'';await registrarEvento('pix',`${nome} | ${telefone} | Perfil: ${instagram} | ${servico} ${plano}${detalhesPedido?' | '+detalhesPedido:''}${bump?' + bump 500 curtidas | Publicação bump: '+bump_publicacao:''}`,valorReais,{origem:pedidos[pedidoId].origem,utm:pedidos[pedidoId].utm});return res.json({success:true,pedidoId,gateway,valor:valorReais.toFixed(2),pix:{copia_e_cola:pixData?.qr_code||null,qr_code_image:pixData?.qr_code_base64||null,expira_em:null},paymentId:payment.id});}catch(err){console.error('[ERRO criar-pedido]',err.response?.data||err.message);return res.status(500).json({error:'Erro ao criar pedido',detail:err.response?.data||err.message});}});
 
 app.post('/webhook-pushinpay',async(req,res)=>{try{const paymentId=req.body?.id,status=req.body?.status;if(!paymentId||status!=='paid')return res.status(200).json({received:true});const pedido=await localizarPedido(paymentId,'pushinPayPaymentId');if(!pedido)return res.status(200).json({received:true});await confirmarPagamento(pedido);return res.status(200).json({received:true,status:pedido.status});}catch(err){console.error('[WEBHOOK PUSH]',err.response?.data||err.message);return res.status(200).json({received:true});}});
 
