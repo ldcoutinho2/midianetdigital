@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/r/:source",
+      "destination": "/index.html?utm_source=:source&utm_medium=referral&utm_campaign=:source"
+    }
+  ]
+}
