@@ -19,25 +19,17 @@ const localDate=(d=new Date())=>d.getFullYear()+'-'+String(d.getMonth()+1).padSt
 const api=(u,o={})=>{o.headers=Object.assign({'X-Dashboard-Password':senha,'Content-Type':'application/json'},o.headers||{});o.cache='no-store';return fetch(u,o)};
 function toast(t){const el=$('toast');if(!el)return;el.textContent=t;el.classList.add('on');setTimeout(()=>el.classList.remove('on'),2200)}
 function show(id){
- const target=titles[id]?id:'dashboard';
- document.querySelectorAll('.nav').forEach(b=>b.classList.toggle('on',b.dataset.s===target));
- document.querySelectorAll('.section').forEach(s=>{
-   const active=s.id===target;
-   s.classList.toggle('on',active);
-   s.hidden=!active;
-   s.setAttribute('data-active',active?'true':'false');
-   s.style.setProperty('display',active?'block':'none','important');
-   if(active){s.style.setProperty('visibility','visible','important');s.style.setProperty('opacity','1','important')}
- });
- if(titles[target]){$('title').textContent=titles[target][0];$('subtitle').textContent=titles[target][1]}
- if(target==='services')renderServices();
- if(target==='plans')renderPlans();
- if(target==='ids')renderIds();
- if(target==='ads'){renderAds();adSummary()}
- if(target==='orders')loadOrders();
- if(target==='site')loadSite();
- if(target==='integrations')health();
- history.replaceState(null,'','#'+target);
+ document.querySelectorAll('.nav').forEach(b=>b.classList.toggle('on',b.dataset.s===id));
+ document.querySelectorAll('.section').forEach(s=>s.classList.toggle('on',s.id===id));
+ if(titles[id]){$('title').textContent=titles[id][0];$('subtitle').textContent=titles[id][1]}
+ if(id==='services')renderServices();
+ if(id==='plans')renderPlans();
+ if(id==='ids')renderIds();
+ if(id==='ads'){renderAds();adSummary()}
+ if(id==='orders')loadOrders();
+ if(id==='site')loadSite();
+ if(id==='integrations')health();
+ history.replaceState(null,'','#'+id);
 }
 window.show=show;
 document.addEventListener('click',e=>{const b=e.target.closest('.nav');if(b){e.preventDefault();show(b.dataset.s)}});
