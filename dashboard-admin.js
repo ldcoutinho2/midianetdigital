@@ -100,7 +100,7 @@ function corrigirRotulosDashboard(){
  if(co?.parentElement?.querySelector('.kh'))co.parentElement.querySelector('.kh').childNodes[0].nodeValue='Iniciaram Checkout ';
 }
 async function loadConfig(){
- try{const r=await api('/admin/config'),j=await r.json();if(!r.ok)throw Error(j.error||'Não autorizado');cfg=j;cfg.servicos=cfg.servicos||{};cfg.anuncios=cfg.anuncios||[];cfg.site=cfg.site||{};renderServices();renderPlans();renderIds();renderAds();const active=location.hash.slice(1);if(titles[active])show(active)}
+ try{const r=await api('/admin/config'),j=await r.json();if(!r.ok)throw Error(j.error||'Não autorizado');cfg=j;cfg.servicos=cfg.servicos||{};cfg.anuncios=cfg.anuncios||[];cfg.site=cfg.site||{};renderServices();renderPlans();renderIds();renderAds()}
  catch(e){toast('Configuração: '+e.message)}
 }
 function groups(){const g={};Object.values(cfg.servicos||{}).filter(x=>x.excluido!==true).forEach(x=>{(g[x.servico]??=[]).push(x)});return g}
