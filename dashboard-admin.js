@@ -20,7 +20,7 @@ const api=(u,o={})=>{o.headers=Object.assign({'X-Dashboard-Password':senha,'Cont
 function toast(t){const el=$('toast');if(!el)return;el.textContent=t;el.classList.add('on');setTimeout(()=>el.classList.remove('on'),2200)}
 function show(id){
  document.querySelectorAll('.nav').forEach(b=>b.classList.toggle('on',b.dataset.s===id));
- document.querySelectorAll('.section').forEach(s=>{const active=s.id===id;s.classList.toggle('on',active);s.style.display=active?'block':'none';});
+ document.querySelectorAll('.section').forEach(s=>{const active=s.id===id;s.classList.toggle('on',active);s.hidden=!active;s.style.display=active?'block':'none';});
  if(titles[id]){$('title').textContent=titles[id][0];$('subtitle').textContent=titles[id][1]}
  if(id==='services')renderServices();
  if(id==='plans')renderPlans();
