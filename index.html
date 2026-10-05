@@ -1075,6 +1075,39 @@ footer{background:rgba(255,255,255,.9)!important;border-color:rgba(225,48,108,.1
           ia=ia<0?999:ia; ib=ib<0?999:ib;
           return ia-ib;
         });
+        function serviceVisual(slug, nome){
+          var l=String(slug||'').toLowerCase();
+          var n=String(nome||'').toLowerCase();
+          var kind=(l.indexOf('curtida')>=0||n.indexOf('curtida')>=0)?'likes':(l.indexOf('visual')>=0||n.indexOf('visual')>=0)?'views':'followers';
+          var profiles=[
+            ['foto1.jpg','fernanda.roberta.505'],
+            ['foto2.jpg','bi.gette'],
+            ['foto3.jpg','mzas_famj'],
+            ['foto4.jpg','aqualandiaaquarios'],
+            ['foto5.jpg','boycott.clothing'],
+            ['foto6.jpg','habibiboutiqueipoh'],
+            ['foto7.jpg','arturogarcialewenstein'],
+            ['foto8.jpg','arsadkhan_ismaily_7']
+          ];
+          var main=profiles[0];
+          var stories=profiles.slice(0,4).map(function(p){return '<div class="ig-story"><img src="'+p[0]+'" alt=""><span>'+p[1]+'</span></div>';}).join('');
+          var notifText=kind==='followers'?'começou a te seguir. agora':kind==='likes'?'curtiu seu vídeo. agora':'visualizou seu vídeo. agora';
+          var count=kind==='followers'?6226:kind==='likes'?1248:125000;
+          var counterLabel=kind==='followers'?'seguidores':kind==='likes'?'curtidas':'visualizações';
+          var chip=kind==='followers'?'♡ +1':kind==='likes'?'♥ +1':'◉ +1';
+          return '<div class="service-visual '+kind+'" data-kind="'+kind+'" data-base="'+count+'">'+
+            '<div class="ig-screen">'+
+              '<div class="ig-top"><span class="ig-brand">Instagram</span><div class="ig-actions"><span>⌕</span><span class="ig-heart">♡<b class="ig-heart-badge">1</b></span><span>≡</span></div></div>'+
+              '<div class="ig-profile"><div class="ig-profile-row"><img class="ig-main-avatar" src="'+main[0]+'" alt=""><div class="ig-profile-stats"><div class="ig-stat"><strong>432</strong><span>publicações</span></div><div class="ig-stat"><strong class="js-primary-count">'+Number(count).toLocaleString('pt-BR')+'</strong><span>'+counterLabel+'</span></div><div class="ig-stat"><strong>1.512</strong><span>seguindo</span></div></div></div><div class="ig-bio">Criador(a) de conteúdo • Foco, disciplina e resultados</div></div>'+
+              '<div class="ig-stories">'+stories+'</div>'+
+              '<div class="ig-post"><div class="ig-post-head"><img src="'+profiles[1][0]+'" alt=""><span>'+profiles[1][1]+'</span><span style="margin-left:auto">•••</span></div><div class="ig-post-media"></div><div class="ig-post-actions"><span>♡</span><span>◯</span><span>➤</span><span style="margin-left:auto">⌑</span></div><div class="ig-post-count"><b class="js-secondary-count">'+Number(count).toLocaleString('pt-BR')+'</b> '+counterLabel+'</div></div>'+
+              '<div class="ig-activity-chip">'+chip+'</div>'+
+              '<div class="ig-notification '+(kind==='likes'?'like-notif':kind==='views'?'view-notif':'')+'"><img class="js-notif-img" src="'+profiles[0][0]+'" alt=""><div class="ig-notif-text"><strong class="js-notif-name">'+profiles[0][1]+'</strong><span class="js-notif-text">'+notifText+'</span></div></div>'+
+              '<div class="ig-counter"><strong class="js-counter">'+Number(count).toLocaleString('pt-BR')+' <span class="up">↑</span></strong><span>'+counterLabel+'</span></div>'+
+            '</div>'+
+          '</div>';
+        }
+
         grid.innerHTML=ordemServicos.map(function(slug){
           var itens=grupos[slug],x=itens[0],nome=x.nome||slug;
           var lower=slug.toLowerCase();
