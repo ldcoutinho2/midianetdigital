@@ -762,6 +762,65 @@ footer{background:rgba(255,255,255,.9)!important;border-color:rgba(225,48,108,.1
       .home-service-btn{width:calc(100% - 24px)!important;margin-left:12px!important;margin-right:12px!important;margin-bottom:10px!important;font-size:.75rem!important}
     }
 
+    /* ===== AJUSTE FINAL DA MARCA + BOLHAS SOCIAIS ===== */
+    .logo .brand-crown{
+      color:#e1306c!important;
+      filter:grayscale(0) sepia(1) saturate(8) hue-rotate(305deg) drop-shadow(0 3px 7px rgba(225,48,108,.28))!important;
+    }
+    .logo .brand-main{color:#111827!important}
+    .logo .brand-digital{color:#e1306c!important}
+    .logo .brand-tagline{
+      display:block!important;
+      grid-column:2 / 4!important;
+      color:#e1306c!important;
+      font-size:.43rem!important;
+      font-weight:800!important;
+      line-height:1.1!important;
+      margin-top:.18rem!important;
+      white-space:nowrap!important;
+    }
+    .ig-scribble{display:none!important}
+    .ig-float{
+      width:48px!important;
+      height:48px!important;
+      border-radius:50%!important;
+      background:rgba(255,255,255,.94)!important;
+      -webkit-background-clip:border-box!important;
+      background-clip:border-box!important;
+      -webkit-text-fill-color:initial!important;
+      color:#e1306c!important;
+      border:2px solid rgba(225,48,108,.22)!important;
+      box-shadow:0 8px 22px rgba(225,48,108,.18)!important;
+      font-size:24px!important;
+      z-index:2!important;
+      filter:none!important;
+      opacity:0!important;
+      animation:socialBubbleUp 10s linear infinite!important;
+    }
+    .ig1{left:8%!important;top:105%!important;animation-delay:-1s!important}
+    .ig2{left:30%!important;top:115%!important;animation-delay:-4s!important}
+    .ig3{left:54%!important;top:110%!important;animation-delay:-7s!important}
+    .ig4{left:74%!important;top:120%!important;animation-delay:-2.5s!important}
+    .ig5{left:90%!important;top:108%!important;animation-delay:-5.5s!important}
+    @keyframes socialBubbleUp{
+      0%{transform:translate3d(0,35vh,0) scale(.65) rotate(-8deg);opacity:0}
+      10%{opacity:.82}
+      45%{opacity:.68}
+      75%{opacity:.38}
+      100%{transform:translate3d(0,-125vh,0) scale(1.08) rotate(10deg);opacity:0}
+    }
+    .ig-decor .ig-float:nth-child(2){animation-duration:11s!important}
+    .ig-decor .ig-float:nth-child(3){animation-duration:13s!important}
+    .ig-decor .ig-float:nth-child(4){animation-duration:10s!important}
+    .ig-decor .ig-float:nth-child(5){animation-duration:12s!important}
+    @media(max-width:700px){
+      .logo .brand-crown{font-size:1.15rem!important}
+      .logo .brand-main,.logo .brand-digital{font-size:1rem!important}
+      .logo .brand-tagline{font-size:.37rem!important;margin-top:.16rem!important}
+      .ig-float{width:38px!important;height:38px!important;font-size:19px!important}
+      .ig1{left:5%!important}.ig2{left:27%!important}.ig3{left:50%!important}.ig4{left:72%!important}.ig5{left:88%!important}
+    }
+
 </style>
 </head>
 <body>
@@ -775,7 +834,7 @@ footer{background:rgba(255,255,255,.9)!important;border-color:rgba(225,48,108,.1
     </div>
 </nav>
   <div class="ig-decor" aria-hidden="true">
-    <span class="ig-float ig1">◎</span><span class="ig-float ig2">♡</span><span class="ig-float ig3">◎</span><span class="ig-float ig4">♡</span><span class="ig-float ig5">◎</span><span class="ig-scribble s1">Mais<br>seguidores!</span><span class="ig-scribble s2">Seu perfil<br>no próximo nível!</span>
+    <span class="ig-float ig1" aria-label="Curtida">♥</span><span class="ig-float ig2" aria-label="Visualizações">▶</span><span class="ig-float ig3" aria-label="Novos seguidores">👤</span><span class="ig-float ig4" aria-label="Curtidas">♥</span><span class="ig-float ig5" aria-label="Visualizações">▶</span>
   </div>
 
 
