@@ -671,92 +671,19 @@ footer{background:rgba(255,255,255,.9)!important;border-color:rgba(225,48,108,.1
 
 
     /* ===== MARCA + MOVIMENTO PREMIUM ===== */
-    .logo{
-      display:grid!important;
-      grid-template-columns:auto auto auto;
-      grid-template-rows:auto auto;
-      align-items:center;
-      column-gap:.22rem;
-      row-gap:0;
-      line-height:1;
-      letter-spacing:-.04em;
-      position:relative;
-    }
-    .brand-crown{
-      grid-row:1 / span 2;
-      font-size:1.28rem;
-      line-height:1;
-      filter:drop-shadow(0 3px 7px rgba(225,48,108,.22));
-      transform:translateY(-1px);
-    }
-    .brand-main{color:#111827!important;font-weight:900}
-    .brand-digital{color:#e1306c!important;font-weight:900}
-    .brand-tagline{
-      grid-column:2 / 4;
-      color:#6b7280;
-      font-size:.43rem;
-      font-weight:700;
-      letter-spacing:.01em;
-      margin-top:.16rem;
-      white-space:nowrap;
-    }
+    .logo{display:grid!important;grid-template-columns:auto auto auto;grid-template-rows:auto auto;align-items:center;column-gap:.22rem;row-gap:0;line-height:1;letter-spacing:-.04em;position:relative}
+    .brand-crown{grid-row:1 / span 2;font-size:1.28rem;line-height:1;filter:drop-shadow(0 3px 7px rgba(225,48,108,.22));transform:translateY(-1px)}
+    .brand-main{color:#111827!important;font-weight:900}.brand-digital{color:#e1306c!important;font-weight:900}
+    .brand-tagline{grid-column:2 / 4;color:#6b7280;font-size:.43rem;font-weight:700;letter-spacing:.01em;margin-top:.16rem;white-space:nowrap}
     .logo em{display:none!important}
-
-    /* Ícones/ações flutuando para cima pelo site inteiro */
-    .ig-decor{
-      position:fixed!important;
-      inset:0!important;
-      width:100%!important;
-      height:100dvh!important;
-      overflow:hidden!important;
-      pointer-events:none!important;
-      z-index:1!important;
-    }
-    .ig-float{
-      animation:floatUp 9s linear infinite!important;
-      will-change:transform,opacity;
-      opacity:0!important;
-    }
-    .ig1{left:5%!important;top:105%!important;animation-delay:-1s!important}
-    .ig2{right:8%!important;top:112%!important;animation-delay:-4s!important}
-    .ig3{right:25%!important;top:118%!important;animation-delay:-7s!important}
-    .ig4{left:22%!important;top:108%!important;animation-delay:-5.5s!important}
-    .ig5{left:72%!important;top:120%!important;animation-delay:-2.5s!important}
-    @keyframes floatUp{
-      0%{transform:translate3d(0,35vh,0) rotate(-12deg) scale(.72);opacity:0}
-      10%{opacity:.7}
-      48%{opacity:.52}
-      82%{opacity:.22}
-      100%{transform:translate3d(0,-125vh,0) rotate(18deg) scale(1.05);opacity:0}
-    }
-    .ig-decor .ig-float:nth-child(2){animation-duration:11s!important}
-    .ig-decor .ig-float:nth-child(3){animation-duration:13s!important}
-    .ig-decor .ig-float:nth-child(4){animation-duration:10s!important}
-    .ig-decor .ig-float:nth-child(5){animation-duration:12s!important}
-
-    /* CTA principal: rosa + laranja, mais forte visualmente */
-    .home-service-btn{
-      background:linear-gradient(90deg,#ff1493 0%,#e1306c 48%,#ff7a00 100%)!important;
-      color:#fff!important;
-      border:2px solid rgba(255,255,255,.55)!important;
-      box-shadow:0 9px 24px rgba(225,48,108,.34),0 0 22px rgba(255,122,0,.20)!important;
-      text-shadow:0 1px 2px rgba(0,0,0,.18);
-      transition:transform .2s ease,filter .2s ease,box-shadow .2s ease!important;
-    }
-    .home-service-btn:hover{
-      transform:translateY(-2px) scale(1.01);
-      filter:saturate(1.15) brightness(1.04);
-      box-shadow:0 12px 30px rgba(225,48,108,.42),0 0 28px rgba(255,122,0,.28)!important;
-    }
-    .home-service-btn:active{transform:scale(.985)}
-    @media (max-width:700px){
-      .logo{font-size:1rem!important;column-gap:.18rem}
-      .brand-crown{font-size:1.08rem}
-      .brand-tagline{font-size:.38rem;margin-top:.13rem}
-      .nav-links{display:none!important}
-      nav{justify-content:flex-start!important}
-    }
-
+    .ig-decor{position:fixed!important;inset:0!important;width:100%!important;height:100dvh!important;overflow:hidden!important;pointer-events:none!important;z-index:1!important}
+    .ig-float{animation:floatUp 9s linear infinite!important;will-change:transform,opacity;opacity:0!important}
+    .ig1{left:5%!important;top:105%!important;animation-delay:-1s!important}.ig2{right:8%!important;top:112%!important;animation-delay:-4s!important}.ig3{right:25%!important;top:118%!important;animation-delay:-7s!important}.ig4{left:22%!important;top:108%!important;animation-delay:-5.5s!important}.ig5{left:72%!important;top:120%!important;animation-delay:-2.5s!important}
+    @keyframes floatUp{0%{transform:translate3d(0,35vh,0) rotate(-12deg) scale(.72);opacity:0}10%{opacity:.7}48%{opacity:.52}82%{opacity:.22}100%{transform:translate3d(0,-125vh,0) rotate(18deg) scale(1.05);opacity:0}}
+    .ig-decor .ig-float:nth-child(2){animation-duration:11s!important}.ig-decor .ig-float:nth-child(3){animation-duration:13s!important}.ig-decor .ig-float:nth-child(4){animation-duration:10s!important}.ig-decor .ig-float:nth-child(5){animation-duration:12s!important}
+    .home-service-btn{background:linear-gradient(90deg,#ff1493 0%,#e1306c 48%,#ff7a00 100%)!important;color:#fff!important;border:2px solid rgba(255,255,255,.55)!important;box-shadow:0 9px 24px rgba(225,48,108,.34),0 0 22px rgba(255,122,0,.20)!important;text-shadow:0 1px 2px rgba(0,0,0,.18);transition:transform .2s ease,filter .2s ease,box-shadow .2s ease!important}
+    .home-service-btn:hover{transform:translateY(-2px) scale(1.01);filter:saturate(1.15) brightness(1.04);box-shadow:0 12px 30px rgba(225,48,108,.42),0 0 28px rgba(255,122,0,.28)!important}.home-service-btn:active{transform:scale(.985)}
+    @media(max-width:700px){.logo{font-size:1rem!important;column-gap:.18rem}.brand-crown{font-size:1.08rem}.brand-tagline{font-size:.38rem;margin-top:.13rem}.nav-links{display:none!important}nav{justify-content:flex-start!important}}
     /* ===== REFERÊNCIA MOBILE APROVADA — CARD VISUAL ===== */
     .services-section{padding-top:1rem!important}
     .home-service-grid{max-width:760px!important;gap:1rem!important}
@@ -846,7 +773,7 @@ footer{background:rgba(255,255,255,.9)!important;border-color:rgba(225,48,108,.1
       <a href="#faq">FAQ</a>
       <a href="#servicos" class="nav-cta">Ver Serviços</a>
     </div>
-  </nav>
+</nav>
   <div class="ig-decor" aria-hidden="true">
     <span class="ig-float ig1">◎</span><span class="ig-float ig2">♡</span><span class="ig-float ig3">◎</span><span class="ig-float ig4">♡</span><span class="ig-float ig5">◎</span><span class="ig-scribble s1">Mais<br>seguidores!</span><span class="ig-scribble s2">Seu perfil<br>no próximo nível!</span>
   </div>
@@ -1009,7 +936,7 @@ footer{background:rgba(255,255,255,.9)!important;border-color:rgba(225,48,108,.1
   </section>
 
   <footer>
-    <a href="index.html" class="logo">MidiaNet<em>Digital</em></a>
+    <a href="index.html" class="logo" aria-label="MidiaNetDigital"><span class="brand-crown">👑</span><span class="brand-main">MidiaNet</span><span class="brand-digital">Digital</span><span class="brand-tagline">Seu Instagram em outro nível</span></a>
     <p>© 2025 MidiaNetDigital — Todos os direitos reservados.</p>
     <div class="footer-links">
       <a href="#">Termos de Uso</a>
@@ -1084,3 +1011,273 @@ footer{background:rgba(255,255,255,.9)!important;border-color:rgba(225,48,108,.1
       fill.style.width="0%";
       v.onloadedmetadata=function(){
         var dur=v.duration||30,step=100/(dur*10);
+        progInt=setInterval(function(){
+          if(v.paused)return;
+          progVal+=step;fill.style.width=Math.min(progVal,100)+"%";
+          if(progVal>=100){clearInterval(progInt);autoNext();}
+        },100);
+      };
+    }
+    function autoNext(){if(cur<STORIES.length-1){cur++;loadStory(cur);}else closeStory();}
+    function nextStory(e){e&&e.stopPropagation();autoNext();}
+    function prevStory(e){e&&e.stopPropagation();if(cur>0){cur--;loadStory(cur);}}
+    function resetProg(){for(var i=0;i<STORIES.length;i++){var f=document.getElementById("lbp"+i);f.style.width="0%";f.classList.remove("done");}}
+
+    (function(){
+      function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+      var on=rnd(300,500),vd=rnd(100,200);
+      var onlineEl=document.getElementById("online-count");
+      var vendidosEl=document.getElementById("vendidos-count");
+      if(onlineEl) onlineEl.textContent=on;
+      if(vendidosEl) vendidosEl.textContent=vd;
+      setInterval(function(){
+        on+=rnd(-3,6);on=Math.max(200,Math.min(600,on));
+        vd+=rnd(0,2);
+        if(onlineEl) onlineEl.textContent=on;
+        if(vendidosEl) vendidosEl.textContent=vd;
+      },4000);
+    })();
+
+    (function(){
+      var acts=[
+        ["João V.","500 seguidores brasileiros","1 min"],
+        ["Ana Moda","1.000 seguidores","2 min"],
+        ["Lucas S.","200 curtidas","3 min"],
+        ["Carla R.","500 visualizações","1 min"],
+        ["Pedro T.","250 seguidores mundiais","2 min"],
+        ["Bianca F.","100 curtidas","4 min"]
+      ];
+      var bar=document.getElementById("activityBar");
+      setInterval(function(){
+        var items=bar.querySelectorAll(".activity-item");
+        var idx=Math.floor(Math.random()*acts.length);
+        var a=acts[idx];
+        var pick=Math.floor(Math.random()*3);
+        items[pick].querySelector("strong").textContent=a[0];
+        items[pick].querySelector("span").textContent=a[1]+" · há "+a[2];
+      },5000);
+    })();
+
+    const TRACK_BACKEND = 'https://midianetdigital.onrender.com';
+    function obterRastreamentoOrigem(){
+      var p=new URLSearchParams(location.search);
+      var saved=JSON.parse(sessionStorage.getItem('mn24_atribuicao')||'null');
+      var source=p.get('utm_source')||'';
+      var origem=source;
+      if(!origem && p.get('fbclid')) origem='meta ads';
+      if(!origem && p.get('ttclid')) origem='tiktok ads';
+      if(!origem && p.get('gclid')) origem='google ads';
+      if(!origem && document.referrer){
+        var ref=document.referrer.toLowerCase();
+        if(ref.includes('instagram.com')) origem='instagram';
+        else if(ref.includes('whatsapp.com')||ref.includes('wa.me')) origem='whatsapp';
+        else if(ref.includes('facebook.com')) origem='facebook';
+        else if(ref.includes('tiktok.com')) origem='tiktok';
+      }
+      if(!origem && saved?.origem) origem=saved.origem;
+      origem=(origem||'direto').toLowerCase().replace(/[-_]+/g,' ');
+      var utm={
+        utm_source:p.get('utm_source')||(saved?.utm?.utm_source||''),
+        utm_medium:p.get('utm_medium')||(saved?.utm?.utm_medium||''),
+        utm_campaign:p.get('utm_campaign')||(saved?.utm?.utm_campaign||''),
+        utm_content:p.get('utm_content')||(saved?.utm?.utm_content||''),
+        utm_term:p.get('utm_term')||(saved?.utm?.utm_term||''),
+        fbclid:p.get('fbclid')||(saved?.utm?.fbclid||''),
+        ttclid:p.get('ttclid')||(saved?.utm?.ttclid||''),
+        gclid:p.get('gclid')||(saved?.utm?.gclid||'')
+      };
+      var atrib={origem:origem,utm:utm};
+      sessionStorage.setItem('mn24_atribuicao',JSON.stringify(atrib));
+      return atrib;
+    }
+    var rastreamentoOrigem=obterRastreamentoOrigem();
+    async function registrarRastreamento(tipo, dados, chave) {
+      const storageKey = 'mn24_track_v4_' + chave;
+      if (sessionStorage.getItem(storageKey) === '1') return true;
+      try {
+        const r = await fetch(TRACK_BACKEND + '/evento', {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body:JSON.stringify(Object.assign({tipo:tipo,origem:rastreamentoOrigem.origem,utm:rastreamentoOrigem.utm,referrer:document.referrer}, dados || {})), keepalive:true
+        });
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        const j = await r.json().catch(()=>({ok:false}));
+        if (j && j.ok) { sessionStorage.setItem(storageKey,'1'); return true; }
+      } catch(e) { console.warn('[Rastreamento]', tipo, e); }
+      return false;
+    }
+
+    document.querySelectorAll('.service-track').forEach(function(c){
+      c.addEventListener('click', async function(e){
+        e.preventDefault();
+        var nome=this.dataset.service,slug=this.dataset.slug;
+        sessionStorage.setItem('servico',slug);
+        var lockKey='evento_servico_lock_v4_'+slug;
+        var now=Date.now(), last=Number(sessionStorage.getItem(lockKey)||0);
+        if(now-last<1500) return;
+        sessionStorage.setItem(lockKey,String(now));
+        if(typeof fbq==='function') fbq('track','ViewContent',{content_name:nome,content_category:'Servico'});
+        await registrarRastreamento('servico',{servico:nome},'servico_'+slug);
+        window.location.href=this.href;
+      });
+    });
+
+    (async function(){
+      // Visitante: uma vez por dia por navegador/sessão.
+      // A data faz a trava mudar automaticamente quando virar o dia.
+      var hoje = new Date();
+      var dataLocal = hoje.getFullYear() + '-' + String(hoje.getMonth()+1).padStart(2,'0') + '-' + String(hoje.getDate()).padStart(2,'0');
+      await registrarRastreamento('visitante',{},'visitante_' + dataLocal);
+    })();
+
+    document.querySelectorAll('a[href^="#"]').forEach(function(a){
+      a.addEventListener('click',function(e){
+        var t=document.querySelector(this.getAttribute('href'));
+        if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth'});}
+      });
+    });
+  </script>
+  <script>
+    (async function(){
+      var BACKEND='https://midianetdigital.onrender.com';
+      var grid=document.getElementById('homeServiceGrid');
+      function esc(v){
+        return String(v==null?'':v)
+          .split('&').join('&amp;')
+          .split('<').join('&lt;')
+          .split('>').join('&gt;')
+          .split('"').join('&quot;');
+      }
+      function serviceVisual(slug,nome){
+        var l=String(slug||'').toLowerCase(), n=String(nome||'').toLowerCase();
+        var kind=(l.indexOf('curtida')>=0||n.indexOf('curtida')>=0)?'likes':(l.indexOf('visual')>=0||n.indexOf('visual')>=0)?'views':'followers';
+        var people=[
+          ['foto1.jpg','fernanda.roberta.505'],['foto2.jpg','bi.gette'],['foto3.jpg','mzas_famj'],['foto4.jpg','aqualandiaaquarios'],
+          ['foto5.jpg','boycott.clothing'],['foto6.jpg','habibiboutiqueipoh'],['foto7.jpg','arturogarcialewenstein'],['foto8.jpg','arsadkhan_ismaily_7']
+        ];
+        var base=kind==='followers'?6226:kind==='likes'?1248:125000;
+        var label=kind==='followers'?'seguidores':kind==='likes'?'curtidas':'visualizações';
+        var eventText=kind==='followers'?'começou a te seguir. agora':kind==='likes'?'curtiu sua publicação. agora':'visualizou seu vídeo. agora';
+        var stories=people.slice(0,4).map(function(p){
+          return '<div class="mock-story"><img src="'+p[0]+'" alt=""><span>'+esc(p[1])+'</span></div>';
+        }).join('');
+        return '<div class="service-visual '+kind+'" data-kind="'+kind+'" data-base="'+base+'">'+
+          '<div class="visual-stage">'+
+            '<div class="visual-instagram-mark">◎</div>'+
+            '<div class="visual-heart">♡</div>'+
+            '<div class="visual-side-counter"><strong class="js-side-old">'+base.toLocaleString('pt-BR')+'</strong><span>'+label+'</span><b class="js-side-new">'+(base+1).toLocaleString('pt-BR')+' ↑</b><small>'+label+'</small></div>'+
+            '<div class="visual-plus">👤 <b>+1</b></div>'+
+            '<div class="mock-phone">'+
+              '<div class="mock-phone-screen">'+
+                '<div class="mock-notch"></div>'+
+                '<div class="mock-top"><span>Instagram</span><span>♡</span></div>'+
+                '<div class="mock-profile">'+
+                  '<img src="'+people[0][0]+'" alt="">'+
+                  '<div class="mock-stats"><b>432<small>publicações</small></b><b class="js-primary-count">'+base.toLocaleString('pt-BR')+'<small>'+label+'</small></b><b>1.512<small>seguindo</small></b></div>'+
+                '</div>'+
+                '<div class="mock-stories">'+stories+'</div>'+
+                '<div class="mock-post"><div class="mock-post-head"><img src="'+people[1][0]+'" alt=""><b>'+people[1][1]+'</b></div><div class="mock-post-photo"></div></div>'+
+              '</div>'+
+            '</div>'+
+            '<div class="visual-notification"><img class="js-notif-img" src="'+people[0][0]+'" alt=""><div><b class="js-notif-name">'+people[0][1]+'</b><span class="js-notif-text">'+eventText+'</span></div></div>'+
+          '</div>'+
+        '</div>';
+      }
+      function bindVisuals(){
+        grid.querySelectorAll('.service-visual').forEach(function(card){
+          var kind=card.getAttribute('data-kind')||'followers', current=Number(card.getAttribute('data-base')||0), idx=0;
+          var people=[['foto1.jpg','fernanda.roberta.505'],['foto2.jpg','bi.gette'],['foto3.jpg','mzas_famj'],['foto4.jpg','aqualandiaaquarios'],['foto5.jpg','boycott.clothing'],['foto6.jpg','habibiboutiqueipoh'],['foto7.jpg','arturogarcialewenstein'],['foto8.jpg','arsadkhan_ismaily_7']];
+          var primary=card.querySelector('.js-primary-count'),secondary=card.querySelector('.js-secondary-count'),counter=card.querySelector('.js-counter'),img=card.querySelector('.js-notif-img'),name=card.querySelector('.js-notif-name'),txt=card.querySelector('.js-notif-text'),badge=card.querySelector('.ig-heart-badge'),notif=card.querySelector('.ig-notification');
+          setInterval(function(){
+            idx=(idx+1)%people.length; current++;
+            var p=people[idx], formatted=current.toLocaleString('pt-BR');
+            if(primary)primary.textContent=formatted;
+            if(secondary)secondary.textContent=formatted;
+            if(counter)counter.innerHTML=formatted+' <span class="up">↑</span>';
+            if(img)img.src=p[0];
+            if(name)name.textContent=p[1];
+            if(txt)txt.textContent=kind==='followers'?'começou a te seguir. agora':kind==='likes'?'curtiu seu vídeo. agora':'visualizou seu vídeo. agora';
+            if(badge)badge.textContent='1';
+            if(notif){notif.style.animation='none';void notif.offsetWidth;notif.style.animation='igNotifIn 3.8s ease-in-out infinite';}
+          },3800);
+        });
+      }
+      function bindServiceClicks(){
+        if(!grid)return;
+        grid.addEventListener('click',async function(e){
+          var card=e.target.closest('.service-track');
+          if(!card)return;
+          e.preventDefault();
+          var nome=card.getAttribute('data-service')||'', slug=card.getAttribute('data-slug')||'', href=card.getAttribute('href');
+          sessionStorage.setItem('servico',slug);
+          if(typeof fbq==='function')fbq('track','ViewContent',{content_name:nome,content_category:'Servico'});
+          try{
+            await fetch(BACKEND+'/evento',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tipo:'servico',servico:nome}),keepalive:true});
+          }catch(_){}
+          window.location.href=href;
+        });
+      }
+      bindServiceClicks();
+      try{
+        var r=await fetch(BACKEND+'/config/public',{cache:'no-store'});
+        if(!r.ok)throw new Error('config HTTP '+r.status);
+        var cfg=await r.json(), site=cfg.site||{};
+        if(site.nome){
+          document.querySelectorAll('.logo').forEach(function(el){el.textContent=site.nome;});
+          document.title=site.nome+' — Cresça no Instagram de Verdade';
+        }
+        if(site.texto){var hs=document.querySelector('.hero-sub');if(hs)hs.textContent=site.texto;}
+        if(site.whatsapp){var wa=document.querySelector('.wa-float');if(wa)wa.href='https://wa.me/'+site.whatsapp+'?text='+encodeURIComponent('Olá, quero saber mais sobre os planos');}
+        if(site.garantia)document.querySelectorAll('.trust-card p').forEach(function(el){if(el.textContent.toLowerCase().indexOf('garantia')>=0)el.textContent=site.garantia;});
+        if(site.horario)document.querySelectorAll('.trust-card p').forEach(function(el){if(el.textContent.toLowerCase().indexOf('suporte')>=0)el.textContent='Atendimento '+site.horario;});
+        var grupos={};
+        (Array.isArray(cfg.servicos)?cfg.servicos:[]).filter(function(x){return x.ativo!==false;}).forEach(function(x){
+          if(!grupos[x.servico])grupos[x.servico]=[];
+          grupos[x.servico].push(x);
+        });
+        Object.keys(grupos).forEach(function(slug){grupos[slug].sort(function(a,b){return Number(a.preco)-Number(b.preco);});});
+        var ordemPadrao=['engajamento-30-70','engajamento-60-40','engajamento-br','curtidas-brasileiras','curtidas-mundiais','visualizacoes','visualizacoes-reels','comentarios'];
+        var ordem=Object.keys(grupos).sort(function(a,b){
+          var oa=Number(grupos[a][0].ordem),ob=Number(grupos[b][0].ordem);
+          if(oa!==ob)return oa-ob;
+          var ia=ordemPadrao.indexOf(a),ib=ordemPadrao.indexOf(b);
+          return (ia<0?999:ia)-(ib<0?999:ib);
+        });
+        grid.innerHTML=ordem.map(function(slug){
+          var x=grupos[slug][0],nome=x.nome||slug,lower=slug.toLowerCase();
+          var cls=lower.indexOf('engajamento')>=0?'service-eng':lower.indexOf('curtidas')>=0?'service-like':lower.indexOf('visualiz')>=0?'service-view':'service-generic';
+          var bonus=[];
+          if(Number(x.bonusCurtidas||0)>0) bonus.push(Number(x.bonusCurtidas).toLocaleString('pt-BR')+' curtidas');
+          if(Number(x.bonusVisualizacoes||0)>0) bonus.push(Number(x.bonusVisualizacoes).toLocaleString('pt-BR')+' visualizações');
+          var bonusText=bonus.length?bonus.join(' + '):'Bônus grátis incluso';
+          return '<a href="planos.html?servico='+encodeURIComponent(slug)+'" class="home-service-card service-track '+cls+'" data-service="'+esc(nome)+'" data-slug="'+esc(slug)+'">'+
+            '<div class="service-main">'+serviceVisual(slug,nome)+
+            '<div class="service-copy">'+
+              '<h3>'+esc(nome)+'</h3>'+
+              '<p>'+esc(
+              x.descricao ||
+              (String(slug).toLowerCase().includes('30-70') ? 'Ideal para quem quer aumentar rapidamente o Instagram, combinando perfis brasileiros e internacionais.' :
+              String(slug).toLowerCase().includes('engajamento-br') ? 'Ideal para influenciadores, criadores de conteúdo e negócios que querem aumentar a presença no público brasileiro.' :
+              String(slug).toLowerCase().includes('premium') ? 'Nossa opção premium para quem busca um crescimento mais natural, com maior concentração de perfis brasileiros.' :
+              String(slug).toLowerCase().includes('curtida') ? 'Aumente o engajamento das suas publicações e deixe seu conteúdo mais movimentado e atrativo.' :
+              String(slug).toLowerCase().includes('visual') ? 'Aumente o alcance dos seus vídeos e faça seu conteúdo ganhar mais visualizações rapidamente.' :
+              'Ideal para quem quer aumentar seu Instagram.'))+
+              '</p>'+
+              '<div class="service-benefits"><span>✓ Perfis reais e ativos</span><span>✓ Entrega rápida</span><span>✓ Sem necessidade de senha</span></div>'+
+              '<div class="bonus-box"><b>🎁 BÔNUS GRÁTIS</b><span>'+esc(bonusText)+'</span></div>'+
+              '<div class="price-row"><div><div class="from">A partir de</div><div class="price">R$ <b>'+Number(x.preco||0).toFixed(2).replace('.',',')+'</b></div></div></div>'+
+            '</div></div>'+
+            '<div class="home-service-btn btn-eng">🛒 &nbsp; VER PACOTES <b>→</b></div></a>';
+        }).join('');
+        if(!ordem.length){
+          grid.innerHTML='<div style="padding:1rem;text-align:center">Nenhum serviço disponível no momento.</div>';
+        }else{
+          bindVisuals();
+        }
+      }catch(err){
+        console.error('[PUBLIC CONFIG]',err);
+        grid.innerHTML='<div style="padding:1rem;text-align:center">Não foi possível carregar os planos. Tente novamente em alguns segundos.</div>';
+      }
+    })();
+  </script>
+</body>
+</html>
