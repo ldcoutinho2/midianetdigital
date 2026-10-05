@@ -274,15 +274,30 @@ function ordemPadraoServico(servico) {
   return ordem[servico] || 100;
 }
 
+const DESCRICOES_SERVICOS = {
+  'engajamento-30-70': 'Ideal para quem quer aumentar rapidamente o Instagram, combinando perfis brasileiros e internacionais.',
+  'engajamento-60-40': 'Mais brasileiros no seu crescimento, combinado com alcance internacional para fortalecer seu perfil.',
+  'engajamento-br': 'Ideal para influenciadores, criadores de conteúdo e negócios que querem aumentar a presença no público brasileiro.',
+  'engajamento-premium': 'Nossa opção premium para quem busca um crescimento mais natural, com maior concentração de perfis brasileiros.',
+  'seguidores-brasileiros': 'Ideal para influenciadores, criadores de conteúdo e negócios que querem aumentar a presença no público brasileiro.',
+  'seguidores-mundiais': 'Ideal para quem quer aumentar rapidamente o Instagram com seguidores de diferentes partes do mundo.',
+  'seguidores-organicos': 'Nossa opção premium para quem busca um crescimento mais natural, com maior concentração de perfis brasileiros.',
+  'curtidas-brasileiras': 'Aumente o engajamento das suas publicações e deixe seu conteúdo mais movimentado e atrativo.',
+  'curtidas-mundiais': 'Aumente as curtidas das suas publicações e dê mais movimento ao seu conteúdo com público internacional.',
+  'visualizacoes': 'Aumente o alcance dos seus vídeos e faça seu conteúdo ganhar mais visualizações rapidamente.',
+  'visualizacoes-reels': 'Aumente o alcance dos seus Reels e faça seus vídeos conquistarem mais visualizações rapidamente.',
+  'comentarios': 'Deixe suas publicações mais movimentadas com comentários para aumentar a sensação de interação no conteúdo.'
+};
+
 function montarConfiguracaoPadrao() {
   const servicos = {};
   for (const [chave, preco] of Object.entries(PRECOS)) {
     const [servico, plano] = chave.split('__');
-    servicos[chave] = { servico, plano, id: SERVICO_MAP[chave] || '', preco: Number(preco || 0), custo: 0, ativo: true, nome: SERVICO_TITULOS[servico] || servico, qtd: plano, chave, ordem: ordemPadraoServico(servico), bonusCurtidas: 0, bonusCurtidasTipo: 'curtidas-brasileiras', bonusCurtidasId: '', bonusVisualizacoes: 0, bonusVisualizacoesId: '' };
+    servicos[chave] = { servico, plano, id: SERVICO_MAP[chave] || '', preco: Number(preco || 0), custo: 0, ativo: true, nome: SERVICO_TITULOS[servico] || servico, qtd: plano, chave, ordem: ordemPadraoServico(servico), bonusCurtidas: 0, bonusCurtidasTipo: 'curtidas-brasileiras', bonusCurtidasId: '', bonusVisualizacoes: 0, bonusVisualizacoesId: '', descricao: DESCRICOES_SERVICOS[servico] || '' };
   }
   for (const [chave, preco] of Object.entries(COMBO_PRECOS)) {
     const [servico, plano] = chave.split('__');
-    servicos[chave] = { servico, plano, id: COMBOS[servico]?.followerServiceId || '', preco: Number(preco || 0), custo: 0, ativo: true, nome: SERVICO_TITULOS[servico] || servico, qtd: plano, chave, ordem: ordemPadraoServico(servico), bonusCurtidas: 0, bonusCurtidasTipo: 'curtidas-brasileiras', bonusCurtidasId: '', bonusVisualizacoes: 0, bonusVisualizacoesId: '' };
+    servicos[chave] = { servico, plano, id: COMBOS[servico]?.followerServiceId || '', preco: Number(preco || 0), custo: 0, ativo: true, nome: SERVICO_TITULOS[servico] || servico, qtd: plano, chave, ordem: ordemPadraoServico(servico), bonusCurtidas: 0, bonusCurtidasTipo: 'curtidas-brasileiras', bonusCurtidasId: '', bonusVisualizacoes: 0, bonusVisualizacoesId: '', descricao: DESCRICOES_SERVICOS[servico] || '' };
   }
   return { servicos, anuncios: [], site: { nome: 'MidiaNetDigital', whatsapp: '5521991689838', horario: '09:00 às 22:00', garantia: '30 dias', texto: '' } };
 }
@@ -291,7 +306,7 @@ async function buscarConfiguracao() {
   const base = montarConfiguracaoPadrao();
   if (!SUPABASE_URL || !SUPABASE_KEY) return base;
   try {
-    const url = `${SUPABASE_URL}/rest/v1/eventos?select=*&tipo=in.(${CONFIG_TIPO_SERVICO},${CONFIG_TIPO_ANUNCIO},${CONFIG_TIPO_SITE})&order=created_at.desc&limit=2000`;
+    const url = `${SUPABASE_URL}/rest/v1/eventos?select=tipo,nome,created_at&tipo=in.(${CONFIG_TIPO_SERVICO},${CONFIG_TIPO_ANUNCIO},${CONFIG_TIPO_SITE})&order=created_at.desc&limit=2000`;
     const resp = await axios.get(url, { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } });
     const vistos = new Set();
     for (const e of resp.data || []) {
