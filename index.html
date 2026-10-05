@@ -594,6 +594,81 @@ footer{background:rgba(255,255,255,.9)!important;border-color:rgba(225,48,108,.1
 @media(max-width:700px){
  nav{left:3%;right:3%;width:94%;min-height:52px;padding:.55rem .75rem;border-radius:15px}.logo{font-size:1rem!important}.nav-links .nav-cta{font-size:.64rem!important;padding:.48rem .72rem!important}.hero{padding:5.3rem 4% .8rem!important}.hero h1{font-size:clamp(2.05rem,11.5vw,3.35rem)!important;line-height:.97!important}.hero-sub{font-size:.78rem!important;line-height:1.35!important}.online-pill{padding:.3rem .6rem!important;margin-bottom:.75rem!important}.online-avatars img{width:27px!important;height:27px!important}.online-pill strong{font-size:.75rem!important}.online-pill>span:last-child{font-size:.68rem!important}.services-section{padding:.9rem 4% 1.5rem!important}.home-service-grid{gap:.7rem!important}.home-service-card{padding:.78rem .72rem!important;border-radius:15px!important}.home-service-card .service-icon{width:48px!important;height:48px!important;border-radius:12px!important;font-size:1.2rem!important}.home-service-card .service-copy h3{font-size:.82rem!important}.home-service-card .service-copy p{font-size:.58rem!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:205px}.home-service-card .price{font-size:1rem!important}.home-service-btn{padding:.58rem .7rem!important;font-size:.62rem!important;margin-top:.6rem!important}.ig1{left:-38px;top:130px;font-size:6rem}.ig2{right:-5px;top:105px;font-size:3.7rem}.ig3{right:-32px;top:510px;font-size:6rem}.ig4{left:-10px;top:760px;font-size:3.8rem}.ig5{left:-35px;top:1050px;font-size:5rem}.ig-scribble{font-size:1rem}.s1{left:1%;top:450px}.s2{right:1%;top:330px}.stories-section{margin:1rem 3%!important}
 }
+
+    /* ===== NOVA APRESENTAÇÃO DOS PLANOS — INSTAGRAM AO VIVO ===== */
+    .home-service-card{padding:1rem 1rem 1.05rem!important;display:block!important;overflow:hidden!important}
+    .home-service-card .service-main{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:.85rem!important;min-height:0!important}
+    .home-service-card .service-copy{width:100%!important}
+    .service-visual{width:100%;position:relative;border-radius:16px;overflow:hidden;background:#08090d;border:1px solid rgba(225,48,108,.26);box-shadow:0 12px 30px rgba(0,0,0,.18),0 0 28px rgba(225,48,108,.10);isolation:isolate}
+    .service-visual::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(120deg,rgba(225,48,108,.08),transparent 38%,rgba(131,58,180,.08));z-index:4}
+    .ig-screen{position:relative;min-height:310px;color:#fff;background:linear-gradient(180deg,#090a0e 0%,#0c0d12 72%,#08090c 100%);font-family:Arial,Helvetica,sans-serif;overflow:hidden}
+    .ig-screen::before{content:"";position:absolute;left:-20%;top:-30%;width:70%;height:70%;background:radial-gradient(circle,rgba(225,48,108,.16),transparent 68%);pointer-events:none}
+    .ig-top{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-bottom:1px solid rgba(255,255,255,.06);font-size:16px;font-weight:700;position:relative;z-index:5}
+    .ig-brand{font-family:Arial,Helvetica,sans-serif;font-weight:800;letter-spacing:-.5px}
+    .ig-actions{display:flex;align-items:center;gap:14px;font-size:20px}
+    .ig-heart{position:relative;display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;font-size:25px;line-height:1}
+    .ig-heart-badge{position:absolute;right:-5px;top:-5px;min-width:18px;height:18px;padding:0 4px;border-radius:10px;background:#ed174f;color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 0 14px rgba(237,23,79,.65);animation:igNotifPulse 1.7s ease-in-out infinite}
+    @keyframes igNotifPulse{0%,100%{transform:scale(1)}45%{transform:scale(1.14)}}
+    .ig-profile{padding:11px 14px 6px;position:relative;z-index:2}
+    .ig-profile-row{display:flex;align-items:center;gap:10px}
+    .ig-main-avatar{width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid #fff;box-shadow:0 0 0 2px #e1306c}
+    .ig-profile-stats{display:flex;justify-content:space-between;flex:1;text-align:center}
+    .ig-stat strong{display:block;font-size:14px;color:#fff}.ig-stat span{display:block;font-size:8px;color:#aeb0b7;margin-top:1px}
+    .ig-bio{font-size:9px;color:#d7d7dc;margin-top:6px}
+    .ig-stories{display:flex;gap:12px;padding:7px 14px 10px;position:relative;z-index:2;overflow:hidden}
+    .ig-story{flex:none;text-align:center;width:49px}
+    .ig-story img{width:43px;height:43px;border-radius:50%;object-fit:cover;border:2px solid #e1306c;box-shadow:0 0 0 2px #833ab4}
+    .ig-story span{display:block;color:#bfc0c6;font-size:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px}
+    .ig-post{margin:0 0 0;border-top:1px solid rgba(255,255,255,.06);position:relative;min-height:116px;background:#050608}
+    .ig-post-head{display:flex;align-items:center;gap:7px;padding:7px 10px;font-size:9px;font-weight:700}
+    .ig-post-head img{width:23px;height:23px;border-radius:50%;object-fit:cover}
+    .ig-post-media{height:72px;margin:0 10px;border-radius:7px;background:linear-gradient(135deg,#26212b,#11151b 55%,#30152c);position:relative;overflow:hidden}
+    .ig-post-media::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 60% 30%,rgba(225,48,108,.38),transparent 32%),linear-gradient(135deg,transparent 25%,rgba(255,255,255,.05) 26%,transparent 27%);opacity:.9}
+    .ig-post-actions{display:flex;gap:10px;padding:6px 10px 2px;font-size:14px}
+    .ig-post-count{font-size:8px;color:#d8d8de;padding:0 10px 7px}
+    .ig-notification{position:absolute;left:12px;right:12px;top:48px;z-index:8;display:flex;align-items:center;gap:8px;padding:9px 10px;background:rgba(255,255,255,.97);color:#111;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.45),0 0 22px rgba(225,48,108,.22);transform:translateY(-10px);opacity:0;animation:igNotifIn 3.8s ease-in-out infinite}
+    @keyframes igNotifIn{0%,8%{opacity:0;transform:translateY(-12px)}14%,78%{opacity:1;transform:translateY(0)}86%,100%{opacity:0;transform:translateY(-10px)}}
+    .ig-notification img{width:34px;height:34px;border-radius:50%;object-fit:cover;flex:none}
+    .ig-notif-text{min-width:0;font-size:9px;line-height:1.25}.ig-notif-text strong{font-size:10px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ig-notif-text span{color:#555;display:block}
+    .ig-counter{position:absolute;right:10px;bottom:10px;z-index:7;background:rgba(8,8,12,.88);border:1px solid rgba(225,48,108,.5);border-radius:10px;padding:7px 9px;text-align:right;box-shadow:0 7px 18px rgba(0,0,0,.3)}
+    .ig-counter strong{display:block;color:#fff;font-size:17px;line-height:1}.ig-counter span{font-size:7px;color:#aeb0b7}.ig-counter .up{color:#31e981;font-size:8px;font-weight:800;margin-left:3px}
+    .ig-activity-chip{position:absolute;right:10px;top:10px;z-index:6;background:#ed174f;color:#fff;border-radius:10px;padding:5px 7px;font-size:9px;font-weight:800;box-shadow:0 0 18px rgba(237,23,79,.45)}
+    .service-visual.likes .ig-post-media{background:linear-gradient(135deg,#2c1723,#101114 45%,#5a193d)}
+    .service-visual.views .ig-post-media{background:linear-gradient(135deg,#151f2d,#0d1117 45%,#182e24)}
+    .service-visual.views .ig-activity-chip{background:#8b5cf6}
+    .service-visual.likes .ig-activity-chip{background:#e1306c}
+    .service-visual.views .ig-counter{border-color:rgba(139,92,246,.65)}
+    .service-visual.likes .ig-counter{border-color:rgba(225,48,108,.65)}
+    .service-visual .ig-notification{top:54px}
+    .service-visual .ig-notification.view-notif{background:rgba(255,255,255,.96)}
+    .service-visual .ig-notification.like-notif{background:rgba(255,255,255,.96)}
+    .service-copy h3{font-size:1.02rem!important;color:#111827!important;line-height:1.12!important}
+    .service-copy p{font-size:.72rem!important;color:#4b5563!important}
+    .service-art{display:none!important}
+    .home-service-btn{margin-top:.65rem!important}
+    @media(min-width:801px){
+      .home-service-card{padding:1.1rem 1.1rem 1.15rem!important}
+      .ig-screen{min-height:350px}
+      .ig-post-media{height:92px}
+      .ig-notification{top:55px}
+      .service-copy h3{font-size:1.15rem!important}
+      .service-copy p{font-size:.78rem!important}
+    }
+    @media(max-width:800px){
+      .home-service-card{padding:.72rem!important}
+      .service-visual{border-radius:14px}
+      .ig-screen{min-height:255px}
+      .ig-top{height:37px;padding:0 11px;font-size:13px}.ig-actions{font-size:17px;gap:9px}.ig-heart{width:25px;height:25px;font-size:21px}.ig-heart-badge{min-width:16px;height:16px;font-size:9px}
+      .ig-profile{padding:8px 10px 4px}.ig-main-avatar{width:38px;height:38px}.ig-stat strong{font-size:11px}.ig-stat span{font-size:6.5px}.ig-bio{font-size:7px}
+      .ig-stories{gap:8px;padding:5px 10px 7px}.ig-story{width:39px}.ig-story img{width:34px;height:34px}.ig-story span{font-size:6px}
+      .ig-post{min-height:90px}.ig-post-head{padding:5px 8px;font-size:7px}.ig-post-head img{width:19px;height:19px}.ig-post-media{height:53px;margin:0 8px}.ig-post-actions{padding:4px 8px 1px;font-size:11px;gap:7px}.ig-post-count{font-size:6.5px;padding:0 8px 5px}
+      .ig-notification{left:9px;right:9px;top:41px;padding:7px 8px;border-radius:10px;gap:7px}.ig-notification img{width:28px;height:28px}.ig-notif-text{font-size:7px}.ig-notif-text strong{font-size:8px}.ig-counter{right:7px;bottom:7px;padding:5px 7px;border-radius:8px}.ig-counter strong{font-size:13px}.ig-counter span{font-size:6px}.ig-activity-chip{right:7px;top:7px;padding:4px 6px;font-size:7px}
+      .home-service-btn{padding:.62rem .65rem!important;font-size:.7rem!important}
+    }
+    @media(prefers-reduced-motion:reduce){
+      .ig-heart-badge,.ig-notification{animation:none!important}
+    }
+
 </style>
 </head>
 <body>
@@ -1005,20 +1080,61 @@ footer{background:rgba(255,255,255,.9)!important;border-color:rgba(225,48,108,.1
           var lower=slug.toLowerCase();
           var cls=lower.indexOf('engajamento')>=0?'service-eng':lower.indexOf('curtidas')>=0?'service-like':lower.indexOf('visualiz')>=0?'service-view':'service-generic';
           var href='planos.html?servico='+encodeURIComponent(slug);
+          var visual=serviceVisual(slug,nome);
           return '<a href="'+href+'" class="home-service-card service-track '+cls+'" data-service="'+esc(nome)+'" data-slug="'+esc(slug)+'">'+
             '<div class="service-main">'+
-              '<div class="service-icon">'+esc(x.icone||'📦')+'</div>'+
+              visual+
               '<div class="service-copy">'+
                 '<h3>'+esc(nome)+'</h3>'+
                 '<p>'+esc(x.descricao||'Escolha o pacote ideal para o seu perfil.')+'</p>'+
                 '<div class="from">A partir de</div>'+
                 '<div class="price">R$ <b>'+Number(x.preco||0).toFixed(2).replace('.',',')+'</b></div>'+
               '</div>'+
-              '<div class="service-art">✨<span>✓</span><i>⚡</i></div>'+
             '</div>'+
             '<div class="home-service-btn btn-eng">VER PACOTES <b>→</b></div>'+
-          '</a>';
+          </a>';
         }).join('')||'<div class="small">Nenhum serviço disponível.</div>';
+
+
+        (function(){
+          var cards=grid.querySelectorAll('.service-visual');
+          cards.forEach(function(card){
+            var kind=card.getAttribute('data-kind')||'followers';
+            var base=Number(card.getAttribute('data-base')||0);
+            var current=base;
+            var names=kind==='followers'
+              ? [['foto1.jpg','fernanda.roberta.505'],['foto2.jpg','bi.gette'],['foto3.jpg','mzas_famj'],['foto4.jpg','aqualandiaaquarios'],['foto5.jpg','boycott.clothing'],['foto6.jpg','habibiboutiqueipoh'],['foto7.jpg','arturogarcialewenstein'],['foto8.jpg','arsadkhan_ismaily_7']]
+              : [['foto2.jpg','bi.gette'],['foto3.jpg','mzas_famj'],['foto4.jpg','aqualandiaaquarios'],['foto5.jpg','boycott.clothing'],['foto6.jpg','habibiboutiqueipoh'],['foto7.jpg','arturogarcialewenstein'],['foto8.jpg','arsadkhan_ismaily_7'],['foto1.jpg','fernanda.roberta.505']];
+            var idx=0;
+            var primary=card.querySelector('.js-primary-count');
+            var secondary=card.querySelector('.js-secondary-count');
+            var counter=card.querySelector('.js-counter');
+            var notifImg=card.querySelector('.js-notif-img');
+            var notifName=card.querySelector('.js-notif-name');
+            var notifText=card.querySelector('.js-notif-text');
+            var badge=card.querySelector('.ig-heart-badge');
+            function fmt(v){return Number(v).toLocaleString('pt-BR');}
+            function tick(){
+              idx=(idx+1)%names.length;
+              current+=1;
+              var person=names[idx];
+              if(primary)primary.textContent=fmt(current);
+              if(secondary)secondary.textContent=fmt(current);
+              if(counter)counter.innerHTML=fmt(current)+' <span class="up">↑</span>';
+              if(notifImg)notifImg.src=person[0];
+              if(notifName)notifName.textContent=person[1];
+              if(notifText)notifText.textContent=kind==='followers'?'começou a te seguir. agora':kind==='likes'?'curtiu seu vídeo. agora':'visualizou seu vídeo. agora';
+              if(badge)badge.textContent='1';
+              var notif=card.querySelector('.ig-notification');
+              if(notif){
+                notif.style.animation='none';
+                void notif.offsetWidth;
+                notif.style.animation='igNotifIn 3.8s ease-in-out infinite';
+              }
+            }
+            setInterval(tick,3800);
+          });
+        })();
 
         grid.querySelectorAll('.service-track').forEach(function(card){
           card.addEventListener('click',function(e){
