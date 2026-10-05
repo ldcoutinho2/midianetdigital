@@ -1046,144 +1046,120 @@ footer{background:rgba(255,255,255,.9)!important;border-color:rgba(225,48,108,.1
   </script>
   <script>
     (async function(){
+      var BACKEND='https://midianetdigital.onrender.com';
+      var grid=document.getElementById('homeServiceGrid');
+      function esc(v){
+        return String(v==null?'':v)
+          .split('&').join('&amp;')
+          .split('<').join('&lt;')
+          .split('>').join('&gt;')
+          .split('"').join('&quot;');
+      }
+      function serviceVisual(slug,nome){
+        var l=String(slug||'').toLowerCase(), n=String(nome||'').toLowerCase();
+        var kind=(l.indexOf('curtida')>=0||n.indexOf('curtida')>=0)?'likes':(l.indexOf('visual')>=0||n.indexOf('visual')>=0)?'views':'followers';
+        var profiles=[
+          ['foto1.jpg','fernanda.roberta.505'],['foto2.jpg','bi.gette'],['foto3.jpg','mzas_famj'],['foto4.jpg','aqualandiaaquarios'],
+          ['foto5.jpg','boycott.clothing'],['foto6.jpg','habibiboutiqueipoh'],['foto7.jpg','arturogarcialewenstein'],['foto8.jpg','arsadkhan_ismaily_7']
+        ];
+        var main=profiles[0], count=kind==='followers'?6226:kind==='likes'?1248:125000;
+        var label=kind==='followers'?'seguidores':kind==='likes'?'curtidas':'visualizações';
+        var text=kind==='followers'?'começou a te seguir. agora':kind==='likes'?'curtiu seu vídeo. agora':'visualizou seu vídeo. agora';
+        var stories=profiles.slice(0,4).map(function(p){
+          return '<div class="ig-story"><img src="'+p[0]+'" alt=""><span>'+esc(p[1])+'</span></div>';
+        }).join('');
+        return '<div class="service-visual '+kind+'" data-kind="'+kind+'" data-base="'+count+'">'+
+          '<div class="ig-screen">'+
+          '<div class="ig-top"><span class="ig-brand">Instagram</span><div class="ig-actions"><span>⌕</span><span class="ig-heart">♡<b class="ig-heart-badge">1</b></span><span>≡</span></div></div>'+
+          '<div class="ig-profile"><div class="ig-profile-row"><img class="ig-main-avatar" src="'+main[0]+'" alt=""><div class="ig-profile-stats">'+
+          '<div class="ig-stat"><strong>432</strong><span>publicações</span></div><div class="ig-stat"><strong class="js-primary-count">'+count.toLocaleString('pt-BR')+'</strong><span>'+label+'</span></div><div class="ig-stat"><strong>1.512</strong><span>seguindo</span></div>'+
+          '</div></div><div class="ig-bio">Criador(a) de conteúdo • Foco, disciplina e resultados</div></div>'+
+          '<div class="ig-stories">'+stories+'</div>'+
+          '<div class="ig-post"><div class="ig-post-head"><img src="'+profiles[1][0]+'" alt=""><span>'+profiles[1][1]+'</span><span style="margin-left:auto">•••</span></div>'+
+          '<div class="ig-post-media"></div><div class="ig-post-actions"><span>♡</span><span>◯</span><span>➤</span><span style="margin-left:auto">⌑</span></div>'+
+          '<div class="ig-post-count"><b class="js-secondary-count">'+count.toLocaleString('pt-BR')+'</b> '+label+'</div></div>'+
+          '<div class="ig-activity-chip">'+(kind==='followers'?'♡ +1':kind==='likes'?'♥ +1':'◉ +1')+'</div>'+
+          '<div class="ig-notification '+(kind==='likes'?'like-notif':kind==='views'?'view-notif':'')+'"><img class="js-notif-img" src="'+main[0]+'" alt=""><div class="ig-notif-text"><strong class="js-notif-name">'+main[1]+'</strong><span class="js-notif-text">'+text+'</span></div></div>'+
+          '<div class="ig-counter"><strong class="js-counter">'+count.toLocaleString('pt-BR')+' <span class="up">↑</span></strong><span>'+label+'</span></div>'+
+          '</div></div>';
+      }
+      function bindVisuals(){
+        grid.querySelectorAll('.service-visual').forEach(function(card){
+          var kind=card.getAttribute('data-kind')||'followers', current=Number(card.getAttribute('data-base')||0), idx=0;
+          var people=[['foto1.jpg','fernanda.roberta.505'],['foto2.jpg','bi.gette'],['foto3.jpg','mzas_famj'],['foto4.jpg','aqualandiaaquarios'],['foto5.jpg','boycott.clothing'],['foto6.jpg','habibiboutiqueipoh'],['foto7.jpg','arturogarcialewenstein'],['foto8.jpg','arsadkhan_ismaily_7']];
+          var primary=card.querySelector('.js-primary-count'),secondary=card.querySelector('.js-secondary-count'),counter=card.querySelector('.js-counter'),img=card.querySelector('.js-notif-img'),name=card.querySelector('.js-notif-name'),txt=card.querySelector('.js-notif-text'),badge=card.querySelector('.ig-heart-badge'),notif=card.querySelector('.ig-notification');
+          setInterval(function(){
+            idx=(idx+1)%people.length; current++;
+            var p=people[idx], formatted=current.toLocaleString('pt-BR');
+            if(primary)primary.textContent=formatted;
+            if(secondary)secondary.textContent=formatted;
+            if(counter)counter.innerHTML=formatted+' <span class="up">↑</span>';
+            if(img)img.src=p[0];
+            if(name)name.textContent=p[1];
+            if(txt)txt.textContent=kind==='followers'?'começou a te seguir. agora':kind==='likes'?'curtiu seu vídeo. agora':'visualizou seu vídeo. agora';
+            if(badge)badge.textContent='1';
+            if(notif){notif.style.animation='none';void notif.offsetWidth;notif.style.animation='igNotifIn 3.8s ease-in-out infinite';}
+          },3800);
+        });
+      }
+      function bindServiceClicks(){
+        if(!grid)return;
+        grid.addEventListener('click',async function(e){
+          var card=e.target.closest('.service-track');
+          if(!card)return;
+          e.preventDefault();
+          var nome=card.getAttribute('data-service')||'', slug=card.getAttribute('data-slug')||'', href=card.getAttribute('href');
+          sessionStorage.setItem('servico',slug);
+          if(typeof fbq==='function')fbq('track','ViewContent',{content_name:nome,content_category:'Servico'});
+          try{
+            await fetch(BACKEND+'/evento',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tipo:'servico',servico:nome}),keepalive:true});
+          }catch(_){}
+          window.location.href=href;
+        });
+      }
+      bindServiceClicks();
       try{
-        var r=await fetch('https://midianetdigital.onrender.com/config/public',{cache:'no-store'});
-        if(!r.ok) throw new Error('config');
-        var cfg=await r.json();
-        var site=cfg.site||{};
-        if(site.nome){ document.querySelectorAll('.logo').forEach(function(el){el.innerHTML=esc(site.nome);}); document.title=site.nome+' — Cresça no Instagram de Verdade'; }
-        if(site.texto){ var hs=document.querySelector('.hero-sub'); if(hs) hs.textContent=site.texto; }
-        if(site.whatsapp){ var wa=document.querySelector('.wa-float'); if(wa) wa.href='https://wa.me/'+site.whatsapp+'?text='+encodeURIComponent('Olá, quero saber mais sobre os planos'); }
-        if(site.garantia){ document.querySelectorAll('.trust-card p').forEach(function(el){if(el.textContent.toLowerCase().indexOf('garantia')>=0)el.textContent=site.garantia;}); }
-        if(site.horario){ document.querySelectorAll('.trust-card p').forEach(function(el){if(el.textContent.toLowerCase().indexOf('suporte')>=0)el.textContent='Atendimento '+site.horario;}); }
+        var r=await fetch(BACKEND+'/config/public',{cache:'no-store'});
+        if(!r.ok)throw new Error('config HTTP '+r.status);
+        var cfg=await r.json(), site=cfg.site||{};
+        if(site.nome){
+          document.querySelectorAll('.logo').forEach(function(el){el.textContent=site.nome;});
+          document.title=site.nome+' — Cresça no Instagram de Verdade';
+        }
+        if(site.texto){var hs=document.querySelector('.hero-sub');if(hs)hs.textContent=site.texto;}
+        if(site.whatsapp){var wa=document.querySelector('.wa-float');if(wa)wa.href='https://wa.me/'+site.whatsapp+'?text='+encodeURIComponent('Olá, quero saber mais sobre os planos');}
+        if(site.garantia)document.querySelectorAll('.trust-card p').forEach(function(el){if(el.textContent.toLowerCase().indexOf('garantia')>=0)el.textContent=site.garantia;});
+        if(site.horario)document.querySelectorAll('.trust-card p').forEach(function(el){if(el.textContent.toLowerCase().indexOf('suporte')>=0)el.textContent='Atendimento '+site.horario;});
         var grupos={};
-        (cfg.servicos||[]).filter(function(x){return x.ativo!==false;}).forEach(function(x){
-          if(!grupos[x.servico]) grupos[x.servico]=[];
+        (Array.isArray(cfg.servicos)?cfg.servicos:[]).filter(function(x){return x.ativo!==false;}).forEach(function(x){
+          if(!grupos[x.servico])grupos[x.servico]=[];
           grupos[x.servico].push(x);
         });
-        var grid=document.getElementById('homeServiceGrid');
-        function esc(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-        Object.keys(grupos).forEach(function(slug){
-          grupos[slug].sort(function(a,b){return Number(a.preco)-Number(b.preco);});
-        });
-        var ordemPadrao=['engajamento-30-70','engajamento-60-40','engajamento-br','curtidas-brasileiras','curtidas-mundiais','visualizacoes','visualizacoes-reels'];
-        var ordemServicos=Object.keys(grupos).sort(function(a,b){
-          var oa=Number(grupos[a][0].ordem), ob=Number(grupos[b][0].ordem);
-          var aVal=Number.isFinite(oa)?oa:100000, bVal=Number.isFinite(ob)?ob:100000;
-          if(aVal!==bVal)return aVal-bVal;
+        Object.keys(grupos).forEach(function(slug){grupos[slug].sort(function(a,b){return Number(a.preco)-Number(b.preco);});});
+        var ordemPadrao=['engajamento-30-70','engajamento-60-40','engajamento-br','curtidas-brasileiras','curtidas-mundiais','visualizacoes','visualizacoes-reels','comentarios'];
+        var ordem=Object.keys(grupos).sort(function(a,b){
+          var oa=Number(grupos[a][0].ordem),ob=Number(grupos[b][0].ordem);
+          if(oa!==ob)return oa-ob;
           var ia=ordemPadrao.indexOf(a),ib=ordemPadrao.indexOf(b);
-          ia=ia<0?999:ia; ib=ib<0?999:ib;
-          return ia-ib;
+          return (ia<0?999:ia)-(ib<0?999:ib);
         });
-        function serviceVisual(slug, nome){
-          var l=String(slug||'').toLowerCase();
-          var n=String(nome||'').toLowerCase();
-          var kind=(l.indexOf('curtida')>=0||n.indexOf('curtida')>=0)?'likes':(l.indexOf('visual')>=0||n.indexOf('visual')>=0)?'views':'followers';
-          var profiles=[
-            ['foto1.jpg','fernanda.roberta.505'],
-            ['foto2.jpg','bi.gette'],
-            ['foto3.jpg','mzas_famj'],
-            ['foto4.jpg','aqualandiaaquarios'],
-            ['foto5.jpg','boycott.clothing'],
-            ['foto6.jpg','habibiboutiqueipoh'],
-            ['foto7.jpg','arturogarcialewenstein'],
-            ['foto8.jpg','arsadkhan_ismaily_7']
-          ];
-          var main=profiles[0];
-          var stories=profiles.slice(0,4).map(function(p){return '<div class="ig-story"><img src="'+p[0]+'" alt=""><span>'+p[1]+'</span></div>';}).join('');
-          var notifText=kind==='followers'?'começou a te seguir. agora':kind==='likes'?'curtiu seu vídeo. agora':'visualizou seu vídeo. agora';
-          var count=kind==='followers'?6226:kind==='likes'?1248:125000;
-          var counterLabel=kind==='followers'?'seguidores':kind==='likes'?'curtidas':'visualizações';
-          var chip=kind==='followers'?'♡ +1':kind==='likes'?'♥ +1':'◉ +1';
-          return '<div class="service-visual '+kind+'" data-kind="'+kind+'" data-base="'+count+'">'+
-            '<div class="ig-screen">'+
-              '<div class="ig-top"><span class="ig-brand">Instagram</span><div class="ig-actions"><span>⌕</span><span class="ig-heart">♡<b class="ig-heart-badge">1</b></span><span>≡</span></div></div>'+
-              '<div class="ig-profile"><div class="ig-profile-row"><img class="ig-main-avatar" src="'+main[0]+'" alt=""><div class="ig-profile-stats"><div class="ig-stat"><strong>432</strong><span>publicações</span></div><div class="ig-stat"><strong class="js-primary-count">'+Number(count).toLocaleString('pt-BR')+'</strong><span>'+counterLabel+'</span></div><div class="ig-stat"><strong>1.512</strong><span>seguindo</span></div></div></div><div class="ig-bio">Criador(a) de conteúdo • Foco, disciplina e resultados</div></div>'+
-              '<div class="ig-stories">'+stories+'</div>'+
-              '<div class="ig-post"><div class="ig-post-head"><img src="'+profiles[1][0]+'" alt=""><span>'+profiles[1][1]+'</span><span style="margin-left:auto">•••</span></div><div class="ig-post-media"></div><div class="ig-post-actions"><span>♡</span><span>◯</span><span>➤</span><span style="margin-left:auto">⌑</span></div><div class="ig-post-count"><b class="js-secondary-count">'+Number(count).toLocaleString('pt-BR')+'</b> '+counterLabel+'</div></div>'+
-              '<div class="ig-activity-chip">'+chip+'</div>'+
-              '<div class="ig-notification '+(kind==='likes'?'like-notif':kind==='views'?'view-notif':'')+'"><img class="js-notif-img" src="'+profiles[0][0]+'" alt=""><div class="ig-notif-text"><strong class="js-notif-name">'+profiles[0][1]+'</strong><span class="js-notif-text">'+notifText+'</span></div></div>'+
-              '<div class="ig-counter"><strong class="js-counter">'+Number(count).toLocaleString('pt-BR')+' <span class="up">↑</span></strong><span>'+counterLabel+'</span></div>'+
-            '</div>'+
-          '</div>';
-        }
-
-        grid.innerHTML=ordemServicos.map(function(slug){
-          var itens=grupos[slug],x=itens[0],nome=x.nome||slug;
-          var lower=slug.toLowerCase();
+        grid.innerHTML=ordem.map(function(slug){
+          var x=grupos[slug][0],nome=x.nome||slug,lower=slug.toLowerCase();
           var cls=lower.indexOf('engajamento')>=0?'service-eng':lower.indexOf('curtidas')>=0?'service-like':lower.indexOf('visualiz')>=0?'service-view':'service-generic';
-          var href='planos.html?servico='+encodeURIComponent(slug);
-          var visual=serviceVisual(slug,nome);
-          return '<a href="'+href+'" class="home-service-card service-track '+cls+'" data-service="'+esc(nome)+'" data-slug="'+esc(slug)+'">'+
-            '<div class="service-main">'+
-              visual+
-              '<div class="service-copy">'+
-                '<h3>'+esc(nome)+'</h3>'+
-                '<p>'+esc(x.descricao||'Escolha o pacote ideal para o seu perfil.')+'</p>'+
-                '<div class="from">A partir de</div>'+
-                '<div class="price">R$ <b>'+Number(x.preco||0).toFixed(2).replace('.',',')+'</b></div>'+
-              '</div>'+
-            '</div>'+
-            '<div class="home-service-btn btn-eng">VER PACOTES <b>→</b></div>'+
-          </a>';
-        }).join('')||'<div class="small">Nenhum serviço disponível.</div>';
-
-
-        (function(){
-          var cards=grid.querySelectorAll('.service-visual');
-          cards.forEach(function(card){
-            var kind=card.getAttribute('data-kind')||'followers';
-            var base=Number(card.getAttribute('data-base')||0);
-            var current=base;
-            var names=kind==='followers'
-              ? [['foto1.jpg','fernanda.roberta.505'],['foto2.jpg','bi.gette'],['foto3.jpg','mzas_famj'],['foto4.jpg','aqualandiaaquarios'],['foto5.jpg','boycott.clothing'],['foto6.jpg','habibiboutiqueipoh'],['foto7.jpg','arturogarcialewenstein'],['foto8.jpg','arsadkhan_ismaily_7']]
-              : [['foto2.jpg','bi.gette'],['foto3.jpg','mzas_famj'],['foto4.jpg','aqualandiaaquarios'],['foto5.jpg','boycott.clothing'],['foto6.jpg','habibiboutiqueipoh'],['foto7.jpg','arturogarcialewenstein'],['foto8.jpg','arsadkhan_ismaily_7'],['foto1.jpg','fernanda.roberta.505']];
-            var idx=0;
-            var primary=card.querySelector('.js-primary-count');
-            var secondary=card.querySelector('.js-secondary-count');
-            var counter=card.querySelector('.js-counter');
-            var notifImg=card.querySelector('.js-notif-img');
-            var notifName=card.querySelector('.js-notif-name');
-            var notifText=card.querySelector('.js-notif-text');
-            var badge=card.querySelector('.ig-heart-badge');
-            function fmt(v){return Number(v).toLocaleString('pt-BR');}
-            function tick(){
-              idx=(idx+1)%names.length;
-              current+=1;
-              var person=names[idx];
-              if(primary)primary.textContent=fmt(current);
-              if(secondary)secondary.textContent=fmt(current);
-              if(counter)counter.innerHTML=fmt(current)+' <span class="up">↑</span>';
-              if(notifImg)notifImg.src=person[0];
-              if(notifName)notifName.textContent=person[1];
-              if(notifText)notifText.textContent=kind==='followers'?'começou a te seguir. agora':kind==='likes'?'curtiu seu vídeo. agora':'visualizou seu vídeo. agora';
-              if(badge)badge.textContent='1';
-              var notif=card.querySelector('.ig-notification');
-              if(notif){
-                notif.style.animation='none';
-                void notif.offsetWidth;
-                notif.style.animation='igNotifIn 3.8s ease-in-out infinite';
-              }
-            }
-            setInterval(tick,3800);
-          });
-        })();
-
-        grid.querySelectorAll('.service-track').forEach(function(card){
-          card.addEventListener('click',function(e){
-            e.preventDefault();
-            var slug=this.getAttribute('data-slug'),nome=this.getAttribute('data-service')||slug,href=this.getAttribute('href');
-            sessionStorage.setItem('servico',slug);
-            if(typeof fbq==='function') fbq('track','ViewContent',{content_name:nome,content_category:'Servico'});
-            // O rastreamento nunca pode bloquear a navegação do cliente.
-            // Dispara em segundo plano e a página segue imediatamente para os planos.
-            try{
-              registrarRastreamento('servico',{servico:nome},'servico_'+slug);
-            }catch(_){}
-            window.location.assign(href);
-          });
-        });
-      }catch(e){console.warn('[CONFIG PAINEL]',e);}
+          return '<a href="planos.html?servico='+encodeURIComponent(slug)+'" class="home-service-card service-track '+cls+'" data-service="'+esc(nome)+'" data-slug="'+esc(slug)+'">'+
+            '<div class="service-main">'+serviceVisual(slug,nome)+
+            '<div class="service-copy"><h3>'+esc(nome)+'</h3><p>'+esc(x.descricao||'Escolha o pacote ideal para o seu perfil.')+'</p><div class="from">A partir de</div><div class="price">R$ <b>'+Number(x.preco||0).toFixed(2).replace('.',',')+'</b></div></div></div>'+
+            '<div class="home-service-btn btn-eng">VER PACOTES <b>→</b></div></a>';
+        }).join('');
+        if(!ordem.length){
+          grid.innerHTML='<div style="padding:1rem;text-align:center">Nenhum serviço disponível no momento.</div>';
+        }else{
+          bindVisuals();
+        }
+      }catch(err){
+        console.error('[PUBLIC CONFIG]',err);
+        grid.innerHTML='<div style="padding:1rem;text-align:center">Não foi possível carregar os planos. Tente novamente em alguns segundos.</div>';
+      }
     })();
   </script>
 </body>
