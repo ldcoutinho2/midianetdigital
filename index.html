@@ -1281,7 +1281,7 @@ footer{background:rgba(255,255,255,.9)!important;border-color:rgba(225,48,108,.1
         if(!r.ok)throw new Error('config HTTP '+r.status);
         var cfg=await r.json(), site=cfg.site||{};
         if(site.nome){
-          document.querySelectorAll('.logo').forEach(function(el){el.textContent=site.nome;});
+          /* Mantém a marca visual personalizada do cabeçalho; a configuração só atualiza o título da página. */
           document.title=site.nome+' — Cresça no Instagram de Verdade';
         }
         if(site.texto){var hs=document.querySelector('.hero-sub');if(hs)hs.textContent=site.texto;}
