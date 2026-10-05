@@ -315,7 +315,12 @@ async function buscarConfiguracao() {
         if (e.tipo === CONFIG_TIPO_SERVICO) {
           const chave = payload.chave || (payload.servico && payload.plano ? `${payload.servico}__${payload.plano}` : '');
           if (!chave || vistos.has(`s:${chave}`)) continue;
-          base.servicos[chave] = { ...(base.servicos[chave] || {}), ...payload, chave };
+          base.servicos[chave] = {
+            ...(base.servicos[chave] || {}),
+            ...payload,
+            chave,
+            descricao: String(payload.descricao || '').trim() || (base.servicos[chave]?.descricao || DESCRICOES_SERVICOS[payload.servico] || '')
+          };
           vistos.add(`s:${chave}`);
         } else if (e.tipo === CONFIG_TIPO_ANUNCIO) {
           const id = payload.id || e.created_at;
