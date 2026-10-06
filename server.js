@@ -66,13 +66,13 @@ const SERVICO_MAP = {
 };
 
 const PRECOS = {
-  'seguidores-brasileiros__250': 1299,
-  'seguidores-brasileiros__500': 1999,
-  'seguidores-brasileiros__1000': 2799,
-  'seguidores-brasileiros__2000': 5499,
-  'seguidores-brasileiros__3000': 7999,
-  'seguidores-brasileiros__4000': 10999,
-  'seguidores-brasileiros__5000': 13999,
+  'seguidores-brasileiros__250': 1499,
+  'seguidores-brasileiros__500': 2499,
+  'seguidores-brasileiros__1000': 4999,
+  'seguidores-brasileiros__2000': 7899,
+  'seguidores-brasileiros__3000': 9999,
+  'seguidores-brasileiros__4000': 12999,
+  'seguidores-brasileiros__5000': 16999,
   'seguidores-brasileiros__10000': 23500,
   'seguidores-mundiais__500': 500,
   'seguidores-mundiais__1000': 1000,
@@ -121,13 +121,13 @@ const COMBO_PRECOS = {
   'engajamento-60-40__3000': 5397,
   'engajamento-60-40__4000': 7196,
   'engajamento-60-40__5000': 8995,
-  'engajamento-br__250': 1500,
-  'engajamento-br__500': 2500,
-  'engajamento-br__1000': 4500,
-  'engajamento-br__2000': 6500,
-  'engajamento-br__3000': 8500,
-  'engajamento-br__4000': 11000,
-  'engajamento-br__5000': 12500,
+  'engajamento-br__250': 1499,
+  'engajamento-br__500': 2499,
+  'engajamento-br__1000': 4999,
+  'engajamento-br__2000': 7899,
+  'engajamento-br__3000': 9999,
+  'engajamento-br__4000': 12999,
+  'engajamento-br__5000': 16999,
   'engajamento-premium__500': 8000,
   'engajamento-premium__1000': 16000,
   'engajamento-premium__2000': 32000,
@@ -331,6 +331,18 @@ async function buscarConfiguracao() {
         }
       } catch (_) {}
     }
+    const PRECO_PUBLICO_FORCADO = {
+      'engajamento-30-70': {500:999,1000:1899,2000:3499,3000:5299,4000:6899,5000:8499},
+      'engajamento-br': {250:1499,500:2499,1000:4999,2000:7899,3000:9999,4000:12999,5000:16999},
+      'engajamento-premium': {500:8000,1000:16000,2000:32000,3000:49700,4000:65700,5000:84700},
+      'curtidas-brasileiras': {250:2400,500:3600,1000:8000,2000:14000,3000:20000,4000:27000,5000:30000}
+    };
+    Object.entries(PRECO_PUBLICO_FORCADO).forEach(([svc, tabela]) => {
+      Object.entries(tabela).forEach(([q, preco]) => {
+        const chave = svc + '__' + q;
+        if (base.servicos[chave]) base.servicos[chave].preco = preco;
+      });
+    });
     return base;
   } catch (err) {
     console.error('[CONFIG]', err.response?.data || err.message);
