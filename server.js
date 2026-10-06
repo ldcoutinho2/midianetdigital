@@ -86,12 +86,12 @@ const PRECOS = {
   'seguidores-organicos__1000': 16000,
   'seguidores-organicos__2000': 32000,
   'curtidas-brasileiras__250': 2400,
-  'curtidas-brasileiras__500': 3600,
-  'curtidas-brasileiras__1000': 8000,
-  'curtidas-brasileiras__2000': 14000,
-  'curtidas-brasileiras__3000': 20000,
-  'curtidas-brasileiras__4000': 27000,
-  'curtidas-brasileiras__5000': 30000,
+  'curtidas-brasileiras__500': 1500,
+  'curtidas-brasileiras__1000': 3000,
+  'curtidas-brasileiras__2000': 6000,
+  'curtidas-brasileiras__3000': 8000,
+  'curtidas-brasileiras__4000': 12000,
+  'curtidas-brasileiras__5000': 15000,
   'visualizacoes__500': 800,
   'visualizacoes__1000': 1500,
   'visualizacoes__2500': 3000,
@@ -335,7 +335,7 @@ async function buscarConfiguracao() {
       'engajamento-30-70': {500:999,1000:1899,2000:3499,3000:5299,4000:6899,5000:8499},
       'engajamento-br': {250:1499,500:2499,1000:4999,2000:7899,3000:9999,4000:12999,5000:16999},
       'engajamento-premium': {500:8000,1000:16000,2000:32000,3000:49700,4000:65700,5000:84700},
-      'curtidas-brasileiras': {250:2400,500:3600,1000:8000,2000:14000,3000:20000,4000:27000,5000:30000}
+      'curtidas-brasileiras': {500:1500,1000:3000,2000:6000,3000:8000,4000:12000,5000:15000}
     };
     Object.entries(PRECO_PUBLICO_FORCADO).forEach(([svc, tabela]) => {
       Object.entries(tabela).forEach(([q, preco]) => {
